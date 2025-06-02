@@ -1,12 +1,18 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { BeakerIcon } from "@heroicons/react/24/solid";
+import Login from "./components/auth/Login";
+import HomePage from "./components/dashboard/HomePage";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <>
-      <BeakerIcon className='size-6 text-blue-500' />
-      <h1 className='text-5xl font-bold underline'>Hello world</h1>
-    </>
+    <BrowserRouter>
+      <Toaster position='buttom-center' reverseOrder={false} />
+      <Routes>
+        <Route path='/' element={<Login />} />
+        <Route path='/homePage' element={<HomePage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
