@@ -21,7 +21,7 @@ api.interceptors.request.use(
     let csrfToken = localStorage.getItem("CSRF_TOKEN");
     if (!csrfToken)
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/csrf`, {withCredentials: true});
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/csrf`, {withCredentials: true});
         csrfToken = response.data.token;
         localStorage.setItem("CSRF_TOKEN", csrfToken);
       } catch (error) {
