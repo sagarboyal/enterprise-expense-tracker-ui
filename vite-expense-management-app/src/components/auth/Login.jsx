@@ -133,9 +133,9 @@ const Login = () => {
 
         <div className='text-center text-sm text-gray-600 mt-6'>
           <p>
-            New to Trek?{" "}
+            New to Trex?{" "}
             <a
-              href='#'
+              href='/register'
               className='text-blue-600 hover:text-blue-700 font-semibold'
             >
               Create an account
