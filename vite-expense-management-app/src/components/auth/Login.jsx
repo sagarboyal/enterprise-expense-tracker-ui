@@ -38,7 +38,7 @@ const Login = () => {
     localStorage.setItem("USER", JSON.stringify(user));
     console.log("User:", user);
     setToken(token);
-    navigate("/homePage");
+    navigate("/");
   };
 
   const onLoginHandler = async (data) => {
@@ -71,7 +71,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (token) navigate("/homePage");
+    if (token) navigate("/");
   }, [navigate, token]);
 
   return (
