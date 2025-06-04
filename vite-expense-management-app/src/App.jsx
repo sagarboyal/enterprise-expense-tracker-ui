@@ -6,6 +6,7 @@ import HomePage from "./components/HomePage";
 import { Toaster } from "react-hot-toast";
 import Contact from "./components/Contact";
 import About from "./components/About";
+import ResetPassword from "./components/auth/ResetPassword";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='/register' element={<SignUp />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
   );
