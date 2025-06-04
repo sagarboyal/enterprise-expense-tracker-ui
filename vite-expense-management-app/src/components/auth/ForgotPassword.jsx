@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
-import { Divider } from "@mui/material";
 import InputField from "../utils/InputField";
-import toast from "react-hot-toast";
 import Buttons from "../utils/Buttons";
+import { Divider } from "@mui/material";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useMyContext } from "../../store/ContextApi";
 
-const ResetPassword = () => {
+const ForgotPassword = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { token } = useMyContext();
+
   const {
     register,
     handleSubmit,
@@ -21,60 +26,62 @@ const ResetPassword = () => {
     mode: "onTouched",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [searchParams] = useSearchParams();
+  const onPasswordForgotHandler = async (data) => {
+    //destructuring email from the data object
+    const { email } = data;
 
-  const handleResetPassword = async (data) => {
-    const { password } = data;
-
-    const token = searchParams.get("token");
-
-    setLoading(true);
     try {
-      const formData = new URLSearchParams();
+      setLoading(true);
 
-      formData.append("token", token);
-      formData.append("newPassword", password);
-      const res = await api.post("/api/auth/public/reset-password", formData, {
+      const formData = new URLSearchParams();
+      formData.append("email", email);
+      await api.post("/api/auth/public/forgot-password", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
       });
-      toast.success("Password reset successful! You can now log in.");
+
+      //reset the field by using reset() function provided by react hook form after submit
       reset();
-      navigate("/login");
+
+      //showing success message
+      toast.success("Password reset email sent! Check your inbox.");
     } catch (error) {
-      toast.error("Error resetting password. Please try again.");
+      toast.error("Error sending password reset email. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  //if there is token  exist navigate  the user to the home page if he tried to access the login page
+  useEffect(() => {
+    if (token) navigate("/");
+  }, [token, navigate]);
+
   return (
     <div className='min-h-[calc(100vh-74px)] flex justify-center items-center bg-gray-50'>
       <form
-        onSubmit={handleSubmit(handleResetPassword)}
+        onSubmit={handleSubmit(onPasswordForgotHandler)}
         className='sm:w-[450px] w-[360px] bg-white shadow-lg rounded-xl py-10 sm:px-10 px-6'
       >
         <div className='mb-6'>
           <h1 className='text-center text-3xl font-semibold text-gray-800'>
-            Update Your Password
+            Forgot Password?
           </h1>
           <p className='text-center text-gray-600'>
-            Enter your new password to update it
+            Enter your email reset link will be sent to you.
           </p>
         </div>
         <div className='flex flex-col gap-4'>
           <InputField
-            label='Password'
+            label='Email'
             required
-            id='password'
-            type='password'
-            message='*Password is required'
-            placeholder='Enter your password'
+            id='email'
+            type='email'
+            message='*Email is required'
+            placeholder='Enter your email'
             register={register}
             errors={errors}
-            min={6}
             className='border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md'
           />
         </div>
@@ -85,7 +92,7 @@ const ResetPassword = () => {
           className='mt-6 w-full py-3 bg-black text-white font-semibold rounded-md shadow-lg hover:bg-gray-800 transition duration-300 ease-in-out'
           type='submit'
         >
-          {loading ? <span>Loading...</span> : "Submit"}
+          {loading ? <span>Loading...</span> : "Send"}
         </Buttons>
 
         <p className='mt-4 text-center text-sm text-gray-700'>
@@ -98,4 +105,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default ForgotPassword;

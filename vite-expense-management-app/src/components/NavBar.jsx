@@ -45,7 +45,7 @@ const NavBar = () => {
         </h1>
       </Link>
 
-      <div className='relative flex items-center gap-6'>
+      <div className='relative flex items-center gap-3'>
         {/* Company Dropdown */}
         <div className='relative'>
           <button
@@ -84,14 +84,17 @@ const NavBar = () => {
               onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
               className='focus:outline-none'
             >
-              <AccountCircleIcon className='text-3xl text-gray-600 hover:text-blue-600 transition duration-200' />
+              <AccountCircleIcon
+                sx={{ fontSize: 40 }} // or 48, 56, etc.
+                className='text-dark hover:text-gray-500 transition duration-200'
+              />
             </button>
 
             {profileDropdownOpen && (
               <div className='absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50'>
                 <Link
                   to='/profile'
-                  className='block px-5 py-3 text-sm text-gray-800 hover:bg-gray-100 transition'
+                  className='block px-5 py-3 text-sm text-dark hover:bg-gray-100 transition'
                 >
                   Profile
                 </Link>
@@ -108,7 +111,7 @@ const NavBar = () => {
           <div className='flex items-end'>
             <Link
               to='/login'
-              className='w-20 px-5 py-3 bg-black text-white font-semibold rounded-md shadow-md hover:bg-gray-800 transition duration-300'
+              className='w-20 px-5 py-3 ml-4 bg-black text-white font-semibold rounded-md shadow-md hover:bg-gray-800 transition duration-300'
             >
               Login
             </Link>

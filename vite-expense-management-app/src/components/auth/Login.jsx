@@ -112,7 +112,7 @@ const Login = () => {
             errors={errors}
           />
           <a
-            href='#'
+            href='/forgot-password'
             className='block text-right text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200'
             aria-label='Link'
           >
