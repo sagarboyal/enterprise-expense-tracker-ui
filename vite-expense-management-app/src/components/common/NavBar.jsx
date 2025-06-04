@@ -1,8 +1,8 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useMyContext } from "../store/ContextApi";
 import { useState } from "react";
-import logo from "../assets/brandlogo-cropped.png";
+import logo from "../../assets/brandlogo-cropped.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useMyContext } from "../../store/ContextApi";
 
 const NavBar = () => {
   const [headerToggle, setHeaderToggle] = useState(false);
