@@ -1,20 +1,23 @@
+import Footer from "./Footer";
 import NavBar from "./NavBar";
 
 const HomePage = () => {
   return (
     <>
       <NavBar />
-      <div className='flex flex-col items-center justify-center h-screen bg-gray-100'>
-        <h1 className='text-4xl font-bold mb-4'>
+      <div className='flex flex-col items-center justify-center min-h-screen bg-gray-50 py-12'>
+        <h1 className='text-4xl sm:text-5xl font-bold text-center text-gray-800 mb-6'>
           Welcome to the Expense Management App
         </h1>
-        <p className='text-lg text-gray-700 mb-8'>
-          Manage your expenses efficiently and effectively.
+        <p className='text-lg sm:text-xl text-gray-600 text-center mb-8'>
+          Manage your expenses efficiently and effectively with our easy-to-use
+          platform.
         </p>
-        <button className='px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300'>
+        <button className='px-8 py-3 bg-black text-white rounded-md shadow-md hover:bg-gray-500 transition duration-300'>
           Get Started
         </button>
       </div>
+      <Footer />
     </>
   );
 };

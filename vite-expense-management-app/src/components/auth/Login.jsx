@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import InputField from "../utils/InputField";
 import Buttons from "../utils/Buttons";
 import api from "../../services/api";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/brandlogo-cropped.png";
 
 const Login = () => {
   const [jwtToken, setJwtToken] = useState(null);
@@ -75,22 +75,27 @@ const Login = () => {
   }, [navigate, token]);
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12'>
+    <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 py-12'>
+      <div className='text-center mb-4'>
+        <img
+          src={logo}
+          alt='Logo'
+          className='max-w-[100px] h-auto object-contain mx-auto mb-1 bg-white p-2 rounded-2xl text-shadow-lg'
+        />
+
+        <h3 className='text-3xl font-semibold text-gray-900 mb-2'>
+          Sign In to Trex
+        </h3>
+        <p className='text-gray-500 text-sm w-80 mx-auto'>
+          Please enter your email address and password to access your account
+          and continue managing your expenses.
+        </p>
+      </div>
       <form
         onSubmit={handleSubmit(onLoginHandler)}
         className='w-full max-w-sm bg-white border border-gray-300 shadow-lg rounded-lg p-8 space-y-6'
       >
-        <div className='text-center'>
-          <img src={logo} alt='Logo' className='w-20 h-20 mx-auto mb-1' />
-          <h1 className='text-3xl font-semibold text-gray-900'>
-            Sign in to Trex
-          </h1>
-          <p className='text-gray-500 text-sm'>
-            Enter your email and password to continue.
-          </p>
-        </div>
-
-        <div className='space-y-2'>
+        <div className='space-y-4'>
           <InputField
             label='Email Address'
             required

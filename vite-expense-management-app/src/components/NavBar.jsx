@@ -1,9 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMyContext } from "../store/ContextApi";
 import { useState } from "react";
-import logo from "../assets/logo.png";
-import userIcon from "../assets/icon.svg";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import logo from "../assets/brandlogo-cropped.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const NavBar = () => {
@@ -39,10 +37,11 @@ const NavBar = () => {
     <header className='h-16 bg-white shadow-md px-6 md:px-12 flex items-center justify-between sticky top-0'>
       {/* Left: Logo & App Name */}
       <Link to='/' className='flex items-center gap-3'>
-        <img src={logo} alt='Trex Logo' className='w-12 h-12 object-cover' />
-        <h1 className='text-3xl font-semibold text-gray-900 tracking-tight'>
-          Trex
-        </h1>
+        <img
+          src={logo}
+          alt='Trex Logo'
+          className='max-w-[90px] h-auto object-contain' // Adjust the max width for responsiveness
+        />
       </Link>
 
       <div className='relative flex items-center gap-3'>
