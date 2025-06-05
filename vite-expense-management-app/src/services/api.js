@@ -14,29 +14,31 @@ const api = axios.create({
 api.interceptors.request.use(
   async (config) => {
     const jwtToken = localStorage.getItem("JWT_TOKEN");
-    if (jwtToken) 
+    if (jwtToken) {
       config.headers.Authorization = `Bearer ${jwtToken}`;
+    }
 
-    
     let csrfToken = localStorage.getItem("CSRF_TOKEN");
-    if (!csrfToken)
+    if (!csrfToken) {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/csrf`, {withCredentials: true});
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/csrf`, {
+          withCredentials: true,
+        });
         csrfToken = response.data.token;
         localStorage.setItem("CSRF_TOKEN", csrfToken);
       } catch (error) {
         console.error("Error fetching CSRF token:", error);
       }
+    }
 
     if (csrfToken) {
-      config.headers["X-CSRF-Token"] = csrfToken;
+      config.headers["X-XSRF-TOKEN"] = csrfToken;
     }
-    console.log("X-CSRF-Token: " +  csrfToken);
+
+    console.log("X-XSRF-TOKEN:", csrfToken);
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default api;

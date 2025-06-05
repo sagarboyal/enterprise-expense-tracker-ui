@@ -16,10 +16,15 @@ export const ContextProvider = ({ children }) => {
 
   const fetchUser = async () => {
     const user = JSON.parse(localStorage.getItem("USER"));
-    if (user?.fullName) {
+    const jwtToken = localStorage.getItem("JWT_TOKEN");
+
+    if (user?.fullName && jwtToken) {
       try {
         const { data } = await api.get("/api/auth/user");
+
         const roles = data.roles || [];
+
+        // Set Admin flag
         if (roles.includes("ROLE_ADMIN")) {
           localStorage.setItem("IS_ADMIN", "true");
           setIsAdmin(true);
@@ -27,6 +32,8 @@ export const ContextProvider = ({ children }) => {
           localStorage.removeItem("IS_ADMIN");
           setIsAdmin(false);
         }
+
+        // Set Manager flag
         if (roles.includes("ROLE_MANAGER")) {
           localStorage.setItem("IS_MANAGER", "true");
           setIsManager(true);
@@ -34,10 +41,23 @@ export const ContextProvider = ({ children }) => {
           localStorage.removeItem("IS_MANAGER");
           setIsManager(false);
         }
+
         setloggedInUser(data);
       } catch (error) {
         console.error("Error fetching user:", error);
-        toast.error("Failed to fetch user data.");
+
+        // Clear tokens and user state on failure
+        localStorage.removeItem("JWT_TOKEN");
+        localStorage.removeItem("USER");
+        localStorage.removeItem("IS_ADMIN");
+        localStorage.removeItem("IS_MANAGER");
+
+        setToken(null);
+        setloggedInUser(null);
+        setIsAdmin(false);
+        setIsManager(false);
+
+        toast.error("Your session has expired. Please log in to continue.");
       }
     }
   };
