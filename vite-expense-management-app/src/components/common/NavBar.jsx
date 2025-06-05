@@ -45,6 +45,15 @@ const NavBar = () => {
       </Link>
 
       <div className='relative flex items-center gap-3'>
+        {/* Dashboard*/}
+        {token && (
+          <Link
+            to='/dashboard'
+            className='text-sm mr-l text-black hover:text-gray-500 transition duration-300'
+          >
+            Dashboard
+          </Link>
+        )}
         {/* Company Dropdown */}
         <div className='relative'>
           <button
