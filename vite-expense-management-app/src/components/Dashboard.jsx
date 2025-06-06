@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import api from "../services/api";
 import ExpenseList from "./expenses/ExpenseList";
 import ActionHeader from "./utils/ActionHeader";
+import AnalyticsDashboard from "./expenses/AnalyticsDashboard";
 
 const HomePage = () => {
   const { token } = useMyContext();
@@ -30,6 +31,9 @@ const HomePage = () => {
     minAmount: null,
     maxAmount: null,
   });
+
+  // Refresh key to trigger AnalyticsDashboard reload
+  const [analyticsRefreshKey, setAnalyticsRefreshKey] = useState(0);
 
   const openModal = (expense) => {
     setSelectedExpense(expense);
@@ -64,6 +68,12 @@ const HomePage = () => {
     }
   };
 
+  // Unified refresh function for expenses + analytics
+  const refreshData = async (pageNumber = page) => {
+    await fetchExpenses(pageNumber);
+    setAnalyticsRefreshKey((prev) => prev + 1);
+  };
+
   useEffect(() => {
     fetchExpenses(page);
   }, [page]);
@@ -78,7 +88,7 @@ const HomePage = () => {
 
   const applyFilters = () => {
     setPage(0);
-    fetchExpenses(0);
+    refreshData(0);
   };
 
   const resetFilters = () => {
@@ -91,7 +101,7 @@ const HomePage = () => {
       maxAmount: null,
     });
     setPage(0);
-    fetchExpenses(0);
+    refreshData(0);
   };
 
   useEffect(() => {
@@ -117,12 +127,11 @@ const HomePage = () => {
           open={openViewExpenseModal}
           setOpen={setOpenViewExpenseModal}
           expense={selectedExpense}
+          onUpdateSuccess={() => refreshData(page)} // Refresh on update
         />
       )}
       <div className='min-h-screen bg-white p-8 flex flex-col items-center font-sans'>
-        <h1 className='text-3xl font-extrabold text-black mb-6 tracking-wide'>
-          Expenses
-        </h1>
+        <AnalyticsDashboard refreshKey={analyticsRefreshKey} />
 
         <ActionHeader
           onAdd={() => setOpenCreateExpenseModal(true)}
@@ -187,7 +196,7 @@ const HomePage = () => {
           isOpen={openCreateExpenseModal}
           onClose={() => {
             setOpenCreateExpenseModal(false);
-            fetchExpenses(0);
+            refreshData(0);
           }}
         />
 
@@ -199,7 +208,7 @@ const HomePage = () => {
           <ExpenseList
             expenses={expenseList}
             loading={loading}
-            onDeleteSuccess={() => fetchExpenses(page)}
+            onDeleteSuccess={() => refreshData(page)}
             openModal={openModal}
             page={page}
             totalPages={totalPages}
