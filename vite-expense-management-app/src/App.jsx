@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
-import HomePage from "./components/Dashboard";
+import HomePage from "./components/HomePage";
 import { Toaster } from "react-hot-toast";
 import Contact from "./components/common/Contact";
 import About from "./components/common/About";
@@ -31,6 +31,7 @@ function App() {
         <Route path='/reset-password' element={<ResetPassword />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/homepage' element={<HomePage />} />
       </Routes>
       {showPage && <Footer />}
     </>
