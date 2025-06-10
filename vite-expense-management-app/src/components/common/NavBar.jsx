@@ -3,6 +3,7 @@ import { useState } from "react";
 import logo from "../../assets/brandlogo-cropped.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useMyContext } from "../../store/ContextApi";
+import NotificationDropdown from "./NotificationDropdown";
 
 const NavBar = () => {
   const [headerToggle, setHeaderToggle] = useState(false);
@@ -45,15 +46,6 @@ const NavBar = () => {
       </Link>
 
       <div className='relative flex items-center gap-3'>
-        {/* Dashboard*/}
-        {token && (
-          <Link
-            to='/dashboard'
-            className='text-sm mr-l text-black hover:text-gray-500 transition duration-300'
-          >
-            Dashboard
-          </Link>
-        )}
         {/* Company Dropdown */}
         <div className='relative'>
           <button
@@ -86,6 +78,20 @@ const NavBar = () => {
             </div>
           )}
         </div>
+
+        {/* Dashboard*/}
+        {token && (
+          <>
+            <Link
+              to='/dashboard'
+              className='text-sm mr-l text-black hover:text-gray-500 transition duration-300'
+            >
+              Dashboard
+            </Link>
+            <NotificationDropdown />
+          </>
+        )}
+
         {token ? (
           <div className='relative ml-4'>
             <button
