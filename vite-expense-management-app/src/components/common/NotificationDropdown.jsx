@@ -1,16 +1,15 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from "../../services/api";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-const NotificationDropdown = () => {
-  const [open, setOpen] = useState(false);
+const NotificationDropdown = ({ isOpen, setIsOpen }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const fetchNotifications = (status = null, page = 0, size = 5) => {
+  const fetchNotifications = async (status = null, page = 0, size = 5) => {
     const params = new URLSearchParams({
       pageNumber: page,
       pageSize: size,
@@ -38,8 +37,10 @@ const NotificationDropdown = () => {
   };
 
   useEffect(() => {
-    if (open) loadNotifications();
-  }, [open]);
+    if (isOpen) {
+      loadNotifications();
+    }
+  }, [isOpen]);
 
   const fetchUnreadCount = async () => {
     try {
@@ -70,14 +71,19 @@ const NotificationDropdown = () => {
       await api.put("/api/notification/mark-all-read");
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       fetchUnreadCount();
-    } catch (err) {
-      console.error("Failed to mark all as read", err);
+    } catch (error) {
+      // Consolidated the catch block
+      console.error("Failed to mark all as read:", error);
     }
+  };
+
+  const handleToggleClick = () => {
+    setIsOpen();
   };
 
   return (
     <div className='relative'>
-      <button onClick={() => setOpen(!open)} className='relative'>
+      <button onClick={handleToggleClick} className='relative'>
         <NotificationsNoneIcon className='text-gray-700 hover:text-black' />
         {unreadCount > 0 && (
           <span className='absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5'>
@@ -86,7 +92,7 @@ const NotificationDropdown = () => {
         )}
       </button>
 
-      {open && (
+      {isOpen && (
         <div className='absolute right-0 mt-2 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50 p-4'>
           <h3 className='font-semibold text-sm mb-2 text-gray-700'>
             Notifications
@@ -104,7 +110,11 @@ const NotificationDropdown = () => {
                   <li
                     key={notif.id}
                     className={`flex items-start justify-between text-sm border-b pb-2 px-3 py-2 rounded transition
-        ${!notif.read ? "bg-gray-100 font-medium" : "bg-white text-gray-700"}`}
+                      ${
+                        !notif.read
+                          ? "bg-gray-100 font-medium"
+                          : "bg-white text-gray-700"
+                      }`}
                   >
                     <span className='pr-2 break-words'>{notif.message}</span>
 
@@ -121,11 +131,11 @@ const NotificationDropdown = () => {
                 ))}
               </ul>
 
-              {notifications.length > 0 && (
-                <div className='flex justify-end'>
+              {notifications.length > 0 && unreadCount > 0 && (
+                <div className='flex justify-end mt-2'>
                   <button
                     onClick={markAllAsRead}
-                    className='text-sm text-black hover:underline pt-2'
+                    className='text-sm text-blue-600 hover:underline pt-2'
                   >
                     Mark all as read
                   </button>
