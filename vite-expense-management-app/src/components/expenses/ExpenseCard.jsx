@@ -10,15 +10,17 @@ const ExpenseCard = ({ expense, onEdit, onDelete }) => {
       <div className='absolute top-6 right-5 flex space-x-2'>
         <button
           onClick={() => onEdit(expense)}
-          className='text-black-600 hover:text-gray-500'
+          className='text-gray-700 hover:text-gray-500'
           title='Edit'
+          aria-label='Edit expense'
         >
           <EditIcon fontSize='small' />
         </button>
         <button
           onClick={() => onDelete(id)}
-          className='text-black-600 hover:text-gray-500'
+          className='text-gray-700 hover:text-gray-500'
           title='Delete'
+          aria-label='Delete expense'
         >
           <DeleteIcon fontSize='small' />
         </button>
@@ -44,10 +46,15 @@ const ExpenseCard = ({ expense, onEdit, onDelete }) => {
       </div>
 
       <p className='text-sm text-gray-400 mt-2'>
-        Date: {new Date(expenseDate).toLocaleDateString()}
+        Date:{" "}
+        {new Date(expenseDate).toLocaleDateString("en-IN", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })}
       </p>
       {message && (
-        <p className='text-sm text-gray-500 mt-2 truncate'>{message}</p>
+        <p className='text-sm text-gray-500 mt-2 line-clamp-2'>{message}</p>
       )}
     </div>
   );

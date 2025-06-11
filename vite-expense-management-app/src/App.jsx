@@ -11,12 +11,13 @@ import ResetPassword from "./components/auth/ResetPassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import NavBar from "./components/common/NavBar";
 import Footer from "./components/common/Footer";
-import Dashboard from "./components/Dashboard";
 import Introduction from "./components/common/Introduction";
+import Expenses from "./components/expenses/Expenses";
+import WelcomePage from "./components/common/WelcomePage";
+import AuditLog from "./components/audit-log/AuditLog";
 
 function App() {
   const location = useLocation();
-  // Only render NavBar and Footer if not on login or register page
   const showPage = !["/login", "/register"].includes(location.pathname);
 
   return (
@@ -24,16 +25,23 @@ function App() {
       {showPage && <NavBar />}
       <Toaster position='bottom-center' reverseOrder={false} />
       <Routes>
+        {/* Public routes */}
         <Route path='/login' element={<Login />} />
-        <Route path='/' element={<Introduction />} />
         <Route path='/register' element={<SignUp />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/contact' element={<Contact />} />
         <Route path='/reset-password' element={<ResetPassword />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/' element={<Introduction />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/contact' element={<Contact />} />
         <Route path='/homepage' element={<HomePage />} />
         <Route path='/profile' element={<Profile />} />
+
+        {/* Dashboard + Nested Routes */}
+        <Route path='/homepage' element={<HomePage />}>
+          <Route index element={<WelcomePage />} /> {/* default view */}
+          <Route path='expenses' element={<Expenses />} />
+          <Route path='audit-logs' element={<AuditLog />} />
+        </Route>
       </Routes>
       {showPage && <Footer />}
     </>

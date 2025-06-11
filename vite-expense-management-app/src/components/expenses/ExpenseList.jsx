@@ -7,7 +7,7 @@ import UpdateExpenseDialog from "./UpdateExpenseDialog";
 const ExpenseList = ({
   expenses,
   loading,
-  onDeleteSuccess, // used to refetch list
+  onDeleteSuccess,
   page,
   totalPages,
   onPageChange,
@@ -21,7 +21,7 @@ const ExpenseList = ({
       setLoadingDelete(true);
       await api.delete(`/api/expenses/${id}`);
       toast.success("Expense deleted successfully.");
-      onDeleteSuccess?.(); // refresh list
+      onDeleteSuccess?.();
     } catch (error) {
       console.error("Error deleting expense:", error);
       toast.error("Failed to delete expense.");
@@ -43,7 +43,7 @@ const ExpenseList = ({
           onClose={() => {
             setOpenUpdateExpenseModal(false);
             setSelectedExpense(null);
-            onDeleteSuccess?.(); // refresh after update too
+            onDeleteSuccess?.();
           }}
           expense={selectedExpense}
         />
@@ -60,8 +60,8 @@ const ExpenseList = ({
               <div key={expense.id} className='flex justify-center'>
                 <ExpenseCard
                   expense={expense}
-                  onEdit={() => handleEditExpense(expense)}
-                  onDelete={() => handleDeleteExpense(expense.id)}
+                  onEdit={handleEditExpense}
+                  onDelete={handleDeleteExpense}
                 />
               </div>
             ))}
