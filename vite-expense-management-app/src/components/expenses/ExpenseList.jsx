@@ -1,9 +1,6 @@
 import { useState } from "react";
 import ExpenseCard from "./ExpenseCard";
-import toast from "react-hot-toast";
-import api from "../../services/api";
 import UpdateExpenseDialog from "./UpdateExpenseDialog";
-
 const ExpenseList = ({
   expenses,
   loading,
@@ -11,6 +8,7 @@ const ExpenseList = ({
   page,
   totalPages,
   onPageChange,
+  openModal,
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [openUpdateExpenseModal, setOpenUpdateExpenseModal] = useState(false);
@@ -62,6 +60,7 @@ const ExpenseList = ({
                   expense={expense}
                   onEdit={handleEditExpense}
                   onDelete={handleDeleteExpense}
+                  onView={() => openModal(expense)}
                 />
               </div>
             ))}

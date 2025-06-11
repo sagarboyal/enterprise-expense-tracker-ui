@@ -15,6 +15,7 @@ import Introduction from "./components/common/Introduction";
 import Expenses from "./components/expenses/Expenses";
 import WelcomePage from "./components/common/WelcomePage";
 import AuditLog from "./components/audit-log/AuditLog";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const location = useLocation();
@@ -35,6 +36,7 @@ function App() {
         <Route path='/contact' element={<Contact />} />
         <Route path='/homepage' element={<HomePage />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/dashboard' element={<Dashboard />} />
 
         {/* Dashboard + Nested Routes */}
         <Route path='/homepage' element={<HomePage />}>
