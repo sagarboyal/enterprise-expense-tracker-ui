@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Description, Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import api from "../../services/api";
@@ -20,6 +20,7 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
       amount: "",
       categoryId: "",
       expenseDate: "",
+      description: "",
     },
     mode: "onTouched",
   });
@@ -52,12 +53,13 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
   };
 
   const handleFormSubmit = async (data) => {
-    const { title, amount, categoryId, expenseDate } = data;
+    const { title, amount, categoryId, expenseDate, description } = data;
     const sendData = {
       title: title.trim(),
       amount: parseFloat(amount),
       categoryId,
       expenseDate: new Date(expenseDate).toISOString(),
+      description: description.trim(),
     };
 
     try {
@@ -218,6 +220,29 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                     {errors.expenseDate && (
                       <p className='text-red-500 text-xs mt-1'>
                         Date is required
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Description
+                    </label>
+                    <textarea
+                      rows={4}
+                      {...register("description", { required: true })}
+                      className={`w-full border px-4 py-2 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 ${
+                        errors.description
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-blue-500"
+                      }`}
+                      placeholder='Write a detailed description...'
+                      disabled={loading}
+                    />
+                    {errors.description && (
+                      <p className='text-red-500 text-xs mt-1'>
+                        Description is required
                       </p>
                     )}
                   </div>

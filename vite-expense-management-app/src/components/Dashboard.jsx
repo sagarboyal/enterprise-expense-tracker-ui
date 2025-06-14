@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ExpenseViewModal from "./expenses/ExpenseViewModal";
 import CreateExpenseDialog from "./expenses/CreateExpenseDialog";
-import EditNoteIcon from "@mui/icons-material/EditNote";
 import { useMyContext } from "../store/ContextApi";
 import toast from "react-hot-toast";
 import api from "../services/api";

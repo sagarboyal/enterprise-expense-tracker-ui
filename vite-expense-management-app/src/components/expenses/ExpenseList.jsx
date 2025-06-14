@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ExpenseCard from "./ExpenseCard";
 import UpdateExpenseDialog from "./UpdateExpenseDialog";
+import toast from "react-hot-toast";
+import api from "../../services/api";
 const ExpenseList = ({
   expenses,
   loading,
@@ -54,8 +56,11 @@ const ExpenseList = ({
       ) : (
         <>
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4'>
-            {expenses.map((expense) => (
-              <div key={expense.id} className='flex justify-center'>
+            {expenses.map((expense, index) => (
+              <div
+                key={`${expense.id}-${index}`}
+                className='flex justify-center'
+              >
                 <ExpenseCard
                   expense={expense}
                   onEdit={handleEditExpense}

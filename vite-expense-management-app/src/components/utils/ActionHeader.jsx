@@ -1,5 +1,3 @@
-import React from "react";
-
 const ActionHeader = ({
   title,
   onAdd,
@@ -22,9 +20,9 @@ const ActionHeader = ({
                 onChange={onFilterChange}
                 className='px-3 py-1.5 border rounded text-sm'
               >
-                {filter.options.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
+                {filter.options.map((option) => (
+                  <option key={option.key ?? option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
