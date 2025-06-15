@@ -16,6 +16,7 @@ import Expenses from "./components/expenses/Expenses";
 import WelcomePage from "./components/common/WelcomePage";
 import AuditLog from "./components/audit-log/AuditLog";
 import Dashboard from "./components/Dashboard";
+import AnalyticsDashboard from "./components/expenses/AnalyticsDashboard";
 
 function App() {
   const location = useLocation();
@@ -42,6 +43,7 @@ function App() {
         <Route path='/homepage' element={<HomePage />}>
           <Route index element={<WelcomePage />} /> {/* default view */}
           <Route path='expenses' element={<Expenses />} />
+          <Route path='analytics' element={<AnalyticsDashboard />} />
           <Route path='audit-logs' element={<AuditLog />} />
         </Route>
       </Routes>

@@ -62,6 +62,13 @@ const SidePanel = () => {
           </Link>
 
           <Link
+            to='/homepage/analytics'
+            className={navLinkClass("/homepage/analytics")}
+          >
+            Analytics
+          </Link>
+
+          <Link
             to='/homepage/audit-logs'
             className={navLinkClass("/homepage/audit-logs")}
           >

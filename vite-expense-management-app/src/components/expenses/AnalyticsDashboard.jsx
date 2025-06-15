@@ -1,9 +1,6 @@
 import { Card, CardContent } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
-  PieChart,
-  Pie,
-  Cell,
   BarChart,
   Bar,
   XAxis,
@@ -11,35 +8,39 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  PieChart,
+  Pie,
+  Cell,
+  LabelList,
 } from "recharts";
 import api from "../../services/api";
-const COLORS = ["#6366F1", "#F97316", "#10B981", "#F43F5E", "#3B82F6"];
+
 const MONTH_COLORS = [
-  "#6366F1", // Indigo
-  "#F97316", // Orange
-  "#10B981", // Green
-  "#F43F5E", // Red
-  "#3B82F6", // Blue
-  "#8B5CF6", // Purple
-  "#EF4444", // Bright Red
-  "#14B8A6", // Teal
-  "#EAB308", // Yellow
-  "#DB2777", // Pink
-  "#6B7280", // Gray
-  "#22C55E", // Lime
+  "#6366F1",
+  "#F97316",
+  "#10B981",
+  "#F43F5E",
+  "#3B82F6",
+  "#8B5CF6",
+  "#EF4444",
+  "#14B8A6",
+  "#EAB308",
+  "#DB2777",
+  "#6B7280",
+  "#22C55E",
 ];
+
 const STATUS_COLORS = {
-  pending: "#FACC15",
-  "manager approve": "#4ADE80",
-  "admin approve": "#22C55E",
-  "manager reject": "#F87171",
-  "admin reject": "#EF4444",
+  pending: "#8B5CF6",
+  approved: "#4ADE80",
+  rejected: "#EF4444",
 };
 
 export default function AnalyticsDashboard({ refreshKey }) {
   const [categoryData, setCategoryData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
   const [statusData, setStatusData] = useState([]);
+  const [weeklyData, setWeeklyData] = useState([]);
   const [summary, setSummary] = useState(null);
 
   const fetchAnalytics = async () => {
@@ -47,12 +48,14 @@ export default function AnalyticsDashboard({ refreshKey }) {
       const { data: categoryRes } = await api.get("/api/analytics/category");
       const { data: monthRes } = await api.get("/api/analytics/monthly");
       const { data: statusRes } = await api.get("/api/analytics/status");
+      const { data: weeklyRes } = await api.get("/api/analytics/weekly");
       const { data: summaryRes } = await api.get("/api/analytics/summary");
 
       setSummary(summaryRes);
       setCategoryData(categoryRes);
       setMonthlyData(monthRes);
       setStatusData(statusRes);
+      setWeeklyData(weeklyRes);
     } catch (error) {
       console.error("Error fetching analytics:", error);
     }
@@ -63,143 +66,175 @@ export default function AnalyticsDashboard({ refreshKey }) {
   }, [refreshKey]);
 
   return (
-    <div className='w-full max-w-6xl mb-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8'>
+    <div className='w-full max-w-7xl mx-auto mb-10 space-y-10'>
       {/* Summary Cards */}
-      {summary && (
-        <div className='grid grid-cols-1 md:grid-rows-4 gap-6'>
-          <Card className='shadow-lg rounded-xl border border-slate-100 p-1 text-center'>
-            <h3 className='text-lg font-semibold text-gray-700 mb-2'>
-              Total Expenses
-            </h3>
-            <p className='text-3xl font-bold text-indigo-600'>
-              ${summary.totalExpenses?.toLocaleString() ?? "0"}
-            </p>
-          </Card>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+        {summary && (
+          <>
+            <SummaryCard
+              title='Total Expenses'
+              value={`₹${summary.totalExpenses?.toLocaleString() ?? "0"}`}
+              color='text-indigo-600'
+            />
+            <SummaryCard
+              title='Approvals This Month'
+              value={summary.approvedCountThisMonth ?? 0}
+              color='text-green-600'
+            />
+            <SummaryCard
+              title='Pending Approvals'
+              value={summary.pendingApprovals ?? 0}
+              color='text-purple-600'
+            />
+            <SummaryCard
+              title='Rejections This Month'
+              value={summary.rejectedExpenses ?? 0}
+              color='text-red-500'
+            />
+          </>
+        )}
+      </div>
 
-          <Card className='shadow-lg rounded-xl border border-slate-100 p-1 text-center'>
-            <h3 className='text-lg font-semibold text-gray-700 mb-2'>
-              Approvals This Month
-            </h3>
-            <p className='text-3xl font-bold text-green-600'>
-              {summary.approvedCountThisMonth ?? 0}
-            </p>
-          </Card>
-
-          <Card className='shadow-lg rounded-xl border border-slate-100 p-1 text-center'>
-            <h3 className='text-lg font-semibold text-gray-700 mb-2'>
-              Pending Approvals
-            </h3>
-            <p className='text-3xl font-bold text-yellow-500'>
-              {summary.pendingApprovals ?? 0}
-            </p>
-          </Card>
-
-          <Card className='shadow-lg rounded-xl border border-slate-100 p-1 text-center'>
-            <h3 className='text-lg font-semibold text-gray-700 mb-2'>
-              Rejections This Month
-            </h3>
-            <p className='text-3xl font-bold text-red-600'>
-              {
-                // Calculate rejection count from statusAnalytics list
-                summary.statusAnalytics
-                  ? summary.statusAnalytics
-                      .filter(
-                        (item) =>
-                          item.status.toLowerCase().includes("reject") ||
-                          item.status.toLowerCase().includes("rejected")
-                      )
-                      .reduce((acc, item) => acc + item.total, 0)
-                  : 0
-              }
-            </p>
-          </Card>
-        </div>
-      )}
-
-      {/* Category Chart */}
-      <Card className='shadow-lg rounded-2xl border border-slate-100'>
-        <CardContent>
-          <h2 className='text-xl font-semibold text-slate-800 mb-6'>
-            🧾 Expenses by Category
-          </h2>
-          <ResponsiveContainer width='100%' height={300}>
-            <PieChart>
-              <Pie
-                data={categoryData}
-                dataKey='total'
-                nameKey='category'
-                outerRadius={90}
-                label
+      {/* Monthly and Weekly Charts Side by Side */}
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+        {/* Monthly Chart */}
+        <Card className='shadow-lg rounded-2xl border border-slate-100'>
+          <CardContent>
+            <h2 className='text-xl font-semibold text-slate-800 mb-4'>
+              📊 Monthly Expenses Trend
+            </h2>
+            <ResponsiveContainer width='100%' height={300}>
+              <BarChart
+                data={monthlyData}
+                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
               >
-                {categoryData.map((entry, index) => (
-                  <Cell
-                    key={`cell-category-${index}`}
-                    fill={COLORS[index % COLORS.length]}
+                <XAxis dataKey='month' tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Legend wrapperStyle={{ fontSize: "12px" }} />
+                <Bar dataKey='total' radius={[8, 8, 0, 0]}>
+                  {monthlyData.map((entry, index) => (
+                    <Cell
+                      key={`mon-${index}`}
+                      fill={MONTH_COLORS[index % MONTH_COLORS.length]}
+                    />
+                  ))}
+                  <LabelList
+                    dataKey='total'
+                    position='top'
+                    formatter={(value) => `₹${value}`}
+                    style={{ fontSize: 10 }}
                   />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
-      {/* Monthly Chart */}
+        {/* Weekly Chart */}
+        <Card className='shadow-lg rounded-2xl border border-slate-100'>
+          <CardContent>
+            <h2 className='text-xl font-semibold text-slate-800 mb-4'>
+              📅 This Week's Spending
+            </h2>
+            <ResponsiveContainer width='100%' height={300}>
+              <BarChart
+                data={weeklyData}
+                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+              >
+                <XAxis dataKey='day' tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip />
+                <Bar dataKey='total' radius={[6, 6, 0, 0]} fill='#3B82F6'>
+                  <LabelList
+                    dataKey='total'
+                    position='top'
+                    formatter={(value) => `₹${value}`}
+                    style={{ fontSize: 10 }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Approval Status Pie Chart */}
       <Card className='shadow-lg rounded-2xl border border-slate-100'>
         <CardContent>
-          <h2 className='text-xl font-semibold text-slate-800 mb-6'>
-            📊 Monthly Expenses Trend
+          <h2 className='text-xl font-semibold text-slate-800 mb-4'>
+            🚦 Expenses by Approval Status
           </h2>
-          <ResponsiveContainer width='100%' height={300}>
-            <BarChart data={monthlyData}>
-              <XAxis dataKey='month' />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey='total' radius={[6, 6, 0, 0]}>
-                {monthlyData.map((entry, index) => (
-                  <Cell
-                    key={`cell-month-${index}`}
-                    fill={MONTH_COLORS[index % MONTH_COLORS.length]}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* Status Chart */}
-      <Card className='shadow-lg rounded-xl border border-slate-100'>
-        <CardContent>
-          <h2 className='text-xl font-semibold text-slate-800 mb-6'>
-            🚦 Expenses by Status
-          </h2>
-          <ResponsiveContainer width='100%' height={300}>
+          <ResponsiveContainer width='100%' height={350}>
             <PieChart>
               <Pie
                 data={statusData}
                 dataKey='total'
                 nameKey='status'
-                outerRadius={90}
-                label={({ status, percent }) =>
-                  `${status} ${(percent * 100).toFixed(0)}%`
+                cx='50%'
+                cy='50%'
+                outerRadius={120}
+                label={({ name, percent }) =>
+                  `${name} (${(percent * 100).toFixed(0)}%)`
                 }
               >
                 {statusData.map((entry, index) => (
                   <Cell
-                    key={`cell-status-${index}`}
-                    fill={STATUS_COLORS[entry.status] || "#A78BFA"}
+                    key={`cell-${index}`}
+                    fill={
+                      STATUS_COLORS[entry.status.toLowerCase()] || "#A78BFA"
+                    }
                   />
                 ))}
               </Pie>
               <Tooltip />
-              <Legend />
+              <Legend wrapperStyle={{ fontSize: "12px" }} />
             </PieChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
+
+      {/* Category Bar Chart */}
+      <Card className='shadow-lg rounded-2xl border border-slate-100'>
+        <CardContent>
+          <h2 className='text-xl font-semibold text-slate-800 mb-4'>
+            🧾 Expenses by Category
+          </h2>
+          <ResponsiveContainer width='100%' height={350}>
+            <BarChart
+              data={categoryData}
+              margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+            >
+              <XAxis dataKey='category' tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} />
+              <Tooltip />
+              <Legend wrapperStyle={{ fontSize: "12px" }} />
+              <Bar dataKey='total' radius={[8, 8, 0, 0]}>
+                {categoryData.map((entry, index) => (
+                  <Cell
+                    key={`cat-${index}`}
+                    fill={MONTH_COLORS[index % MONTH_COLORS.length]}
+                  />
+                ))}
+                <LabelList
+                  dataKey='total'
+                  position='top'
+                  style={{ fontSize: 10 }}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
     </div>
+  );
+}
+
+function SummaryCard({ title, value, color }) {
+  return (
+    <Card className='shadow-lg rounded-xl border border-slate-100 p-4 text-center'>
+      <h3 className='text-md font-medium text-gray-700 mb-1'>{title}</h3>
+      <p className={`text-2xl font-bold ${color}`}>{value}</p>
+    </Card>
   );
 }
