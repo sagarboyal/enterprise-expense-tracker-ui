@@ -65,7 +65,7 @@ const Expenses = () => {
       toast.error("Failed to load expenses.");
     } finally {
       setLoading(false);
-      if (triggerExport) setExportPdf(false); // Reset export flag
+      if (triggerExport) setExportPdf(false);
     }
   };
 

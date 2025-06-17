@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import "./App.css";
 import Login from "./components/auth/Login";
 import SignUp from "./components/auth/SignUp";
 import Profile from "./components/auth/Profile";
@@ -17,6 +16,7 @@ import WelcomePage from "./components/common/WelcomePage";
 import AuditLog from "./components/audit-log/AuditLog";
 import Dashboard from "./components/Dashboard";
 import AnalyticsDashboard from "./components/expenses/AnalyticsDashboard";
+import ApprovalPanel from "./components/approval/ApprovalPanel";
 
 function App() {
   const location = useLocation();
@@ -45,6 +45,7 @@ function App() {
           <Route path='expenses' element={<Expenses />} />
           <Route path='analytics' element={<AnalyticsDashboard />} />
           <Route path='audit-logs' element={<AuditLog />} />
+          <Route path='approvals' element={<ApprovalPanel />} />
         </Route>
       </Routes>
       {showPage && <Footer />}
