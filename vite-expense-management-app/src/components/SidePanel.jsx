@@ -67,20 +67,33 @@ const SidePanel = () => {
           >
             Analytics
           </Link>
+          {(isAdmin || isManager) && (
+            <>
+              <Link
+                to='/homepage/approvals'
+                className={navLinkClass("/homepage/approvals")}
+              >
+                Approval Panel
+              </Link>
+            </>
+          )}
+          {isAdmin && (
+            <>
+              <Link
+                to='/homepage/audit-logs'
+                className={navLinkClass("/homepage/audit-logs")}
+              >
+                Audit Logs
+              </Link>
 
-          <Link
-            to='/homepage/audit-logs'
-            className={navLinkClass("/homepage/audit-logs")}
-          >
-            Audit Logs
-          </Link>
-
-          <Link
-            to='/homepage/users'
-            className={navLinkClass("/homepage/users")}
-          >
-            User Management
-          </Link>
+              <Link
+                to='/homepage/users'
+                className={navLinkClass("/homepage/users")}
+              >
+                User Management
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Footer Section with Profile + Logout */}
