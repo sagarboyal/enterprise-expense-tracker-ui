@@ -83,10 +83,10 @@ const Login = () => {
           className='max-w-[100px] h-auto object-contain mx-auto mb-1 bg-white p-2 rounded-2xl text-shadow-lg'
         />
 
-        <h3 className='text-3xl font-semibold text-gray-900 mb-2'>
+        <h3 className='font-[Poppins] text-3xl font-bold   text-gray-900 mb-2'>
           Sign In to Trex
         </h3>
-        <p className='text-gray-500 text-sm w-80 mx-auto'>
+        <p className='font-[Poppins] font-light text-gray-400 text-xs w-80 mx-auto'>
           Please enter your email address and password to access your account
           and continue managing your expenses.
         </p>
@@ -101,7 +101,7 @@ const Login = () => {
             required
             id='username'
             type='email'
-            message='*Email is required'
+            message='Email is required'
             placeholder='Email address'
             register={register}
             errors={errors}
@@ -111,14 +111,14 @@ const Login = () => {
             required
             id='password'
             type='password'
-            message='*Password is required'
+            message='Password is required'
             placeholder='Password'
             register={register}
             errors={errors}
           />
           <a
             href='/forgot-password'
-            className='block text-right text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200'
+            className='font-[Poppins] block text-right text-xs text-red-500 hover:text-black font-semibold transition-colors duration-200'
             aria-label='Link'
           >
             Forgot password?
@@ -136,12 +136,12 @@ const Login = () => {
           </Buttons>
         </div>
 
-        <div className='text-center text-sm text-gray-600 mt-6'>
+        <div className='font-[Poppins] text-center text-sm text-gray-600 mt-6'>
           <p>
             New to Trex?{" "}
             <a
               href='/register'
-              className='text-blue-600 hover:text-blue-700 font-semibold'
+              className='font-[Poppins] text-blue-600 hover:text-black font-light transition-colors duration-200'
             >
               Create an account
             </a>

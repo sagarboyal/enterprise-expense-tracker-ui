@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import LogoutDialog from "../utils/LogoutDialog";
 import { IoLogOutOutline } from "react-icons/io5";
 import { FaUserTie } from "react-icons/fa";
+import profileIcon from "../../assets/profile-icon.png";
 
 const NavBar = () => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -101,7 +102,7 @@ const NavBar = () => {
       </div>
 
       {/* Right Side */}
-      <div className='relative flex items-center gap-3'>
+      <div className='relative flex items-center gap-2 ml-auto'>
         {token && (
           <div ref={notificationDropdownRef}>
             <NotificationDropdown
@@ -116,12 +117,13 @@ const NavBar = () => {
             <div className='relative group'>
               <button
                 onClick={toggleProfileDropdown}
-                className='p-2 rounded-full transition-all duration-300 ease-in-out hover:bg-gray-100 hover:scale-105 focus:outline-none'
+                className='p-1 rounded-full transition-all duration-300 ease-in-out hover:bg-gray-100 hover:scale-105 focus:outline-none'
                 aria-label='Open profile menu'
               >
-                <AccountCircleIcon
-                  sx={{ fontSize: 40 }}
-                  className='text-gray-700 transition-colors duration-300 ease-in-out group-hover:text-gray-900'
+                <img
+                  src={profileIcon}
+                  alt='Profile'
+                  className='w-10 h-10 rounded-full object-cover transition duration-300 ease-in-out group-hover:brightness-110'
                 />
               </button>
             </div>

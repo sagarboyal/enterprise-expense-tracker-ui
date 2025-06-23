@@ -1,43 +1,58 @@
 const InputField = ({
   label,
   id,
-  type,
-  errors,
+  type = "text",
+  errors = {},
   register,
-  required,
-  message,
-  className,
+  required = false,
+  message = "This field is required",
+  className = "",
   min,
   value,
-  autoFocus,
-  placeholder,
-  readOnly,
+  autoFocus = false,
+  placeholder = "",
+  readOnly = false,
 }) => {
+  const baseInputClass = `
+    px-2 py-2 
+    border 
+    outline-none 
+    bg-transparent 
+    text-slate-700 
+    rounded-md 
+    transition duration-200 ease-in-out
+  `;
+
+  const errorClass = errors[id]?.message
+    ? "border-red-500"
+    : "border-slate-700";
+  const autoFocusClass = autoFocus ? "border-2" : "";
+
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label
-        htmlFor={id}
-        className={`block mb-1 text-sm font-semibold text-gray-900 dark:text-gray-900 `}
-      >
-        {label}
-      </label>
+      {label && (
+        <label
+          htmlFor={id}
+          className='block mb-1 text-sm font-semibold text-gray-900'
+        >
+          {label}
+        </label>
+      )}
 
       <input
         type={type}
         id={id}
         placeholder={placeholder}
-        className={` px-2 py-2 border  ${
-          autoFocus ? "border-2" : ""
-        }   outline-none bg-transparent  text-slate-700 rounded-md ${
-          errors[id]?.message ? "border-red-500" : "border-slate-700"
-        }`}
+        readOnly={readOnly}
+        defaultValue={value}
+        autoFocus={autoFocus}
+        className={`${baseInputClass} ${errorClass} ${autoFocusClass} ${className}`}
         {...register(id, {
           required: { value: required, message },
           minLength: min
-            ? { value: min, message: "Minimum 6 character is required" }
-            : null,
+            ? { value: min, message: "Minimum 6 characters required" }
+            : undefined,
         })}
-        readOnly={readOnly}
       />
 
       {errors[id]?.message && (
@@ -55,9 +70,9 @@ const InputField = ({
               strokeLinecap='round'
               strokeLinejoin='round'
               d='M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
-            ></path>
+            />
           </svg>
-          {errors[id]?.message}
+          {errors[id].message}
         </p>
       )}
     </div>
