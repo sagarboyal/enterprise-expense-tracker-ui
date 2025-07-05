@@ -4,7 +4,8 @@ import toast from "react-hot-toast";
 import ExpenseViewModal from "./ExpenseViewModal";
 import ExpenseList from "./ExpenseList";
 import CreateExpenseDialog from "./CreateExpenseDialog";
-import ExpenseFilterBar from "../utils/ExpenseFilterBar";
+import ExpenseFilterBar from "./ExpenseFilterBar";
+import AdvancedFilterDialog from "./AdvancedFilterDialog";
 
 const Expenses = () => {
   const [openViewExpenseModal, setOpenViewExpenseModal] = useState(false);
@@ -28,7 +29,7 @@ const Expenses = () => {
   });
 
   const [page, setPage] = useState(0);
-  const [size] = useState(6);
+  const [size] = useState(12);
   const [totalPages, setTotalPages] = useState(0);
 
   const openModal = (expense) => {
@@ -36,11 +37,17 @@ const Expenses = () => {
     setOpenViewExpenseModal(true);
   };
 
-  const fetchExpenses = async (pageNumber = 0, triggerExport = false) => {
+  const fetchExpenses = async (
+    pageNumber = 0,
+    triggerExport = false,
+    customFilters = null
+  ) => {
     try {
       setLoading(true);
 
-      const filteredEntries = Object.entries(filters).filter(
+      const activeFilters = customFilters || filters;
+
+      const filteredEntries = Object.entries(activeFilters).filter(
         ([_, value]) => value !== null && value !== ""
       );
 
@@ -49,7 +56,7 @@ const Expenses = () => {
         pageSize: size.toString(),
         sortOrder: "desc",
         ...Object.fromEntries(filteredEntries),
-        export: triggerExport || filters.export ? "true" : "false",
+        export: triggerExport || activeFilters.export ? "true" : "false",
       });
 
       const response = await api.get(`/api/expenses?${params.toString()}`);
@@ -95,7 +102,6 @@ const Expenses = () => {
 
   useEffect(() => {
     fetchExpenses(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   useEffect(() => {
@@ -121,6 +127,7 @@ const Expenses = () => {
 
   return (
     <>
+      {/* View Expense Modal */}
       <ExpenseViewModal
         open={openViewExpenseModal}
         setOpen={setOpenViewExpenseModal}
@@ -128,6 +135,7 @@ const Expenses = () => {
         onUpdateSuccess={() => {}}
       />
 
+      {/* Create Expense Dialog */}
       <CreateExpenseDialog
         isOpen={openCreateExpenseModal}
         onClose={() => {
@@ -136,26 +144,43 @@ const Expenses = () => {
         }}
       />
 
-      <div className='flex flex-col items-center justify-start min-h-screen w-full bg-white font-sans overflow-x-hidden'>
-        <div className='w-full max-w-5xl space-y-4'>
-          <div className='flex items-center justify-between'>
-            <h1 className='text-3xl font-bold text-black'>Expenses</h1>
-            <div className='flex gap-2'>
+      {/* Advanced Filter Dialog */}
+      <AdvancedFilterDialog
+        isOpen={openAdvanceFilter}
+        onClose={() => setOpenAdvanceFilter(false)}
+        filters={filters}
+        setFilters={setFilters}
+        onSearch={(updatedFilters) => {
+          setPage(0);
+          fetchExpenses(0, false, updatedFilters);
+        }}
+        categories={categories}
+      />
+
+      {/* Main Layout */}
+      <div className='flex flex-col items-center justify-start min-h-screen w-full font-[Poppins] px-4 sm:px-6 lg:px-8'>
+        <div className='w-full max-w-7xl space-y-6'>
+          {/* Header */}
+          <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
+            <h1 className='text-3xl font-light text-black'>Manage Expenses</h1>
+
+            <div className='flex flex-wrap gap-2'>
               <button
                 onClick={() => setOpenCreateExpenseModal(true)}
-                className='px-4 py-2 bg-black text-white font-semibold rounded-md shadow hover:bg-gray-800 transition duration-300'
+                className='px-4 py-2 bg-black text-white font-light text-sm rounded-md shadow hover:bg-gray-800 transition'
               >
                 + New Expense
               </button>
               <button
                 onClick={handleExport}
-                className='px-4 py-2 bg-black text-white font-semibold rounded-md shadow hover:bg-gray-800 transition duration-300'
+                className='px-4 py-2 bg-black text-white text-sm rounded-md shadow hover:bg-gray-800 transition'
               >
                 Export PDF
               </button>
             </div>
           </div>
 
+          {/* Filter Bar */}
           <ExpenseFilterBar
             filters={filters}
             setFilters={setFilters}
@@ -166,8 +191,9 @@ const Expenses = () => {
             }}
           />
 
+          {/* Expense List or Loader */}
           {loading ? (
-            <div className='mt-12 text-center text-gray-700 font-semibold text-lg'>
+            <div className='mt-12 text-center text-gray-700 font-medium text-lg'>
               Loading expenses...
             </div>
           ) : expenseList.length === 0 ? (

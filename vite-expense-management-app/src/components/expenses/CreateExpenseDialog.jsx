@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { Description, Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import api from "../../services/api";
@@ -25,7 +25,6 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
     mode: "onTouched",
   });
 
-  // Load categories when dialog opens
   useEffect(() => {
     if (isOpen) {
       setShowDialog(true);
@@ -44,12 +43,12 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
   };
 
   const handleClose = () => {
-    setShowDialog(false); // Triggers exit animation
+    setShowDialog(false);
   };
 
   const afterLeave = () => {
     reset();
-    onClose(); // Only call after animation ends
+    onClose();
   };
 
   const handleFormSubmit = async (data) => {
@@ -76,7 +75,7 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
           secondary: "#FFFAEE",
         },
       });
-      if (response.data) handleClose(); // Smooth close
+      if (response.data) handleClose();
     } catch (error) {
       console.error("Error adding expense:", error);
       toast.error("Failed to add expense. Please try again.");
@@ -111,7 +110,7 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200'>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200 font-[Poppins]'>
                 <Dialog.Title
                   as='h3'
                   className='text-2xl font-semibold text-center text-black mb-6'
@@ -123,54 +122,25 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                   onSubmit={handleSubmit(handleFormSubmit)}
                   className='space-y-5'
                 >
-                  {/* Title */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Title
-                    </label>
-                    <input
-                      autoFocus
-                      {...register("title", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
-                        errors.title
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
-                      placeholder='Expense title'
-                      disabled={loading}
-                    />
-                    {errors.title && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Title is required
-                      </p>
-                    )}
-                  </div>
+                  <FormField
+                    label='Title'
+                    type='text'
+                    register={register("title", { required: true })}
+                    error={errors.title}
+                    placeholder='Expense title'
+                    disabled={loading}
+                  />
 
-                  {/* Amount */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Amount
-                    </label>
-                    <input
-                      type='number'
-                      step='0.01'
-                      {...register("amount", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
-                        errors.amount
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
-                      placeholder='Expense amount'
-                      disabled={loading}
-                    />
-                    {errors.amount && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Amount is required
-                      </p>
-                    )}
-                  </div>
+                  <FormField
+                    label='Amount'
+                    type='number'
+                    step='0.01'
+                    register={register("amount", { required: true })}
+                    error={errors.amount}
+                    placeholder='Expense amount'
+                    disabled={loading}
+                  />
 
-                  {/* Category */}
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-1'>
                       Category
@@ -178,12 +148,12 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                     <select
                       {...register("categoryId", { required: true })}
                       defaultValue=''
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                      disabled={loading}
+                      className={`w-full border px-4 py-2 rounded-md shadow-sm font-[Poppins] focus:outline-none focus:ring-2 ${
                         errors.categoryId
                           ? "border-red-500 focus:ring-red-500"
                           : "border-gray-300 focus:ring-blue-500"
                       }`}
-                      disabled={loading}
                     >
                       <option value='' disabled>
                         Select a category
@@ -202,29 +172,14 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                     )}
                   </div>
 
-                  {/* Date */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Date
-                    </label>
-                    <input
-                      type='date'
-                      {...register("expenseDate", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
-                        errors.expenseDate
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
-                      disabled={loading}
-                    />
-                    {errors.expenseDate && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Date is required
-                      </p>
-                    )}
-                  </div>
+                  <FormField
+                    label='Date'
+                    type='date'
+                    register={register("expenseDate", { required: true })}
+                    error={errors.expenseDate}
+                    disabled={loading}
+                  />
 
-                  {/* Description */}
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-1'>
                       Description
@@ -232,7 +187,7 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                     <textarea
                       rows={4}
                       {...register("description", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 ${
+                      className={`w-full border px-4 py-2 rounded-md shadow-sm resize-none font-[Poppins] focus:outline-none focus:ring-2 ${
                         errors.description
                           ? "border-red-500 focus:ring-red-500"
                           : "border-gray-300 focus:ring-blue-500"
@@ -247,21 +202,19 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                     )}
                   </div>
 
-                  {/* Buttons */}
                   <div className='flex justify-end gap-4 pt-4'>
                     <button
                       type='button'
                       onClick={handleClose}
-                      className='px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 transition'
+                      className='px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 transition font-[Poppins]'
                       disabled={loading}
                     >
                       Cancel
                     </button>
-
                     <button
                       type='submit'
                       disabled={loading}
-                      className='px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition'
+                      className='px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition font-[Poppins]'
                     >
                       {loading ? "Saving..." : "Add Expense"}
                     </button>
@@ -275,5 +228,35 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
     </Transition>
   );
 };
+
+// Reusable input field component
+const FormField = ({
+  label,
+  type,
+  step,
+  register,
+  error,
+  placeholder,
+  disabled,
+}) => (
+  <div>
+    <label className='block text-sm font-medium text-gray-700 mb-1'>
+      {label}
+    </label>
+    <input
+      type={type}
+      step={step}
+      {...register}
+      disabled={disabled}
+      placeholder={placeholder}
+      className={`w-full border px-4 py-2 rounded-md shadow-sm font-[Poppins] focus:outline-none focus:ring-2 ${
+        error
+          ? "border-red-500 focus:ring-red-500"
+          : "border-gray-300 focus:ring-blue-500"
+      }`}
+    />
+    {error && <p className='text-red-500 text-xs mt-1'>{label} is required</p>}
+  </div>
+);
 
 export default CreateExpenseDialog;

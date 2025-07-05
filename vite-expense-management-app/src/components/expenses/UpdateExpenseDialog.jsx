@@ -62,7 +62,8 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
   }, [categoryData]);
 
   const handleFormSubmit = async (data) => {
-    const { id, title, amount, categoryId, expenseDate, description } = data;
+    const { id, title, amount, categoryId, expenseDate, description, file } =
+      data;
     const sendData = {
       id,
       title: title.trim(),
@@ -75,6 +76,16 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
     try {
       setLoading(true);
       const response = await api.put("/api/expenses", sendData);
+
+      if (file && file.length > 0) {
+        const formData = new FormData();
+        formData.append("file", file[0]);
+
+        await api.post(`/api/document/${id}/upload`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+
       toast.success("Expense updated successfully.");
       reset();
       if (response.data) {
@@ -91,7 +102,6 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as='div' className='relative z-50' onClose={onClose}>
-        {/* Overlay */}
         <Transition.Child
           as={Fragment}
           enter='ease-out duration-300'
@@ -104,7 +114,6 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
           <div className='fixed inset-0 bg-black/30 backdrop-blur-sm' />
         </Transition.Child>
 
-        {/* Dialog Panel */}
         <div className='fixed inset-0 overflow-y-auto'>
           <div className='flex min-h-full items-center justify-center p-4 text-center'>
             <Transition.Child
@@ -116,7 +125,7 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200'>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200 font-[Poppins]'>
                 <Dialog.Title
                   as='h3'
                   className='text-2xl font-bold leading-6 text-black text-center mb-6'
@@ -127,6 +136,7 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
                 <form
                   onSubmit={handleSubmit(handleFormSubmit)}
                   className='space-y-5'
+                  encType='multipart/form-data'
                 >
                   {/* Title */}
                   <div>
@@ -245,6 +255,20 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
                         Description is required
                       </p>
                     )}
+                  </div>
+
+                  {/* File Upload */}
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-1'>
+                      Attach Document (PDF/Image)
+                    </label>
+                    <input
+                      type='file'
+                      accept='.pdf,image/*'
+                      {...register("file")}
+                      className='w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500'
+                      disabled={loading}
+                    />
                   </div>
 
                   {/* Buttons */}

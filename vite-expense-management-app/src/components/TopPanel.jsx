@@ -15,7 +15,7 @@ const TopPanel = () => {
 
   return (
     <>
-      <div className='w-full p-4 mb-6 flex flex-wrap items-center gap-4'>
+      <div className='w-full p-8 pt-3 pb-1 mb-6 flex flex-wrap items-center gap-4'>
         <div className='ml-auto flex flex-wrap gap-1'>
           <Link
             to='/homepage/expenses'

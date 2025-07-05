@@ -6,7 +6,7 @@ const ExpenseCard = ({ expense, onEdit, onDelete, onView }) => {
   const { id, title, amount, expenseDate, category, status } = expense;
 
   return (
-    <div className='relative max-w-sm w-full bg-white border border-gray-300 shadow-md rounded-lg p-6 flex flex-col justify-between'>
+    <div className='relative max-w-sm w-full bg-white border border-gray-300 shadow-md rounded-lg p-6 flex flex-col justify-between font-[Poppins]'>
       {/* Top-right Action Buttons */}
       <div className='absolute top-4 right-4 flex space-x-2'>
         <button

@@ -50,12 +50,12 @@ const ExpenseList = ({
       )}
 
       {loading ? (
-        <div className='text-center py-10 text-gray-600 font-medium text-lg'>
+        <div className='text-center py-8 text-gray-600 font-medium text-lg'>
           Loading expenses...
         </div>
       ) : (
         <>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
             {expenses.map((expense, index) => (
               <div
                 key={`${expense.id}-${index}`}
@@ -72,7 +72,7 @@ const ExpenseList = ({
           </div>
 
           {/* Pagination Controls */}
-          <div className='mt-8 flex justify-center gap-4'>
+          <div className='mt-8 mb-8 flex justify-center gap-4'>
             <button
               disabled={page === 0}
               onClick={() => onPageChange(page - 1)}
