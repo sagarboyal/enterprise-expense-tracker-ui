@@ -1,14 +1,14 @@
 import { Outlet } from "react-router-dom";
-import SidePanel from "./SidePanel";
+import TopPanel from "./TopPanel";
 
 const HomePage = () => {
   return (
-    <div className='grid grid-cols-1 md:grid-cols-4 gap-4 p-6 min-h-screen bg-gray-50'>
-      {/* 📂 Sidebar Navigation */}
-      <SidePanel />
+    <div className='min-h-screen bg-gray-50'>
+      <div>
+        <TopPanel />
+      </div>
 
-      {/* 📊 Main Dynamic Content */}
-      <main className='col-span-3 bg-white rounded-xl p-6 shadow-md overflow-y-auto'>
+      <main className='overflow-y-auto'>
         <Outlet />
       </main>
     </div>
