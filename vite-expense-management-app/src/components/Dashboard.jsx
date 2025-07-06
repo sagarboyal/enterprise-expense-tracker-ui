@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import api from "../services/api";
 import ExpenseList from "./expenses/ExpenseList";
 import ActionHeader from "./utils/ActionHeader";
-import AnalyticsDashboard from "./expenses/AnalyticsDashboard";
+import AnalyticsDashboard from "./analytics/AnalyticsDashboard";
 
 const HomePage = () => {
   const { token } = useMyContext();

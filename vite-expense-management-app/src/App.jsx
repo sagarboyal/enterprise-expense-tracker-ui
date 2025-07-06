@@ -15,8 +15,8 @@ import Expenses from "./components/expenses/Expenses";
 import WelcomePage from "./components/common/WelcomePage";
 import AuditLog from "./components/audit-log/AuditLog";
 import Dashboard from "./components/Dashboard";
-import AnalyticsDashboard from "./components/expenses/AnalyticsDashboard";
 import ApprovalPanel from "./components/approval/ApprovalPanel";
+import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
 
 function App() {
   const location = useLocation();
