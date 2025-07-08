@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button } from "@headlessui/react";
+import { FaEye } from "react-icons/fa";
 import api from "../../services/api";
 import ApprovalViewModal from "./ApprovalViewModal";
 
@@ -36,30 +36,38 @@ const ApprovalTable = ({ approvals = [], loading }) => {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status, level) => {
+    if (status === "APPROVED" && level === "MANAGER") {
+      return "bg-yellow-100 text-yellow-700";
+    }
+
     return status === "APPROVED"
-      ? "bg-teal-100 text-teal-800"
+      ? "bg-teal-100 text-teal-700"
       : status === "REJECTED"
-      ? "bg-rose-100 text-rose-800"
-      : "bg-yellow-100 text-yellow-800";
+      ? "bg-rose-100 text-rose-700"
+      : "bg-yellow-100 text-yellow-700";
   };
 
   if (loading) {
-    return <div className='text-center text-gray-500 py-8'>Loading...</div>;
+    return (
+      <div className='text-center text-gray-500 py-8 font-[Poppins]'>
+        Loading...
+      </div>
+    );
   }
 
   if (!approvals.length) {
     return (
-      <div className='text-center text-gray-400 py-8'>
+      <div className='text-center text-gray-400 py-8 font-[Poppins]'>
         No pending approvals.
       </div>
     );
   }
 
   return (
-    <div className='overflow-x-auto border border-gray-200 rounded-lg shadow'>
+    <div className='overflow-x-auto border border-gray-200 rounded-xl shadow-sm font-[Poppins]'>
       <table className='min-w-full text-sm text-left'>
-        <thead className='bg-gray-100 text-gray-600 uppercase text-xs'>
+        <thead className='bg-gray-50 text-gray-600 uppercase text-xs tracking-wider'>
           <tr>
             <th className='px-6 py-3'>Title</th>
             <th className='px-6 py-3'>Amount</th>
@@ -69,19 +77,22 @@ const ApprovalTable = ({ approvals = [], loading }) => {
           </tr>
         </thead>
         <tbody>
-          {approvals.map((item) => (
-            <tr key={item.id} className='border-t hover:bg-gray-50 transition'>
-              <td className='px-6 py-4'>
-                {item.title || item.expense?.title || "—"}
+          {approvals.map((item, index) => (
+            <tr
+              key={item.id}
+              className='border-t hover:bg-indigo-50 transition duration-200 cursor-pointer'
+            >
+              <td className='px-6 py-4 font-bold text-gray-800'>
+                {index + 1}. {item.title || item.expense?.title || "—"}
               </td>
-              <td className='px-6 py-4'>
+              <td className='px-6 py-4 text-gray-700'>
                 ₹{item.amount || item.expense?.amount || "—"}
               </td>
               <td className='px-6 py-4'>
                 {item.userId ? (
                   userMap[item.userId] ? (
                     <div className='flex flex-col'>
-                      <span className='font-medium'>
+                      <span className='font-semibold text-gray-800'>
                         {userMap[item.userId]?.fullName}
                       </span>
                       <span className='text-gray-500 text-xs'>
@@ -98,19 +109,21 @@ const ApprovalTable = ({ approvals = [], loading }) => {
               <td className='px-6 py-4'>
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                    item.status
+                    item.status,
+                    item.level
                   )}`}
                 >
-                  {item.status || "PENDING"}
+                  {getStatusLabel(item.status, item.level)}
                 </span>
               </td>
               <td className='px-6 py-4 text-center'>
-                <Button
-                  variant='outlined'
+                <button
                   onClick={() => handleViewDetails(item)}
+                  className='inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-300 bg-white text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-800 transition duration-200'
                 >
-                  View Request
-                </Button>
+                  <FaEye className='text-gray-600 text-xs' />
+                  View Application
+                </button>
               </td>
             </tr>
           ))}
@@ -127,6 +140,13 @@ const ApprovalTable = ({ approvals = [], loading }) => {
       )}
     </div>
   );
+};
+
+const getStatusLabel = (status, level) => {
+  if (status === "APPROVED" && level === "MANAGER") {
+    return "Partially Approved";
+  }
+  return status || "PENDING";
 };
 
 export default ApprovalTable;
