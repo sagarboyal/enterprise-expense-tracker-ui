@@ -19,6 +19,7 @@
     "@mui/material": "^7.1.1",
     "@tailwindcss/postcss": "^4.1.8",
     "axios": "^1.9.0",
+    "framer-motion": "^12.23.0",
     "jwt-decode": "^4.0.0",
     "postcss": "^8.5.4",
     "react": "^19.1.0",
