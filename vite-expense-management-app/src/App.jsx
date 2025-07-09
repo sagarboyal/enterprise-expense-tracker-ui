@@ -14,9 +14,9 @@ import Introduction from "./components/common/Introduction";
 import Expenses from "./components/expenses/Expenses";
 import WelcomePage from "./components/common/WelcomePage";
 import AuditLog from "./components/audit-log/AuditLog";
-import Dashboard from "./components/Dashboard";
 import ApprovalPanel from "./components/approval/ApprovalPanel";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
+import UserManagementDashboard from "./components/users/UserManagementDashboard";
 
 function App() {
   const location = useLocation();
@@ -37,7 +37,6 @@ function App() {
         <Route path='/contact' element={<Contact />} />
         <Route path='/homepage' element={<HomePage />} />
         <Route path='/profile' element={<Profile />} />
-        <Route path='/dashboard' element={<Dashboard />} />
 
         {/* Dashboard + Nested Routes */}
         <Route path='/homepage' element={<HomePage />}>
@@ -46,6 +45,7 @@ function App() {
           <Route path='analytics' element={<AnalyticsDashboard />} />
           <Route path='audit-logs' element={<AuditLog />} />
           <Route path='approvals' element={<ApprovalPanel />} />
+          <Route path='users' element={<UserManagementDashboard />} />
         </Route>
       </Routes>
       {showPage && <Footer />}
