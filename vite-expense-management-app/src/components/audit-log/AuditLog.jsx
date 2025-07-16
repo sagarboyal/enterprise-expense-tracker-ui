@@ -92,47 +92,97 @@ const AuditLogDashboard = () => {
             >
               <Card className='rounded-2xl shadow-md border border-gray-200 transition'>
                 <CardContent className='space-y-2 text-sm text-gray-700'>
-                  <div className='flex justify-between items-center'>
-                    <p className='text-gray-800 font-medium'>
-                      <span className='text-indigo-600'>{log.entityName}</span>{" "}
-                      - #{log.entityId}
-                    </p>
-                    <span className='text-xs text-gray-400'>
-                      {new Date(log.timestamp).toLocaleString("en-IN")}
-                    </span>
+                  <div className='space-y-1.5 text-sm text-gray-700'>
+                    {/* Entity + Timestamp */}
+                    <div className='flex justify-between items-start'>
+                      <div>
+                        <p className='font-semibold text-indigo-600'>
+                          {log.entityName}{" "}
+                          <span className='text-gray-600 font-medium'>
+                            #{log.entityId}
+                          </span>
+                        </p>
+                      </div>
+                      <span className='text-xs text-gray-400 whitespace-nowrap'>
+                        {new Date(log.timestamp).toLocaleString("en-IN", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </span>
+                    </div>
+
+                    {/* Action */}
+                    <div className='flex items-start gap-2'>
+                      <span className='min-w-[100px] text-gray-600 font-medium'>
+                        Action:
+                      </span>
+                      <span className='text-gray-800'>{log.action}</span>
+                    </div>
+
+                    {/* Performed By */}
+                    <div className='flex items-start gap-2'>
+                      <span className='min-w-[100px] text-gray-600 font-medium'>
+                        Performed By:
+                      </span>
+                      <span className='text-gray-800'>{log.performedBy}</span>
+                    </div>
+
+                    {/* IP Address */}
+                    <div className='flex items-start gap-2'>
+                      <span className='min-w-[100px] text-gray-600 font-medium'>
+                        IP Address:
+                      </span>
+                      <span className='text-gray-800'>{log.deviceIp}</span>
+                    </div>
+
+                    {/* Old Value */}
+                    {log.oldValue && (
+                      <div className='mt-2 bg-rose-50 border-l-4 border-rose-400 px-3 py-2 text-xs text-rose-700 whitespace-pre-wrap rounded-md'>
+                        <strong className='block mb-1'>Old Value:</strong>
+                        {log.oldValue}
+                      </div>
+                    )}
+
+                    {/* New Value */}
+                    {log.newValue && (
+                      <div className='bg-green-50 border-l-4 border-green-400 px-3 py-2 text-xs text-green-700 whitespace-pre-wrap rounded-md'>
+                        <strong className='block mb-1'>New Value:</strong>
+                        {log.newValue}
+                      </div>
+                    )}
                   </div>
-                  <p>
-                    <strong>Action:</strong> {log.action}
-                  </p>
-                  <p>
-                    <strong>Performed By:</strong> {log.performedBy}
-                  </p>
-                  <p>
-                    <strong>IP:</strong> {log.deviceIp}
-                  </p>
-                  {log.oldValue && (
-                    <p className='text-rose-600 text-xs break-words'>
-                      <strong>Old:</strong> {log.oldValue}
-                    </p>
-                  )}
-                  {log.newValue && (
-                    <p className='text-green-600 text-xs break-words'>
-                      <strong>New:</strong> {log.newValue}
-                    </p>
-                  )}
 
                   <div className='flex justify-end pt-2'>
                     <Button
                       size='small'
                       variant='text'
                       onClick={() => setSelectedLog(log)}
+                      startIcon={
+                        <svg
+                          className='w-4 h-4'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth={2}
+                          viewBox='0 0 24 24'
+                        >
+                          <path d='M15 12H3m0 0l6-6m-6 6l6 6' />
+                        </svg>
+                      }
                       sx={{
                         fontFamily: "Poppins",
                         textTransform: "none",
                         color: "#4f46e5",
+                        px: 1.5,
+                        py: 0.5,
+                        borderRadius: "8px",
+                        transition: "all 0.2s ease-in-out",
                         "&:hover": {
-                          textDecoration: "underline",
-                          backgroundColor: "transparent",
+                          backgroundColor: "rgba(79, 70, 229, 0.1)",
+                          transform: "scale(1.03)",
+                          textDecoration: "none",
+                        },
+                        "& .MuiButton-startIcon": {
+                          marginRight: "6px",
                         },
                       }}
                     >
@@ -166,8 +216,8 @@ const AuditLogDashboard = () => {
 
       {selectedLog && (
         <AuditLogViewModal
-          log={selectedLog}
           open={!!selectedLog}
+          log={selectedLog}
           onClose={() => setSelectedLog(null)}
         />
       )}

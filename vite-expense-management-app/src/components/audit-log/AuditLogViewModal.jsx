@@ -1,11 +1,10 @@
-import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { Button, Divider } from "@mui/material";
 import { motion } from "framer-motion";
 
-const AuditLogViewModal = ({ open, setOpen, auditLog }) => {
-  if (!auditLog) return null;
+const AuditLogViewModal = ({ open, onClose, log }) => {
+  if (!log) return null;
 
   const formatJson = (jsonString) => {
     try {
@@ -18,7 +17,7 @@ const AuditLogViewModal = ({ open, setOpen, auditLog }) => {
 
   return (
     <Transition.Root show={open} as={Fragment}>
-      <Dialog as='div' className='relative z-50' onClose={setOpen}>
+      <Dialog as='div' className='relative z-50' onClose={onClose}>
         <Transition.Child
           as={Fragment}
           enter='ease-out duration-300'
@@ -53,43 +52,51 @@ const AuditLogViewModal = ({ open, setOpen, auditLog }) => {
                   </Dialog.Title>
 
                   <div className='grid grid-cols-2 gap-4 text-sm text-gray-700'>
-                    <Detail label='ID' value={auditLog.id} />
-                    <Detail label='Entity Name' value={auditLog.entityName} />
-                    <Detail label='Entity ID' value={auditLog.entityId} />
-                    <Detail label='IP Address' value={auditLog.deviceIp} />
-                    <Detail label='Action' value={auditLog.action} />
-                    <Detail label='Performed By' value={auditLog.performedBy} />
+                    <Detail label='ID' value={log.id} />
+                    <Detail label='Entity Name' value={log.entityName} />
+                    <Detail label='Entity ID' value={log.entityId} />
+                    <Detail label='IP Address' value={log.deviceIp} />
+                    <Detail label='Action' value={log.action} />
+                    <Detail label='Performed By' value={log.performedBy} />
                     <Detail
                       label='Timestamp'
-                      value={new Date(auditLog.timestamp).toLocaleString(
-                        "en-IN",
-                        {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        }
-                      )}
+                      value={new Date(log.timestamp).toLocaleString("en-IN", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
                     />
                   </div>
 
-                  <Divider className='my-4' />
-
-                  <div className='text-sm text-gray-700'>
-                    <Section
-                      title='Old Value'
-                      content={formatJson(auditLog.oldValue)}
-                    />
-                    <Section
-                      title='New Value'
-                      content={formatJson(auditLog.newValue)}
-                    />
+                  <div className='my-6 flex items-center text-sm text-gray-500 font-medium'>
+                    <div className='flex-grow border-t border-gray-300' />
+                    <span className='mx-4 whitespace-nowrap'>Changes</span>
+                    <div className='flex-grow border-t border-gray-300' />
                   </div>
+
+                  <Section
+                    title='Changes'
+                    oldContent={formatJson(log.oldValue)}
+                    newContent={formatJson(log.newValue)}
+                  />
 
                   <div className='mt-6 flex justify-end gap-3'>
-                    <Button variant='contained' onClick={() => setOpen(false)}>
+                    <Button
+                      variant='contained'
+                      onClick={onClose}
+                      sx={{
+                        backgroundColor: "black",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#333",
+                        },
+                        fontFamily: "Poppins",
+                        textTransform: "none",
+                      }}
+                    >
                       Close
                     </Button>
                   </div>
@@ -110,13 +117,79 @@ const Detail = ({ label, value }) => (
   </div>
 );
 
-const Section = ({ title, content }) => (
-  <div className='mb-4'>
-    <p className='text-sm font-medium text-gray-800 mb-1'>{title}</p>
-    <pre className='p-3 border rounded bg-gray-50 text-gray-700 whitespace-pre-wrap overflow-auto text-xs max-h-64'>
-      {content}
-    </pre>
-  </div>
-);
+const Section = ({ title, oldContent = "", newContent = "" }) => {
+  const oldLines = oldContent.split("\n");
+  const newLines = newContent.split("\n");
+
+  const maxLength = Math.max(oldLines.length, newLines.length);
+
+  return (
+    <div className='mb-6 font-[Poppins]'>
+      <p className='text-sm font-semibold text-gray-800 mb-2'>{title}</p>
+
+      <div className='grid grid-cols-2 text-xs font-mono border rounded overflow-hidden max-h-64'>
+        {/* Old Value Column */}
+        <div className='bg-gray-50 border-r border-gray-200'>
+          <div className='p-2 font-semibold text-gray-600 bg-gray-100 border-b'>
+            Old Value
+          </div>
+          {Array.from({ length: maxLength }).map((_, idx) => {
+            const oldLine = oldLines[idx] ?? "";
+            const newLine = newLines[idx] ?? "";
+
+            const trimmedOld = oldLine.trim();
+            const trimmedNew = newLine.trim();
+
+            let bgColor = "bg-white text-gray-700";
+            if (trimmedOld && !trimmedNew) {
+              bgColor = "bg-rose-100 text-rose-700"; // Deleted
+            } else if (trimmedOld && trimmedNew && trimmedOld !== trimmedNew) {
+              bgColor = "bg-yellow-100 text-yellow-800"; // Changed
+            }
+
+            return (
+              <div
+                key={`old-${idx}`}
+                className={`px-3 py-1 border-b border-gray-200 whitespace-pre-wrap ${bgColor}`}
+              >
+                {oldLine || <span className='text-gray-300'>—</span>}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* New Value Column */}
+        <div className='bg-gray-50'>
+          <div className='p-2 font-semibold text-gray-600 bg-gray-100 border-b'>
+            New Value
+          </div>
+          {Array.from({ length: maxLength }).map((_, idx) => {
+            const oldLine = oldLines[idx] ?? "";
+            const newLine = newLines[idx] ?? "";
+
+            const trimmedOld = oldLine.trim();
+            const trimmedNew = newLine.trim();
+
+            let bgColor = "bg-white text-gray-700";
+            if (!trimmedOld && trimmedNew) {
+              bgColor = "bg-green-100 text-green-700"; // Added
+            } else if (trimmedOld && trimmedNew && trimmedOld !== trimmedNew) {
+              bgColor = "bg-green-100 text-green-700";
+            }
+
+            return (
+              <div
+                key={`new-${idx}`}
+                className={`px-3 py-1 border-b border-gray-200 whitespace-pre-wrap ${bgColor}`}
+              >
+                {newLine || <span className='text-gray-300'>—</span>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default AuditLogViewModal;

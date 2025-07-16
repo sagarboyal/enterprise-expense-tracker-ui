@@ -47,6 +47,8 @@ const ForgotPassword = () => {
       //showing success message
       toast.success("Password reset email sent! Check your inbox.");
     } catch (error) {
+      console.log(error);
+
       toast.error("Email is not registered. Register to continue");
     } finally {
       setLoading(false);
