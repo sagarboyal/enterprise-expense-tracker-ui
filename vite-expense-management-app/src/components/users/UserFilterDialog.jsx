@@ -43,8 +43,12 @@ const UserFilterDialog = ({ open, onClose, onApply }) => {
       onClose={onClose}
       fullWidth
       maxWidth='sm'
-      TransitionComponent={Transition}
-      PaperProps={{ className: "font-[Poppins] rounded-xl" }}
+      TransitionComponent={Slide}
+      transitionDuration={300}
+      PaperProps={{
+        className: "font-[Poppins]",
+        style: { borderRadius: 12 },
+      }}
     >
       <DialogTitle className='text-lg font-semibold'>
         Advanced User Filter
@@ -76,9 +80,9 @@ const UserFilterDialog = ({ open, onClose, onApply }) => {
               label='Role'
             >
               <MenuItem value=''>All</MenuItem>
-              <MenuItem value='ADMIN'>Admin</MenuItem>
-              <MenuItem value='MANAGER'>Manager</MenuItem>
-              <MenuItem value='USER'>User</MenuItem>
+              <MenuItem value='ROLE_ADMIN'>Admin</MenuItem>
+              <MenuItem value='ROLE_MANAGER'>Manager</MenuItem>
+              <MenuItem value='ROLE_EMPLOYEE'>User</MenuItem>
             </Select>
           </FormControl>
           <TextField
@@ -119,18 +123,34 @@ const UserFilterDialog = ({ open, onClose, onApply }) => {
       </DialogContent>
       <DialogActions className='px-6 pb-4'>
         <Button
-          onClick={onClose}
           variant='outlined'
-          sx={{ fontFamily: "Poppins", textTransform: "none" }}
+          onClick={onClose}
+          sx={{
+            fontFamily: "Poppins",
+            textTransform: "none",
+            color: "black",
+            borderColor: "black",
+            "&:hover": {
+              borderColor: "black",
+              backgroundColor: "#f3f3f3",
+            },
+          }}
         >
           Cancel
         </Button>
         <Button
-          onClick={handleApply}
           variant='contained'
-          sx={{ fontFamily: "Poppins", textTransform: "none" }}
+          onClick={handleApply}
+          sx={{
+            fontFamily: "Poppins",
+            textTransform: "none",
+            backgroundColor: "#000",
+            "&:hover": {
+              backgroundColor: "#111",
+            },
+          }}
         >
-          Apply
+          Apply Filters
         </Button>
       </DialogActions>
     </MuiDialog>

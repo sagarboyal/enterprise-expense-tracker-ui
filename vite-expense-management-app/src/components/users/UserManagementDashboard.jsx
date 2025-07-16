@@ -27,6 +27,7 @@ import {
 import { motion } from "framer-motion";
 import UserFilterDialog from "./UserFilterDialog";
 import UserViewDialog from "./UserViewDialog";
+import { FaFilter } from "react-icons/fa";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -123,9 +124,18 @@ const UserManagement = () => {
         <h2 className='text-2xl font-semibold'>User Management</h2>
         <Button
           variant='outlined'
-          startIcon={<FilterList />}
           onClick={() => setOpenFilter(true)}
-          className='normal-case'
+          startIcon={<FaFilter />}
+          sx={{
+            fontFamily: "Poppins",
+            textTransform: "none",
+            color: "black",
+            borderColor: "black",
+            "&:hover": {
+              borderColor: "black",
+              backgroundColor: "#f3f3f3",
+            },
+          }}
         >
           Advanced Filter
         </Button>
