@@ -105,6 +105,18 @@ const Footer = () => {
           </p>
           <div className='flex gap-4 mt-4 sm:mt-0'>
             <Link
+              to='/about'
+              className='text-sm hover:text-white transition-colors'
+            >
+              About Us
+            </Link>
+            <Link
+              to='/contact'
+              className='text-sm hover:text-white transition-colors'
+            >
+              Contact
+            </Link>
+            <Link
               to='/privacy'
               className='text-sm hover:text-white transition-colors'
             >
