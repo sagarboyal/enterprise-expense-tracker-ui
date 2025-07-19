@@ -1,148 +1,184 @@
 import { useState, useEffect } from "react";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import CircularProgress from "@mui/material/CircularProgress";
+import {
+  BellIcon,
+  XMarkIcon,
+  EnvelopeOpenIcon,
+  CheckCircleIcon,
+} from "@heroicons/react/24/outline";
 import api from "../../services/api";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+
+const formatRelativeTime = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.round((now - date) / 1000);
+  const minutes = Math.round(seconds / 60);
+  const hours = Math.round(minutes / 60);
+  const days = Math.round(hours / 24);
+
+  if (seconds < 60) return `${seconds}s ago`;
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  return `${days}d ago`;
+};
 
 const NotificationDropdown = ({ isOpen, setIsOpen }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const fetchNotifications = async (status = null, page = 0, size = 5) => {
-    const params = new URLSearchParams({
-      pageNumber: page,
-      pageSize: size,
-      sortBy: "createdAt",
-      sortOrder: "desc",
-    });
-    params.append("status", status !== null ? status : "false");
-    return api.get(`/api/notification`);
+  const fetchNotifications = async () => {
+    return api.get(`/api/notification?sortOrder=desc`);
   };
 
   const loadNotifications = async () => {
+    if (!isOpen) return;
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await fetchNotifications(false, 0, 5);
-      console.log("Fetched notifications:", res.data);
+      const res = await fetchNotifications();
       if (res.data.error) {
         throw new Error(res.data.error);
       }
       setNotifications(res.data.content || []);
     } catch (err) {
       console.error("Failed to fetch notifications", err);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      loadNotifications();
-    }
-  }, [isOpen]);
-
   const fetchUnreadCount = async () => {
     try {
       const res = await api.get("/api/notification/unread-count");
-      console.log("Fetched unread count:", res.data.unreadCount);
-      setUnreadCount(res.data.unreadCount);
+      setUnreadCount(res.data.unreadCount || 0);
     } catch (error) {
       console.error("Failed to fetch unread count:", error);
     }
   };
 
   useEffect(() => {
+    loadNotifications();
+  }, [isOpen]);
+
+  useEffect(() => {
     fetchUnreadCount();
+    const intervalId = setInterval(fetchUnreadCount, 30000); // Poll every 30 seconds
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleDelete = async (id) => {
+    const originalNotifications = [...notifications];
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
     try {
       await api.delete(`/api/notification/${id}`);
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
       fetchUnreadCount();
     } catch (error) {
       console.error("Failed to delete notification:", error);
+      setNotifications(originalNotifications);
     }
   };
 
   const markAllAsRead = async () => {
+    setLoading(true);
     try {
       await api.put("/api/notification/mark-all-read");
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-      fetchUnreadCount();
+      setUnreadCount(0);
     } catch (error) {
-      // Consolidated the catch block
       console.error("Failed to mark all as read:", error);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const handleToggleClick = () => {
-    setIsOpen();
   };
 
   return (
     <div className='relative'>
-      <button onClick={handleToggleClick} className='relative'>
-        <NotificationsNoneIcon className='text-gray-700 hover:text-black' />
+      <button
+        onClick={setIsOpen}
+        className='relative p-2 rounded-full hover:bg-gray-100'
+      >
+        <BellIcon className='h-6 w-6 text-gray-600' />
         {unreadCount > 0 && (
-          <span className='absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5'>
-            {unreadCount > 99 ? "99+" : unreadCount}
+          <span className='absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white'>
+            {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className='absolute right-0 mt-2 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50 p-4'>
-          <h3 className='font-semibold text-sm mb-2 text-gray-700'>
-            Notifications
-          </h3>
-          {loading ? (
-            <div className='text-center py-2'>
-              <CircularProgress size={20} />
-            </div>
-          ) : notifications.length === 0 ? (
-            <p className='text-sm text-gray-500'>No new notifications</p>
-          ) : (
-            <>
-              <ul className='space-y-2 max-h-60 overflow-y-auto'>
+        <div className='absolute right-0 mt-2 w-80 origin-top-right rounded-lg bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-fade-in-down'>
+          {/* Header */}
+          <div className='flex items-center justify-between border-b border-gray-200 px-4 py-3'>
+            <h3 className='text-lg font-semibold text-gray-800'>
+              Notifications
+            </h3>
+            {unreadCount > 0 && (
+              <button
+                onClick={markAllAsRead}
+                className='text-sm font-medium text-indigo-600 hover:text-indigo-500'
+              >
+                Mark all as read
+              </button>
+            )}
+          </div>
+
+          {/* Body */}
+          <div className='max-h-80 overflow-y-auto'>
+            {loading ? (
+              <div className='flex justify-center items-center py-10'>
+                <div className='h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-500'></div>
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className='py-10 text-center'>
+                <CheckCircleIcon className='mx-auto h-12 w-12 text-gray-300' />
+                <h4 className='mt-2 text-sm font-semibold text-gray-700'>
+                  All caught up!
+                </h4>
+                <p className='text-xs text-gray-500'>
+                  You have no new notifications.
+                </p>
+              </div>
+            ) : (
+              <ul className='divide-y divide-gray-100'>
                 {notifications.map((notif) => (
                   <li
                     key={notif.id}
-                    className={`flex items-start justify-between text-sm border-b pb-2 px-3 py-2 rounded transition
-                      ${
-                        !notif.read
-                          ? "bg-gray-100 font-medium"
-                          : "bg-white text-gray-700"
-                      }`}
+                    className={`flex items-start gap-3 p-4 transition-colors hover:bg-gray-50 ${
+                      !notif.read ? "bg-indigo-50/50" : "bg-white"
+                    }`}
                   >
-                    <span className='pr-2 break-words'>{notif.message}</span>
-
-                    {notif.read && (
-                      <button
-                        onClick={() => handleDelete(notif.id)}
-                        className='text-gray-400 hover:text-red-500 ml-2'
-                        title='Delete notification'
-                      >
-                        <DeleteOutlineIcon fontSize='small' />
-                      </button>
+                    {!notif.read && (
+                      <div className='mt-1 h-2 w-2 rounded-full bg-indigo-500 flex-shrink-0'></div>
                     )}
+                    <div className={`flex-1 ${notif.read && "pl-5"}`}>
+                      <p className='text-sm text-gray-800'>{notif.message}</p>
+                      <p className='mt-1 text-xs text-gray-500'>
+                        {formatRelativeTime(notif.sentAt)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleDelete(notif.id)}
+                      className='text-gray-400 hover:text-red-500 flex-shrink-0'
+                      title='Delete notification'
+                    >
+                      <XMarkIcon className='h-4 w-4' />
+                    </button>
                   </li>
                 ))}
               </ul>
+            )}
+          </div>
 
-              {notifications.length > 0 && unreadCount > 0 && (
-                <div className='flex justify-end mt-2'>
-                  <button
-                    onClick={markAllAsRead}
-                    className='text-sm text-blue-600 hover:underline pt-2'
-                  >
-                    Mark all as read
-                  </button>
-                </div>
-              )}
-            </>
-          )}
+          {/* Footer */}
+          <div className='border-t border-gray-200 bg-gray-50/80 px-4 py-2'>
+            <a
+              href='/homepage/notifications'
+              className='flex items-center justify-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-500'
+            >
+              <EnvelopeOpenIcon className='h-5 w-5' />
+              <span>View all notifications</span>
+            </a>
+          </div>
         </div>
       )}
     </div>

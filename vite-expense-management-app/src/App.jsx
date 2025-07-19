@@ -13,6 +13,7 @@ import Footer from "./components/common/Footer";
 import Introduction from "./components/common/Introduction";
 import Expenses from "./components/expenses/Expenses";
 import WelcomePage from "./components/common/WelcomePage";
+import Notifications from "./components/common/Notifications";
 import AuditLog from "./components/audit-log/AuditLog";
 import ApprovalPanel from "./components/approval/ApprovalPanel";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
@@ -48,6 +49,7 @@ function App() {
           <Route path='approvals' element={<ApprovalPanel />} />
           <Route path='users' element={<UserManagementDashboard />} />
           <Route path='invoice' element={<InvoiceDashboard />} />
+          <Route path='notifications' element={<Notifications />} />
         </Route>
       </Routes>
       {showPage && <Footer />}
