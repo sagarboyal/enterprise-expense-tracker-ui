@@ -17,6 +17,7 @@ import AuditLog from "./components/audit-log/AuditLog";
 import ApprovalPanel from "./components/approval/ApprovalPanel";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
 import UserManagementDashboard from "./components/users/UserManagementDashboard";
+import InvoiceDashboard from "./components/invoice/InvoiceDashboard";
 
 function App() {
   const location = useLocation();
@@ -46,6 +47,7 @@ function App() {
           <Route path='audit-logs' element={<AuditLog />} />
           <Route path='approvals' element={<ApprovalPanel />} />
           <Route path='users' element={<UserManagementDashboard />} />
+          <Route path='invoice' element={<InvoiceDashboard />} />
         </Route>
       </Routes>
       {showPage && <Footer />}

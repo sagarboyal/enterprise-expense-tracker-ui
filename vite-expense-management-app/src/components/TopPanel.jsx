@@ -51,6 +51,12 @@ const TopPanel = () => {
               >
                 User Management
               </Link>
+              <Link
+                to='/homepage/invoice'
+                className={navLinkClass("/homepage/invoice")}
+              >
+                Manage Invoices
+              </Link>
             </>
           )}
         </div>
