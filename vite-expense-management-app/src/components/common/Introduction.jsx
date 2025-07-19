@@ -46,8 +46,11 @@ const Introduction = () => {
     <div className='flex flex-col items-center justify-center min-h-screen bg-slate-50 py-20 px-4 sm:px-6 lg:px-8'>
       <div className='text-center'>
         <h1 className='text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight'>
-          Welcome to <span className='text-red-600'>TREX</span> Your New Expense
-          Hub
+          Welcome to{" "}
+          <span className='bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text'>
+            TREX
+          </span>{" "}
+          Your New Expense Hub
         </h1>
         <p className='mt-4 max-w-3xl mx-auto text-lg md:text-xl text-slate-600'>
           Effortlessly manage your expenses, gain valuable insights, and take
