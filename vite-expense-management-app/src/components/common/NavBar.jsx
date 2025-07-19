@@ -1,14 +1,15 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import logo from "../../assets/brandlogo-cropped.png";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useMyContext } from "../../store/ContextApi";
-import NotificationDropdown from "./NotificationDropdown";
 import toast from "react-hot-toast";
-import LogoutDialog from "../utils/LogoutDialog";
+
 import { IoLogOutOutline } from "react-icons/io5";
 import { FaUserTie } from "react-icons/fa";
+
+import logo from "../../assets/brandlogo-cropped.png";
 import profileIcon from "../../assets/profile-icon.png";
+import NotificationDropdown from "./NotificationDropdown";
+import LogoutDialog from "../utils/LogoutDialog";
 
 const NavBar = () => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -20,161 +21,126 @@ const NavBar = () => {
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
 
-  const {
-    token,
-    setToken,
-    setloggedInUser,
-    isAdmin,
-    setIsAdmin,
-    isManager,
-    setIsManager,
-  } = useMyContext();
+  const { token, setToken, setloggedInUser, setIsAdmin, setIsManager } =
+    useMyContext();
 
   const handleLogout = () => {
-    localStorage.removeItem("JWT_TOKEN");
-    localStorage.removeItem("USER");
-    localStorage.removeItem("CSRF_TOKEN");
-    localStorage.removeItem("IS_ADMIN");
-    localStorage.removeItem("IS_MANAGER");
-
+    ["JWT_TOKEN", "USER", "CSRF_TOKEN", "IS_ADMIN", "IS_MANAGER"].forEach(
+      (item) => localStorage.removeItem(item)
+    );
     setToken(null);
     setloggedInUser(null);
     setIsAdmin(false);
     setIsManager(false);
     setIsDialogOpen(false);
     navigate("/login");
-
-    toast.success("Logged out successfully", {
-      position: "bottom-center",
-      duration: 3000,
-    });
+    toast.success("Logged out successfully", { position: "bottom-center" });
   };
+
+  const toggleProfileDropdown = () => setProfileDropdownOpen((prev) => !prev);
+  const toggleNotificationDropdown = () =>
+    setNotificationDropdownOpen((prev) => !prev);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target)
+      ) {
+        setProfileDropdownOpen(false);
+      }
+      if (
+        notificationDropdownRef.current &&
+        !notificationDropdownRef.current.contains(event.target)
+      ) {
+        setNotificationDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const closeAllDropdowns = () => {
     setProfileDropdownOpen(false);
     setNotificationDropdownOpen(false);
   };
 
-  const toggleProfileDropdown = () => {
-    setProfileDropdownOpen((prev) => !prev);
-    setNotificationDropdownOpen(false);
-  };
-
-  const toggleNotificationDropdown = () => {
-    setNotificationDropdownOpen((prev) => !prev);
-    setProfileDropdownOpen(false);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        (profileDropdownOpen &&
-          profileDropdownRef.current &&
-          !profileDropdownRef.current.contains(event.target)) ||
-        (notificationDropdownOpen &&
-          notificationDropdownRef.current &&
-          !notificationDropdownRef.current.contains(event.target))
-      ) {
-        closeAllDropdowns();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [profileDropdownOpen, notificationDropdownOpen]);
-
   return (
-    <header className='h-16 bg-white shadow-lg px-6 md:px-12 flex items-center justify-between sticky top-0 z-50 border-b border-gray-100'>
-      {/* Left Side */}
-      <div className='relative flex items-center gap-3'>
-        <Link to='/' className='relative'>
-          <img
-            src={logo}
-            alt='Trex Logo'
-            className='max-w-[90px] h-auto object-contain transition duration-200 ease-in-out hover:opacity-80'
-          />
+    <header className='h-16 bg-white shadow-sm px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-50'>
+      <div className='flex items-center gap-4'>
+        <Link to='/' className='flex-shrink-0'>
+          <img src={logo} alt='Trex Logo' className='h-10 w-auto' />
         </Link>
-        <div className='relative font-[Poppins] text-base font-medium pl-1 pt-3'>
-          Features
-        </div>
       </div>
 
-      {/* Right Side */}
-      <div className='relative flex items-center gap-2 ml-auto'>
-        {token && (
-          <div ref={notificationDropdownRef}>
-            <NotificationDropdown
-              isOpen={notificationDropdownOpen}
-              setIsOpen={toggleNotificationDropdown}
-            />
-          </div>
-        )}
-
+      <div className='flex items-center gap-4'>
         {token ? (
-          <div className='relative' ref={profileDropdownRef}>
-            <div className='relative group'>
+          <>
+            <div ref={notificationDropdownRef}>
+              <NotificationDropdown
+                isOpen={notificationDropdownOpen}
+                setIsOpen={toggleNotificationDropdown}
+              />
+            </div>
+
+            <div className='relative' ref={profileDropdownRef}>
               <button
                 onClick={toggleProfileDropdown}
-                className='p-1 rounded-full transition-all duration-300 ease-in-out hover:bg-gray-100 hover:scale-105 focus:outline-none'
+                className='rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                 aria-label='Open profile menu'
               >
                 <img
                   src={profileIcon}
                   alt='Profile'
-                  className='w-10 h-10 rounded-full object-cover transition duration-300 ease-in-out group-hover:brightness-110'
+                  className='w-10 h-10 rounded-full object-cover'
                 />
               </button>
-            </div>
 
-            {profileDropdownOpen && (
-              <div className=' font-[Poppins] text-base font-medium absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden animate-fade-in-down'>
-                <Link
-                  to='/profile'
-                  className='block px-5 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-700 transition duration-150 ease-in-out'
-                  onClick={closeAllDropdowns}
+              {profileDropdownOpen && (
+                <div
+                  className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transition ease-out duration-100 transform opacity-100 scale-100'
+                  role='menu'
+                  aria-orientation='vertical'
                 >
-                  <div className='flex items-center gap-2'>
-                    <FaUserTie className='text-base' />
-                    Profile
-                  </div>
-                </Link>
-                <button
-                  onClick={() => {
-                    setIsDialogOpen(true);
-                    closeAllDropdowns();
-                  }}
-                  className='w-full text-left px-5 py-3 text-sm text-black hover:bg-red-50 hover:text-red-700 transition duration-150 ease-in-out'
-                >
-                  <div className='flex items-center gap-2'>
-                    <IoLogOutOutline className='text-base' />
-                    Logout
-                  </div>
-                </button>
-              </div>
-            )}
-          </div>
+                  <Link
+                    to='/profile'
+                    onClick={closeAllDropdowns}
+                    className='flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                    role='menuitem'
+                  >
+                    <FaUserTie className='w-5 h-5 text-gray-500' />
+                    <span>Profile</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setIsDialogOpen(true);
+                      closeAllDropdowns();
+                    }}
+                    className='w-full text-left flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                    role='menuitem'
+                  >
+                    <IoLogOutOutline className='w-5 h-5 text-gray-500' />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
         ) : (
-          <>
+          <div className='hidden md:flex items-center gap-4'>
             <Link
               to='/login'
-              className='font-[Poppins] text-base text-black font-medium transition duration-200 ease-in-out hover:text-gray-600'
-              onClick={closeAllDropdowns}
+              className='text-sm font-medium text-gray-600 hover:text-indigo-500'
             >
               Sign in
             </Link>
             <Link
               to='/register'
-              onClick={closeAllDropdowns}
-              className='relative group overflow-hidden px-5 py-2 font-[Poppins] text-base font-medium text-white bg-black rounded-xl'
+              className='inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
             >
-              <span className='absolute inset-0 bg-gray-500/40 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out rounded-full z-0'></span>
-              <span className='relative z-10 transition duration-300'>
-                Try it now
-              </span>
+              Try it now
             </Link>
-          </>
+          </div>
         )}
         <LogoutDialog
           isOpen={isDialogOpen}
