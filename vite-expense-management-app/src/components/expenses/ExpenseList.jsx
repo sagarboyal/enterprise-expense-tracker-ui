@@ -3,9 +3,10 @@ import ExpenseCard from "./ExpenseCard";
 import UpdateExpenseDialog from "./UpdateExpenseDialog";
 import toast from "react-hot-toast";
 import api from "../../services/api";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+
 const ExpenseList = ({
   expenses,
-  loading,
   onDeleteSuccess,
   page,
   totalPages,
@@ -17,14 +18,17 @@ const ExpenseList = ({
   const [selectedExpense, setSelectedExpense] = useState(null);
 
   const handleDeleteExpense = async (id) => {
+    const toastId = toast.loading("Deleting expense...");
+    setLoadingDelete(true);
     try {
-      setLoadingDelete(true);
       await api.delete(`/api/expenses/${id}`);
-      toast.success("Expense deleted successfully.");
-      onDeleteSuccess?.();
+      toast.success("Expense deleted successfully.", { id: toastId });
+      if (onDeleteSuccess) {
+        onDeleteSuccess();
+      }
     } catch (error) {
       console.error("Error deleting expense:", error);
-      toast.error("Failed to delete expense.");
+      toast.error("Failed to delete expense.", { id: toastId });
     } finally {
       setLoadingDelete(false);
     }
@@ -35,61 +39,65 @@ const ExpenseList = ({
     setOpenUpdateExpenseModal(true);
   };
 
+  const handleUpdateSuccess = () => {
+    setOpenUpdateExpenseModal(false);
+    setSelectedExpense(null);
+    if (onDeleteSuccess) {
+      onDeleteSuccess();
+    }
+  };
+
   return (
     <>
-      {selectedExpense && openUpdateExpenseModal && (
+      {selectedExpense && (
         <UpdateExpenseDialog
           isOpen={openUpdateExpenseModal}
-          onClose={() => {
-            setOpenUpdateExpenseModal(false);
-            setSelectedExpense(null);
-            onDeleteSuccess?.();
-          }}
+          onClose={() => setOpenUpdateExpenseModal(false)}
           expense={selectedExpense}
+          onUpdateSuccess={handleUpdateSuccess}
         />
       )}
 
-      {loading ? (
-        <div className='text-center py-8 text-gray-600 font-medium text-lg'>
-          Loading expenses...
+      <div className='space-y-6'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+          {expenses.map((expense) => (
+            <div key={expense.id} className='flex justify-center'>
+              <ExpenseCard
+                expense={expense}
+                onEdit={handleEditExpense}
+                onDelete={handleDeleteExpense}
+                onView={() => openModal(expense)}
+              />
+            </div>
+          ))}
         </div>
-      ) : (
-        <>
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-            {expenses.map((expense, index) => (
-              <div
-                key={`${expense.id}-${index}`}
-                className='flex justify-center'
-              >
-                <ExpenseCard
-                  expense={expense}
-                  onEdit={handleEditExpense}
-                  onDelete={handleDeleteExpense}
-                  onView={() => openModal(expense)}
-                />
-              </div>
-            ))}
-          </div>
 
-          {/* Pagination Controls */}
-          <div className='mt-8 mb-8 flex justify-center gap-4'>
+        {/* Improved Pagination Controls */}
+        {totalPages > 1 && (
+          <div className='flex items-center justify-between pt-4'>
             <button
-              disabled={page === 0}
               onClick={() => onPageChange(page - 1)}
-              className='px-4 py-2 bg-gray-300 text-gray-800 rounded disabled:opacity-50'
+              disabled={page === 0}
+              className='inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition'
             >
+              <ChevronLeftIcon className='h-4 w-4' />
               Previous
             </button>
+            <span className='text-sm text-gray-600'>
+              Page <span className='font-bold'>{page + 1}</span> of{" "}
+              <span className='font-bold'>{totalPages}</span>
+            </span>
             <button
-              disabled={page >= totalPages - 1}
               onClick={() => onPageChange(page + 1)}
-              className='px-4 py-2 bg-gray-300 text-gray-800 rounded disabled:opacity-50'
+              disabled={page >= totalPages - 1}
+              className='inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition'
             >
               Next
+              <ChevronRightIcon className='h-4 w-4' />
             </button>
           </div>
-        </>
-      )}
+        )}
+      </div>
     </>
   );
 };

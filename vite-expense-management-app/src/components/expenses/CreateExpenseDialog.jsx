@@ -1,13 +1,48 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState, useCallback, Fragment } from "react";
+import api from "../../services/api";
+import toast from "react-hot-toast";
+import ExpenseViewModal from "./ExpenseViewModal";
+import ExpenseList from "./ExpenseList";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import api from "../../services/api";
+import ExpenseFilterBar from "./ExpenseFilterBar";
+import {
+  PlusIcon,
+  DocumentArrowDownIcon,
+  CurrencyDollarIcon,
+  TagIcon,
+  CalendarDaysIcon,
+  PencilSquareIcon,
+} from "@heroicons/react/24/outline";
+
+// --- Helper Components for better UI feedback ---
+
+const Spinner = ({
+  className = "h-8 w-8",
+  borderColor = "border-indigo-600",
+}) => (
+  <div className='flex justify-center items-center py-20'>
+    <div
+      className={`${className} animate-spin rounded-full border-b-2 ${borderColor}`}
+    ></div>
+  </div>
+);
+
+const EmptyState = () => (
+  <div className='text-center py-16 px-4 bg-white rounded-lg shadow-sm border'>
+    <CurrencyDollarIcon className='mx-auto h-12 w-12 text-gray-300' />
+    <h3 className='mt-2 text-lg font-semibold text-gray-800'>
+      No Expenses Found
+    </h3>
+    <p className='mt-1 text-sm text-gray-500'>
+      Try adjusting your filters or create a new expense.
+    </p>
+  </div>
+);
 
 const CreateExpenseDialog = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [showDialog, setShowDialog] = useState(false);
 
   const {
     register,
@@ -27,31 +62,25 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
-      setShowDialog(true);
+      const fetchCategories = async () => {
+        try {
+          const response = await api.get("/api/public/categories?pageSize=100");
+          setCategories(response.data.content || []);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          toast.error("Failed to load categories.");
+        }
+      };
       fetchCategories();
     }
   }, [isOpen]);
 
-  const fetchCategories = async () => {
-    try {
-      const response = await api.get("/api/public/categories?pageSize=100");
-      setCategories(response.data.content || []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      toast.error("Failed to load categories.");
-    }
-  };
-
-  const handleClose = () => {
-    setShowDialog(false);
-  };
-
   const afterLeave = () => {
     reset();
-    onClose();
   };
 
   const handleFormSubmit = async (data) => {
+    setLoading(true);
     const { title, amount, categoryId, expenseDate, description } = data;
     const sendData = {
       title: title.trim(),
@@ -62,37 +91,29 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
     };
 
     try {
-      setLoading(true);
-      const response = await api.post("/api/expenses", sendData);
-      toast.success("New expense added to your tracker.", {
-        style: {
-          border: "1px solid #713200",
-          padding: "16px",
-          color: "#713200",
-        },
-        iconTheme: {
-          primary: "#713200",
-          secondary: "#FFFAEE",
-        },
-      });
-      if (response.data) handleClose();
+      await api.post("/api/expenses", sendData);
+      toast.success("New expense added successfully!");
+      onClose();
     } catch (error) {
       console.error("Error adding expense:", error);
-      toast.error("Failed to add expense. Please try again.");
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to add expense. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Transition appear show={showDialog} as={Fragment} afterLeave={afterLeave}>
-      <Dialog as='div' className='relative z-50' onClose={handleClose}>
+    <Transition appear show={isOpen} as={Fragment} afterLeave={afterLeave}>
+      <Dialog as='div' className='relative z-50' onClose={onClose}>
         <Transition.Child
           as={Fragment}
-          enter='ease-out duration-200'
+          enter='ease-out duration-300'
           enterFrom='opacity-0'
           enterTo='opacity-100'
-          leave='ease-in duration-150'
+          leave='ease-in duration-200'
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
@@ -103,110 +124,132 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
           <div className='flex min-h-full items-center justify-center p-4'>
             <Transition.Child
               as={Fragment}
-              enter='ease-out duration-200'
+              enter='ease-out duration-300'
               enterFrom='opacity-0 scale-95'
               enterTo='opacity-100 scale-100'
-              leave='ease-in duration-150'
+              leave='ease-in duration-200'
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200 font-[Poppins]'>
+              <Dialog.Panel className='w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                 <Dialog.Title
                   as='h3'
-                  className='text-2xl font-semibold text-center text-black mb-6'
+                  className='text-xl font-bold leading-6 text-gray-900'
                 >
-                  Add Expense
+                  Add a New Expense
                 </Dialog.Title>
+                <p className='mt-1 text-sm text-gray-500'>
+                  Fill in the details below to add a new expense to your
+                  tracker.
+                </p>
 
                 <form
                   onSubmit={handleSubmit(handleFormSubmit)}
-                  className='space-y-5'
+                  className='mt-6 space-y-4'
                 >
-                  <FormField
-                    label='Title'
-                    type='text'
-                    register={register("title", { required: true })}
-                    error={errors.title}
-                    placeholder='Expense title'
-                    disabled={loading}
-                  />
+                  <div className='relative'>
+                    <PencilSquareIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                    <input
+                      {...register("title", { required: "Title is required." })}
+                      placeholder='e.g., Team Lunch'
+                      className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
+                        errors.title ? "ring-red-500" : "focus:ring-indigo-500"
+                      }`}
+                    />
+                    {errors.title && (
+                      <p className='text-xs text-red-600 mt-1'>
+                        {errors.title.message}
+                      </p>
+                    )}
+                  </div>
 
-                  <FormField
-                    label='Amount'
-                    type='number'
-                    step='0.01'
-                    register={register("amount", { required: true })}
-                    error={errors.amount}
-                    placeholder='Expense amount'
-                    disabled={loading}
-                  />
+                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                    <div className='relative'>
+                      <CurrencyDollarIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                      <input
+                        type='number'
+                        step='0.01'
+                        {...register("amount", {
+                          required: "Amount is required.",
+                          valueAsNumber: true,
+                        })}
+                        placeholder='Amount'
+                        className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
+                          errors.amount
+                            ? "ring-red-500"
+                            : "focus:ring-indigo-500"
+                        }`}
+                      />
+                      {errors.amount && (
+                        <p className='text-xs text-red-600 mt-1'>
+                          {errors.amount.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className='relative'>
+                      <CalendarDaysIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                      <input
+                        type='date'
+                        {...register("expenseDate", {
+                          required: "Date is required.",
+                        })}
+                        className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
+                          errors.expenseDate
+                            ? "ring-red-500"
+                            : "focus:ring-indigo-500"
+                        }`}
+                      />
+                      {errors.expenseDate && (
+                        <p className='text-xs text-red-600 mt-1'>
+                          {errors.expenseDate.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
 
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Category
-                    </label>
+                  <div className='relative'>
+                    <TagIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
                     <select
-                      {...register("categoryId", { required: true })}
+                      {...register("categoryId", {
+                        required: "Category is required.",
+                      })}
                       defaultValue=''
-                      disabled={loading}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm font-[Poppins] focus:outline-none focus:ring-2 ${
+                      className={`w-full appearance-none rounded-lg border-gray-300 py-2.5 pl-10 pr-10 shadow-sm focus:ring-2 ${
                         errors.categoryId
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
+                          ? "ring-red-500"
+                          : "focus:ring-indigo-500"
                       }`}
                     >
                       <option value='' disabled>
                         Select a category
                       </option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name.charAt(0).toUpperCase() +
-                            category.name.slice(1).toLowerCase()}
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
                         </option>
                       ))}
                     </select>
                     {errors.categoryId && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Category is required
+                      <p className='text-xs text-red-600 mt-1'>
+                        {errors.categoryId.message}
                       </p>
                     )}
                   </div>
 
-                  <FormField
-                    label='Date'
-                    type='date'
-                    register={register("expenseDate", { required: true })}
-                    error={errors.expenseDate}
-                    disabled={loading}
-                  />
-
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Description
-                    </label>
                     <textarea
-                      rows={4}
-                      {...register("description", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm resize-none font-[Poppins] focus:outline-none focus:ring-2 ${
-                        errors.description
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
-                      placeholder='Write a detailed description...'
-                      disabled={loading}
+                      {...register("description")}
+                      rows={3}
+                      placeholder='Add a description (optional)...'
+                      className='w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500'
                     />
-                    {errors.description && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Description is required
-                      </p>
-                    )}
                   </div>
 
                   <div className='flex justify-end gap-4 pt-4'>
                     <button
                       type='button'
-                      onClick={handleClose}
-                      className='px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 transition font-[Poppins]'
+                      onClick={onClose}
+                      className='rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-200'
                       disabled={loading}
                     >
                       Cancel
@@ -214,9 +257,19 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                     <button
                       type='submit'
                       disabled={loading}
-                      className='px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition font-[Poppins]'
+                      className='inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:bg-indigo-400'
                     >
-                      {loading ? "Saving..." : "Add Expense"}
+                      {loading ? (
+                        <>
+                          <Spinner
+                            className='h-5 w-5 mr-2 !py-0'
+                            borderColor='border-white/50 border-b-white'
+                          />
+                          Saving...
+                        </>
+                      ) : (
+                        "Add Expense"
+                      )}
                     </button>
                   </div>
                 </form>
@@ -228,35 +281,5 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
     </Transition>
   );
 };
-
-// Reusable input field component
-const FormField = ({
-  label,
-  type,
-  step,
-  register,
-  error,
-  placeholder,
-  disabled,
-}) => (
-  <div>
-    <label className='block text-sm font-medium text-gray-700 mb-1'>
-      {label}
-    </label>
-    <input
-      type={type}
-      step={step}
-      {...register}
-      disabled={disabled}
-      placeholder={placeholder}
-      className={`w-full border px-4 py-2 rounded-md shadow-sm font-[Poppins] focus:outline-none focus:ring-2 ${
-        error
-          ? "border-red-500 focus:ring-red-500"
-          : "border-gray-300 focus:ring-blue-500"
-      }`}
-    />
-    {error && <p className='text-red-500 text-xs mt-1'>{label} is required</p>}
-  </div>
-);
 
 export default CreateExpenseDialog;

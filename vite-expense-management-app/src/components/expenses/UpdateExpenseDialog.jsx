@@ -3,11 +3,24 @@ import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import api from "../../services/api";
+import {
+  PencilSquareIcon,
+  CurrencyDollarIcon,
+  TagIcon,
+  CalendarDaysIcon,
+  DocumentTextIcon,
+  ArrowUpTrayIcon,
+} from "@heroicons/react/24/outline";
 
-const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
+const Spinner = ({ className = "h-5 w-5", borderColor = "border-white" }) => (
+  <div
+    className={`${className} animate-spin rounded-full border-b-2 ${borderColor}`}
+  ></div>
+);
+
+const UpdateExpenseDialog = ({ expense, isOpen, onClose, onUpdateSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [categoryData, setCategoryData] = useState(null);
 
   const {
     register,
@@ -17,51 +30,40 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
   } = useForm();
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await api.get("/api/public/categories?pageSize=100");
-        setCategories(response.data.content || []);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        toast.error("Failed to load categories.");
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    const fetchCategory = async () => {
-      try {
-        if (expense?.category) {
-          const response = await api.get(
-            `/api/public/categories/name/${expense.category}`
+    const fetchAndSetData = async () => {
+      if (isOpen && expense) {
+        try {
+          const categoriesResponse = await api.get(
+            "/api/public/categories?pageSize=100"
           );
-          setCategoryData(response.data);
+          const allCategories = categoriesResponse.data.content || [];
+          setCategories(allCategories);
+
+          const currentCategory = allCategories.find(
+            (c) => c.name === expense.category
+          );
+
+          reset({
+            id: expense.id,
+            title: expense.title,
+            amount: expense.amount,
+            categoryId: currentCategory ? currentCategory.id : "",
+            expenseDate: expense.expenseDate
+              ? new Date(expense.expenseDate).toISOString().split("T")[0]
+              : "",
+            description: expense.description,
+          });
+        } catch (error) {
+          console.error("Error setting up form data:", error);
+          toast.error("Failed to load expense data for editing.");
         }
-      } catch (error) {
-        console.error("Error fetching category:", error);
-        toast.error("Failed to load category.");
       }
     };
-    fetchCategory();
-  }, [expense?.category]);
-
-  useEffect(() => {
-    if (expense && categoryData) {
-      reset({
-        id: expense.id,
-        title: expense.title,
-        amount: expense.amount,
-        categoryId: categoryData.id,
-        expenseDate: expense.expenseDate
-          ? new Date(expense.expenseDate).toISOString().split("T")[0]
-          : "",
-        description: expense.description,
-      });
-    }
-  }, [categoryData]);
+    fetchAndSetData();
+  }, [isOpen, expense, reset]);
 
   const handleFormSubmit = async (data) => {
+    setLoading(true);
     const { id, title, amount, categoryId, expenseDate, description, file } =
       data;
     const sendData = {
@@ -69,31 +71,29 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
       title: title.trim(),
       amount: parseFloat(amount),
       categoryId,
-      expenseDate: new Date(expenseDate).toISOString(),
+      date: new Date(expenseDate).toISOString(),
       description: description.trim(),
     };
 
     try {
-      setLoading(true);
-      const response = await api.put("/api/expenses", sendData);
+      await api.put("/api/expenses", sendData);
 
       if (file && file.length > 0) {
         const formData = new FormData();
         formData.append("file", file[0]);
-
         await api.post(`/api/document/${id}/upload`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
 
       toast.success("Expense updated successfully.");
-      reset();
-      if (response.data) {
-        onClose();
+      if (onUpdateSuccess && typeof onUpdateSuccess === "function") {
+        onUpdateSuccess();
       }
+      onClose();
     } catch (error) {
       console.error("Error updating expense:", error);
-      toast.error("Failed to update expense.");
+      toast.error(error.response?.data?.message || "Failed to update expense.");
     } finally {
       setLoading(false);
     }
@@ -115,7 +115,7 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
         </Transition.Child>
 
         <div className='fixed inset-0 overflow-y-auto'>
-          <div className='flex min-h-full items-center justify-center p-4 text-center'>
+          <div className='flex min-h-full items-center justify-center p-4'>
             <Transition.Child
               as={Fragment}
               enter='ease-out duration-300'
@@ -125,158 +125,133 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200 font-[Poppins]'>
+              <Dialog.Panel className='w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                 <Dialog.Title
                   as='h3'
-                  className='text-2xl font-bold leading-6 text-black text-center mb-6'
+                  className='text-xl font-bold leading-6 text-gray-900'
                 >
                   Update Expense
                 </Dialog.Title>
+                <p className='mt-1 text-sm text-gray-500'>
+                  Modify the details of your expense below.
+                </p>
 
                 <form
                   onSubmit={handleSubmit(handleFormSubmit)}
-                  className='space-y-5'
-                  encType='multipart/form-data'
+                  className='mt-6 space-y-4'
                 >
-                  {/* Title */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Title
-                    </label>
+                  {/* Form fields with icons and improved styling */}
+                  <div className='relative'>
+                    <PencilSquareIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
                     <input
-                      {...register("title", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
-                        errors.title
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
+                      {...register("title", { required: "Title is required." })}
+                      placeholder='Expense Title'
+                      className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
+                        errors.title ? "ring-red-500" : "focus:ring-indigo-500"
                       }`}
-                      disabled={loading}
                     />
-                    {errors.title && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Title is required
-                      </p>
-                    )}
                   </div>
 
-                  {/* Amount */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Amount
-                    </label>
-                    <input
-                      type='number'
-                      step='0.01'
-                      {...register("amount", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
-                        errors.amount
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
-                      disabled={loading}
-                    />
-                    {errors.amount && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Amount is required
-                      </p>
-                    )}
+                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                    <div className='relative'>
+                      <CurrencyDollarIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                      <input
+                        type='number'
+                        step='0.01'
+                        {...register("amount", {
+                          required: "Amount is required.",
+                          valueAsNumber: true,
+                        })}
+                        placeholder='Amount'
+                        className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
+                          errors.amount
+                            ? "ring-red-500"
+                            : "focus:ring-indigo-500"
+                        }`}
+                      />
+                    </div>
+                    <div className='relative'>
+                      <CalendarDaysIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                      <input
+                        type='date'
+                        {...register("expenseDate", {
+                          required: "Date is required.",
+                        })}
+                        className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
+                          errors.expenseDate
+                            ? "ring-red-500"
+                            : "focus:ring-indigo-500"
+                        }`}
+                      />
+                    </div>
                   </div>
 
-                  {/* Category */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Category
-                    </label>
+                  <div className='relative'>
+                    <TagIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
                     <select
-                      {...register("categoryId", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                      {...register("categoryId", {
+                        required: "Category is required.",
+                      })}
+                      className={`w-full appearance-none rounded-lg border-gray-300 py-2.5 pl-10 pr-10 shadow-sm focus:ring-2 ${
                         errors.categoryId
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
+                          ? "ring-red-500"
+                          : "focus:ring-indigo-500"
                       }`}
-                      disabled={loading}
                     >
                       <option value='' disabled>
                         Select a category
                       </option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name.charAt(0).toUpperCase() +
-                            category.name.slice(1).toLowerCase()}
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
                         </option>
                       ))}
                     </select>
-                    {errors.categoryId && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Category is required
-                      </p>
-                    )}
                   </div>
 
-                  {/* Date */}
                   <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Date
-                    </label>
-                    <input
-                      type='date'
-                      {...register("expenseDate", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
-                        errors.expenseDate
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
-                      disabled={loading}
-                    />
-                    {errors.expenseDate && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Date is required
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Description
-                    </label>
                     <textarea
-                      rows={4}
-                      {...register("description", { required: true })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 ${
-                        errors.description
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
-                      }`}
-                      disabled={loading}
+                      {...register("description")}
+                      rows={3}
+                      placeholder='Update description (optional)...'
+                      className='w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500'
                     />
-                    {errors.description && (
-                      <p className='text-red-500 text-xs mt-1'>
-                        Description is required
-                      </p>
-                    )}
                   </div>
 
-                  {/* File Upload */}
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Attach Document (PDF/Image)
+                      Attach New Document (Optional)
                     </label>
-                    <input
-                      type='file'
-                      accept='.pdf,image/*'
-                      {...register("file")}
-                      className='w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500'
-                      disabled={loading}
-                    />
+                    <div className='mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md'>
+                      <div className='space-y-1 text-center'>
+                        <ArrowUpTrayIcon className='mx-auto h-12 w-12 text-gray-400' />
+                        <div className='flex text-sm text-gray-600'>
+                          <label
+                            htmlFor='file-upload'
+                            className='relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none'
+                          >
+                            <span>Upload a file</span>
+                            <input
+                              id='file-upload'
+                              {...register("file")}
+                              type='file'
+                              className='sr-only'
+                            />
+                          </label>
+                          <p className='pl-1'>or drag and drop</p>
+                        </div>
+                        <p className='text-xs text-gray-500'>
+                          PDF, PNG, JPG up to 10MB
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Buttons */}
                   <div className='flex justify-end gap-4 pt-4'>
                     <button
                       type='button'
                       onClick={onClose}
-                      className='px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition'
+                      className='rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-200'
                       disabled={loading}
                     >
                       Cancel
@@ -284,9 +259,19 @@ const UpdateExpenseDialog = ({ expense, isOpen, onClose }) => {
                     <button
                       type='submit'
                       disabled={loading}
-                      className='px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition'
+                      className='inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:bg-indigo-400'
                     >
-                      {loading ? "Saving..." : "Update Expense"}
+                      {loading ? (
+                        <>
+                          <Spinner
+                            className='h-5 w-5 mr-2'
+                            borderColor='border-white/50 border-b-white'
+                          />
+                          Saving...
+                        </>
+                      ) : (
+                        "Update Expense"
+                      )}
                     </button>
                   </div>
                 </form>

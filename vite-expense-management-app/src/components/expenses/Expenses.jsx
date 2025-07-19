@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import ExpenseViewModal from "./ExpenseViewModal";
@@ -6,12 +6,38 @@ import ExpenseList from "./ExpenseList";
 import CreateExpenseDialog from "./CreateExpenseDialog";
 import ExpenseFilterBar from "./ExpenseFilterBar";
 import AdvancedFilterDialog from "./AdvancedFilterDialog";
+import {
+  PlusIcon,
+  DocumentArrowDownIcon,
+  CurrencyDollarIcon,
+} from "@heroicons/react/24/outline";
+
+// --- Helper Components for better UI feedback ---
+
+const Spinner = () => (
+  <div className='flex justify-center items-center py-20'>
+    <div className='h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600'></div>
+  </div>
+);
+
+const EmptyState = () => (
+  <div className='text-center py-16 px-4 bg-white rounded-lg shadow-sm border'>
+    <CurrencyDollarIcon className='mx-auto h-12 w-12 text-gray-300' />
+    <h3 className='mt-2 text-lg font-semibold text-gray-800'>
+      No Expenses Found
+    </h3>
+    <p className='mt-1 text-sm text-gray-500'>
+      Try adjusting your filters or create a new expense.
+    </p>
+  </div>
+);
+
+// --- Main Expenses Component ---
 
 const Expenses = () => {
   const [openViewExpenseModal, setOpenViewExpenseModal] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [openCreateExpenseModal, setOpenCreateExpenseModal] = useState(false);
-  const [exportPdf, setExportPdf] = useState(false);
   const [loading, setLoading] = useState(false);
   const [expenseList, setExpenseList] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -25,64 +51,72 @@ const Expenses = () => {
     endDate: null,
     minAmount: null,
     maxAmount: null,
-    export: false,
   });
 
   const [page, setPage] = useState(0);
   const [size] = useState(12);
   const [totalPages, setTotalPages] = useState(0);
 
-  const openModal = (expense) => {
-    setSelectedExpense(expense);
-    setOpenViewExpenseModal(true);
-  };
-
-  const fetchExpenses = async (
-    pageNumber = 0,
-    triggerExport = false,
-    customFilters = null
-  ) => {
-    try {
+  const fetchExpenses = useCallback(
+    async (pageNumber = 0, customFilters = filters) => {
       setLoading(true);
+      try {
+        const filteredEntries = Object.entries(customFilters).filter(
+          ([_, value]) => value !== null && value !== ""
+        );
 
-      const activeFilters = customFilters || filters;
+        const params = new URLSearchParams({
+          pageNumber: pageNumber.toString(),
+          pageSize: size.toString(),
+          sortOrder: "desc",
+          ...Object.fromEntries(filteredEntries),
+        });
 
-      const filteredEntries = Object.entries(activeFilters).filter(
+        const response = await api.get(`/api/expenses?${params.toString()}`);
+        setExpenseList(response.data.content);
+        setTotalPages(response.data.totalPages);
+        setPage(response.data.pageNumber);
+      } catch (error) {
+        console.error("Error fetching expenses:", error);
+        toast.error("Failed to load expenses.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [filters, size]
+  );
+
+  const handleExport = async () => {
+    const toastId = toast.loading("Generating PDF export...");
+    try {
+      const filteredEntries = Object.entries(filters).filter(
         ([_, value]) => value !== null && value !== ""
       );
-
       const params = new URLSearchParams({
-        pageNumber: pageNumber.toString(),
-        pageSize: size.toString(),
-        sortOrder: "desc",
         ...Object.fromEntries(filteredEntries),
-        export: triggerExport || activeFilters.export ? "true" : "false",
+        export: "true",
       });
 
-      const response = await api.get(`/api/expenses?${params.toString()}`);
-      setExpenseList(response.data.content);
-      setTotalPages(response.data.totalPages);
-      setPage(response.data.pageNumber);
+      const response = await api.get(`/api/expenses?${params.toString()}`, {
+        responseType: "blob",
+      });
 
-      if (triggerExport) {
-        toast.success("PDF Export triggered!");
-      }
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `expenses-${new Date().toISOString()}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success("PDF export successful!", { id: toastId });
     } catch (error) {
-      console.error("Error fetching expenses:", error);
-      toast.error("Failed to load expenses.");
-    } finally {
-      setLoading(false);
-      if (triggerExport) setExportPdf(false);
+      console.error("Error exporting PDF:", error);
+      toast.error("Failed to export PDF.", { id: toastId });
     }
   };
 
-  const handleExport = () => {
-    setExportPdf(true);
-    fetchExpenses(0, true);
-  };
-
-  const resetFilters = () => {
-    setFilters({
+  const resetFiltersAndFetch = () => {
+    const clearedFilters = {
       title: null,
       categoryName: null,
       status: null,
@@ -90,61 +124,58 @@ const Expenses = () => {
       endDate: null,
       minAmount: null,
       maxAmount: null,
-      export: false,
-    });
+    };
+    setFilters(clearedFilters);
     setPage(0);
-    fetchExpenses(0);
+    fetchExpenses(0, clearedFilters);
   };
 
-  const refreshData = async (pageNumber = page) => {
-    await fetchExpenses(pageNumber);
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
+      fetchExpenses(newPage);
+    }
   };
 
   useEffect(() => {
-    fetchExpenses(page);
-  }, [page]);
+    fetchExpenses(0);
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        setLoading(true);
         const response = await api.get("/api/public/categories?pageSize=100");
         setCategories(response.data.content);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        toast.error("Failed to load categories.");
-      } finally {
-        setLoading(false);
       }
     };
     fetchCategories();
   }, []);
 
   useEffect(() => {
-    const shouldLock = openViewExpenseModal || openCreateExpenseModal;
+    const shouldLock =
+      openViewExpenseModal || openCreateExpenseModal || openAdvanceFilter;
     document.body.style.overflow = shouldLock ? "hidden" : "auto";
-  }, [openViewExpenseModal, openCreateExpenseModal]);
+  }, [openViewExpenseModal, openCreateExpenseModal, openAdvanceFilter]);
 
   return (
     <>
-      {/* View Expense Modal */}
       <ExpenseViewModal
         open={openViewExpenseModal}
         setOpen={setOpenViewExpenseModal}
         expense={selectedExpense}
-        onUpdateSuccess={() => {}}
+        onUpdateSuccess={() => fetchExpenses(page)}
       />
 
-      {/* Create Expense Dialog */}
       <CreateExpenseDialog
         isOpen={openCreateExpenseModal}
         onClose={() => {
           setOpenCreateExpenseModal(false);
-          refreshData(0);
+          fetchExpenses(0);
         }}
       />
 
-      {/* Advanced Filter Dialog */}
       <AdvancedFilterDialog
         isOpen={openAdvanceFilter}
         onClose={() => setOpenAdvanceFilter(false)}
@@ -152,66 +183,64 @@ const Expenses = () => {
         setFilters={setFilters}
         onSearch={(updatedFilters) => {
           setPage(0);
-          fetchExpenses(0, false, updatedFilters);
+          fetchExpenses(0, updatedFilters);
         }}
         categories={categories}
       />
 
-      {/* Main Layout */}
-      <div className='flex flex-col items-center justify-start min-h-screen w-full font-[Poppins] px-4 sm:px-6 lg:px-8'>
-        <div className='w-full max-w-7xl space-y-6'>
-          {/* Header */}
-          <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
-            <h1 className='text-3xl font-light text-black'>Manage Expenses</h1>
-
-            <div className='flex flex-wrap gap-2'>
+      <div className='bg-gray-50 min-h-screen w-full p-4 sm:p-6 lg:p-8 font-[Poppins]'>
+        <div className='max-w-7xl mx-auto space-y-6'>
+          <header className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
+            <div>
+              <h1 className='text-3xl font-bold text-gray-900'>
+                Manage Expenses
+              </h1>
+              <p className='mt-1 text-sm text-gray-600'>
+                Track, filter, and export all your team's expenses.
+              </p>
+            </div>
+            <div className='flex-shrink-0 flex gap-2'>
               <button
                 onClick={() => setOpenCreateExpenseModal(true)}
-                className='px-4 py-2 bg-black text-white font-light text-sm rounded-md shadow hover:bg-gray-800 transition'
+                className='inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition'
               >
-                + New Expense
+                <PlusIcon className='h-5 w-5' />
+                New Expense
               </button>
               <button
                 onClick={handleExport}
-                className='px-4 py-2 bg-black text-white text-sm rounded-md shadow hover:bg-gray-800 transition'
+                className='inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition'
               >
+                <DocumentArrowDownIcon className='h-5 w-5' />
                 Export PDF
               </button>
             </div>
-          </div>
+          </header>
 
-          {/* Filter Bar */}
           <ExpenseFilterBar
             filters={filters}
             setFilters={setFilters}
-            onToggleAdvanced={() => setOpenAdvanceFilter((prev) => !prev)}
-            onSearch={() => {
-              setPage(0);
-              fetchExpenses(0);
-            }}
+            onToggleAdvanced={() => setOpenAdvanceFilter(true)}
+            onSearch={() => fetchExpenses(0)}
+            onReset={resetFiltersAndFetch}
           />
 
-          {/* Expense List or Loader */}
           {loading ? (
-            <div className='mt-12 text-center text-gray-700 font-medium text-lg'>
-              Loading expenses...
-            </div>
+            <Spinner />
           ) : expenseList.length === 0 ? (
-            <div className='mt-12 text-center text-gray-500 font-medium'>
-              No expenses found.
-            </div>
+            <EmptyState />
           ) : (
-            <div className='mt-4'>
-              <ExpenseList
-                expenses={expenseList}
-                loading={loading}
-                onDeleteSuccess={() => refreshData(page)}
-                openModal={openModal}
-                page={page}
-                totalPages={totalPages}
-                onPageChange={setPage}
-              />
-            </div>
+            <ExpenseList
+              expenses={expenseList}
+              openModal={(expense) => {
+                setSelectedExpense(expense);
+                setOpenViewExpenseModal(true);
+              }}
+              onDeleteSuccess={() => fetchExpenses(page)}
+              page={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           )}
         </div>
       </div>

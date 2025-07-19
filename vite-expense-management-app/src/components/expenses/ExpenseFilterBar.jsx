@@ -1,8 +1,14 @@
+import {
+  MagnifyingGlassIcon,
+  AdjustmentsHorizontalIcon,
+} from "@heroicons/react/24/outline";
+
 const ExpenseFilterBar = ({
   onSearch,
   onToggleAdvanced,
   filters,
   setFilters,
+  onReset,
 }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -12,39 +18,51 @@ const ExpenseFilterBar = ({
     }));
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onSearch();
+    }
+  };
+
   return (
-    <div className='font-[Poppins] w-full mb-4'>
-      <div className='flex justify-between items-center flex-wrap gap-4'>
-        {/* 🔍 Search Section */}
-        <div className='flex items-center gap-2 flex-grow'>
-          <label htmlFor='search-title' className='sr-only'>
-            Search by description
-          </label>
+    <div className='p-4 bg-white rounded-xl shadow-sm border border-gray-200/80'>
+      <div className='grid grid-cols-1 md:grid-cols-5 gap-4 items-center'>
+        {/* Search Input */}
+        <div className='relative md:col-span-2'>
+          <MagnifyingGlassIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
           <input
-            id='search-title'
             type='text'
             name='title'
             value={filters.title || ""}
             onChange={handleChange}
+            onKeyPress={handleKeyPress}
             placeholder='Search by title...'
-            className='w-full max-w-xs px-3 py-2 border rounded-md text-sm'
+            className='w-full border-gray-300 rounded-lg shadow-sm pl-10 focus:ring-indigo-500 focus:border-indigo-500 py-2.5'
             autoComplete='off'
           />
-          <button
-            type='button'
-            onClick={onSearch}
-            className='px-4 py-2 bg-black text-white text-sm rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1'
-          >
-            Search
-          </button>
         </div>
 
-        <div className='flex-shrink-0'>
+        {/* Action Buttons */}
+        <div className='flex flex-col sm:flex-row gap-2 md:col-span-3 justify-end'>
+          <button
+            onClick={onSearch}
+            className='inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition'
+          >
+            <MagnifyingGlassIcon className='h-5 w-5' />
+            Search
+          </button>
           <button
             onClick={onToggleAdvanced}
-            className='px-4 py-2 bg-gray-100 border border-gray-300 text-sm rounded-md hover:bg-gray-200'
+            className='inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition'
           >
-            Advanced Filter
+            <AdjustmentsHorizontalIcon className='h-5 w-5' />
+            Advanced
+          </button>
+          <button
+            onClick={onReset}
+            className='inline-flex items-center justify-center px-4 py-2.5 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition'
+          >
+            Reset
           </button>
         </div>
       </div>
