@@ -1,14 +1,35 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useMyContext } from "../../store/ContextApi";
-import EditIcon from "@mui/icons-material/Edit";
-import EmailIcon from "@mui/icons-material/Email";
-import PersonIcon from "@mui/icons-material/Person";
-import SecurityIcon from "@mui/icons-material/Security";
-import LogoutIcon from "@mui/icons-material/Logout";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ProfileUpdateDialog from "./ProfileUpdateDialog";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import {
+  UserCircleIcon,
+  EnvelopeIcon,
+  ShieldCheckIcon,
+  PencilSquareIcon,
+  ArrowLeftOnRectangleIcon,
+} from "@heroicons/react/24/outline";
+import ProfileUpdateDialog from "./ProfileUpdateDialog"; // Assuming this component exists
+
+// Helper to get initials from a name
+const getInitials = (name) => {
+  if (!name) return "?";
+  const names = name.split(" ");
+  const initials = names.map((n) => n[0]).join("");
+  return initials.slice(0, 2).toUpperCase();
+};
+
+// Helper to assign colors to roles for visual distinction
+const getRoleClass = (role) => {
+  switch (role.toLowerCase()) {
+    case "admin":
+      return "bg-red-100 text-red-700";
+    case "manager":
+      return "bg-yellow-100 text-yellow-700";
+    default:
+      return "bg-blue-100 text-blue-700";
+  }
+};
 
 const Profile = () => {
   const { setToken, loggedInUser, setloggedInUser, setIsAdmin, setIsManager } =
@@ -18,11 +39,10 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("JWT_TOKEN");
-    localStorage.removeItem("USER");
-    localStorage.removeItem("CSRF_TOKEN");
-    localStorage.removeItem("IS_ADMIN");
-    localStorage.removeItem("IS_MANAGER");
+    // Clear all relevant local storage items
+    ["JWT_TOKEN", "USER", "CSRF_TOKEN", "IS_ADMIN", "IS_MANAGER"].forEach(
+      (item) => localStorage.removeItem(item)
+    );
     setToken(null);
     setloggedInUser(null);
     setIsAdmin(false);
@@ -33,13 +53,22 @@ const Profile = () => {
 
   if (!loggedInUser) {
     return (
-      <div className='p-6 text-center text-gray-600'>
-        No user data available.
+      <div className='flex items-center justify-center h-screen bg-gray-100'>
+        <div className='p-8 text-center text-gray-600 bg-white rounded-lg shadow-md'>
+          <h3 className='text-xl font-semibold'>No User Data Available</h3>
+          <p className='mt-2'>Please log in to view your profile.</p>
+          <button
+            onClick={() => navigate("/login")}
+            className='mt-4 px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700'
+          >
+            Go to Login
+          </button>
+        </div>
       </div>
     );
   }
 
-  const { id, fullName, email, roles } = loggedInUser;
+  const { fullName, email, roles } = loggedInUser;
 
   return (
     <>
@@ -50,70 +79,105 @@ const Profile = () => {
         />
       )}
 
-      <div className='h-screen flex items-center justify-center bg-gray-50 px-4'>
-        <div className='w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8 relative border border-gray-200'>
-          <div className='flex flex-col items-center'>
-            <AccountCircleIcon
-              className='text-gray-400 mb-2'
-              style={{ fontSize: 80 }}
-            />
-            <div className='flex items-center gap-2'>
-              <h2 className='text-2xl font-semibold text-gray-800'>
-                {fullName}
-              </h2>
-              <button
-                onClick={() => setOpenUpdateModal(true)}
-                className='flex items-center gap-1 text-sm px-3 py-1.5 rounded-md border border-gray-300 text-gray-600 hover:text-white hover:bg-gray-700 transition'
-                title='Edit Profile'
-              >
-                <EditIcon fontSize='small' />
-                Edit
-              </button>
-            </div>
-          </div>
-
-          {/* Info Section */}
-          <div className='space-y-5 text-gray-700'>
-            <div className='flex items-center gap-3'>
-              <PersonIcon className='text-blue-500' />
-              <div>
-                <p className='text-sm text-gray-500'>Full Name</p>
-                <p className='text-lg font-medium'>{fullName}</p>
+      <div className='min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8'>
+        <div className='w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-200/80 overflow-hidden'>
+          <div className='flex flex-col md:flex-row'>
+            {/* Sidebar */}
+            <div className='w-full md:w-1/4 bg-gray-50 p-6 border-r border-gray-200'>
+              <div className='flex flex-col items-center'>
+                <div className='relative'>
+                  <div className='w-24 h-24 rounded-full bg-indigo-500 text-white flex items-center justify-center text-4xl font-bold mb-4'>
+                    {getInitials(fullName)}
+                  </div>
+                </div>
+                <h2 className='text-xl font-bold text-gray-800 text-center'>
+                  {fullName}
+                </h2>
+                <p className='text-sm text-gray-500'>{email}</p>
+              </div>
+              <nav className='mt-8 space-y-2'>
+                <a
+                  href='#'
+                  className='flex items-center gap-3 px-3 py-2 text-sm font-medium text-indigo-700 bg-indigo-100 rounded-lg'
+                >
+                  <UserCircleIcon className='h-5 w-5' />
+                  Profile
+                </a>
+                <a
+                  href='#'
+                  className='flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg'
+                >
+                  <ShieldCheckIcon className='h-5 w-5' />
+                  Security
+                </a>
+              </nav>
+              <div className='mt-8 pt-6 border-t border-gray-200'>
+                <button
+                  onClick={handleLogout}
+                  className='w-full flex items-center justify-center gap-3 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors'
+                >
+                  <ArrowLeftOnRectangleIcon className='h-5 w-5' />
+                  Logout
+                </button>
               </div>
             </div>
 
-            <div className='flex items-center gap-3'>
-              <EmailIcon className='text-green-500' />
-              <div>
-                <p className='text-sm text-gray-500'>Email</p>
-                <p className='text-lg font-medium'>{email}</p>
+            {/* Main Content */}
+            <div className='w-full md:w-3/4 p-8'>
+              <div className='flex justify-between items-center pb-4 border-b border-gray-200'>
+                <div>
+                  <h3 className='text-2xl font-bold text-gray-900'>
+                    Profile Information
+                  </h3>
+                  <p className='text-sm text-gray-500 mt-1'>
+                    Your personal details and role within the organization.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setOpenUpdateModal(true)}
+                  className='inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                >
+                  <PencilSquareIcon className='h-4 w-4' />
+                  Edit Profile
+                </button>
               </div>
-            </div>
 
-            <div className='flex items-start gap-3'>
-              <SecurityIcon className='text-yellow-500 mt-1' />
-              <div>
-                <p className='text-sm text-gray-500 mb-1'>Roles</p>
-                <ul className='list-disc ml-5'>
-                  {roles?.map((role, idx) => (
-                    <li key={idx} className='capitalize'>
-                      {role.replace("ROLE_", "").toLowerCase()}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <dl className='mt-6 space-y-6'>
+                <div className='flex flex-col sm:flex-row'>
+                  <dt className='w-full sm:w-1/4 text-sm font-medium text-gray-500'>
+                    Full Name
+                  </dt>
+                  <dd className='w-full sm:w-3/4 mt-1 sm:mt-0 text-md text-gray-900'>
+                    {fullName}
+                  </dd>
+                </div>
+                <div className='flex flex-col sm:flex-row'>
+                  <dt className='w-full sm:w-1/4 text-sm font-medium text-gray-500'>
+                    Email Address
+                  </dt>
+                  <dd className='w-full sm:w-3/4 mt-1 sm:mt-0 text-md text-gray-900'>
+                    {email}
+                  </dd>
+                </div>
+                <div className='flex flex-col sm:flex-row'>
+                  <dt className='w-full sm:w-1/4 text-sm font-medium text-gray-500'>
+                    Roles
+                  </dt>
+                  <dd className='w-full sm:w-3/4 mt-2 sm:mt-0 flex flex-wrap gap-2'>
+                    {roles?.map((role, idx) => (
+                      <span
+                        key={idx}
+                        className={`px-3 py-1 text-xs font-semibold rounded-full ${getRoleClass(
+                          role.replace("ROLE_", "")
+                        )}`}
+                      >
+                        {role.replace("ROLE_", "").toLowerCase()}
+                      </span>
+                    ))}
+                  </dd>
+                </div>
+              </dl>
             </div>
-          </div>
-
-          {/* Footer / Logout */}
-          <div className='mt-8 text-right'>
-            <button
-              onClick={handleLogout}
-              className='inline-flex items-center gap-2 px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md transition'
-            >
-              <LogoutIcon fontSize='small' />
-              Logout
-            </button>
           </div>
         </div>
       </div>

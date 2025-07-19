@@ -4,20 +4,32 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 import { useMyContext } from "../../store/ContextApi";
+import {
+  UserIcon,
+  EnvelopeIcon,
+  LockClosedIcon,
+} from "@heroicons/react/24/outline";
 
 const ProfileUpdateDialog = ({ isOpen, onClose }) => {
-  const context = useMyContext();
-  const [loggedInUser, setLoggedInUser] = useState(context.loggedInUser);
+  const { loggedInUser, setloggedInUser } = useMyContext();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      id: loggedInUser?.id,
+      fullName: loggedInUser?.fullName || "",
+      email: loggedInUser?.email || "",
+      password: "",
+    },
+  });
 
   useEffect(() => {
-    if (loggedInUser) {
+    if (loggedInUser && isOpen) {
       reset({
         id: loggedInUser.id,
         fullName: loggedInUser.fullName || "",
@@ -25,32 +37,35 @@ const ProfileUpdateDialog = ({ isOpen, onClose }) => {
         password: "",
       });
     }
-  }, [loggedInUser, reset]);
+  }, [loggedInUser, isOpen, reset]);
 
   const handleFormSubmit = async (data) => {
+    setIsSubmitting(true);
     const { id, fullName, email, password } = data;
 
     const payload = {
       id,
       fullName: fullName?.trim(),
       email: email?.trim(),
-      password: password?.trim() || null,
+      ...(password?.trim() && { password: password.trim() }),
     };
 
     try {
       const response = await api.put("/api/users", payload);
+      setloggedInUser(response.data);
       toast.success("Profile updated successfully.");
-      setLoggedInUser(response.data);
       onClose();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to update profile.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as='div' className='relative z-50' onClose={onClose}>
-        {/* Overlay */}
+        {/* The backdrop, rendered as a fixed sibling to the panel container */}
         <Transition.Child
           as={Fragment}
           enter='ease-out duration-300'
@@ -63,7 +78,7 @@ const ProfileUpdateDialog = ({ isOpen, onClose }) => {
           <div className='fixed inset-0 bg-black/30 backdrop-blur-sm' />
         </Transition.Child>
 
-        {/* Dialog Panel */}
+        {/* Full-screen container to center the panel */}
         <div className='fixed inset-0 overflow-y-auto'>
           <div className='flex min-h-full items-center justify-center p-4 text-center'>
             <Transition.Child
@@ -75,45 +90,42 @@ const ProfileUpdateDialog = ({ isOpen, onClose }) => {
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200'>
+              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200/80'>
                 <Dialog.Title
                   as='h3'
-                  className='text-2xl font-bold leading-6 text-black text-center mb-6'
+                  className='text-xl font-bold leading-6 text-gray-900 text-center mb-6'
                 >
-                  Update Profile
+                  Edit Your Profile
                 </Dialog.Title>
 
                 <form
                   onSubmit={handleSubmit(handleFormSubmit)}
-                  className='space-y-5'
+                  className='space-y-4'
                 >
-                  {/* Full Name */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Full Name
-                    </label>
+                  {/* Full Name Input */}
+                  <div className='relative'>
+                    <UserIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
                     <input
                       {...register("fullName", {
                         required: "Full name is required",
                       })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                      placeholder='Full Name'
+                      className={`w-full border rounded-lg px-4 py-2.5 pl-10 shadow-sm focus:outline-none focus:ring-2 transition-colors ${
                         errors.fullName
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
+                          ? "border-red-300 focus:ring-red-500 bg-red-50"
+                          : "border-gray-300 focus:ring-indigo-500"
                       }`}
                     />
                     {errors.fullName && (
-                      <p className='text-red-500 text-xs mt-1'>
+                      <p className='text-red-600 text-xs mt-1 ml-1'>
                         {errors.fullName.message}
                       </p>
                     )}
                   </div>
 
-                  {/* Email */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Email
-                    </label>
+                  {/* Email Input */}
+                  <div className='relative'>
+                    <EnvelopeIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
                     <input
                       type='email'
                       {...register("email", {
@@ -123,46 +135,72 @@ const ProfileUpdateDialog = ({ isOpen, onClose }) => {
                           message: "Enter a valid email address",
                         },
                       })}
-                      className={`w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                      placeholder='Email Address'
+                      className={`w-full border rounded-lg px-4 py-2.5 pl-10 shadow-sm focus:outline-none focus:ring-2 transition-colors ${
                         errors.email
-                          ? "border-red-500 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-blue-500"
+                          ? "border-red-300 focus:ring-red-500 bg-red-50"
+                          : "border-gray-300 focus:ring-indigo-500"
                       }`}
                     />
                     {errors.email && (
-                      <p className='text-red-500 text-xs mt-1'>
+                      <p className='text-red-600 text-xs mt-1 ml-1'>
                         {errors.email.message}
                       </p>
                     )}
                   </div>
 
-                  {/* Password */}
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700 mb-1'>
-                      Password
-                    </label>
+                  {/* Password Input */}
+                  <div className='relative'>
+                    <LockClosedIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
                     <input
                       type='password'
                       {...register("password")}
-                      placeholder='Leave blank to keep current password'
-                      className='w-full border px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500'
+                      placeholder='New Password (optional)'
+                      className='w-full border rounded-lg px-4 py-2.5 pl-10 shadow-sm focus:outline-none focus:ring-2 border-gray-300 focus:ring-indigo-500'
                     />
                   </div>
 
-                  {/* Actions */}
+                  {/* Action Buttons */}
                   <div className='flex justify-end gap-4 pt-4'>
                     <button
                       type='button'
                       onClick={onClose}
-                      className='px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition'
+                      className='px-5 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 transition'
                     >
                       Cancel
                     </button>
                     <button
                       type='submit'
-                      className='px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition'
+                      disabled={isSubmitting}
+                      className='inline-flex justify-center items-center px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 transition disabled:bg-indigo-400 disabled:cursor-not-allowed'
                     >
-                      Update Profile
+                      {isSubmitting ? (
+                        <>
+                          <svg
+                            className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
+                            xmlns='http://www.w3.org/2000/svg'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                          >
+                            <circle
+                              className='opacity-25'
+                              cx='12'
+                              cy='12'
+                              r='10'
+                              stroke='currentColor'
+                              strokeWidth='4'
+                            ></circle>
+                            <path
+                              className='opacity-75'
+                              fill='currentColor'
+                              d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                            ></path>
+                          </svg>
+                          Updating...
+                        </>
+                      ) : (
+                        "Update Profile"
+                      )}
                     </button>
                   </div>
                 </form>
