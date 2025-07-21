@@ -12,8 +12,6 @@ import {
   CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 
-// --- Helper Components for better UI feedback ---
-
 const Spinner = () => (
   <div className='flex justify-center items-center py-20'>
     <div className='h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600'></div>
@@ -31,8 +29,6 @@ const EmptyState = () => (
     </p>
   </div>
 );
-
-// --- Main Expenses Component ---
 
 const Expenses = () => {
   const [openViewExpenseModal, setOpenViewExpenseModal] = useState(false);
@@ -137,6 +133,10 @@ const Expenses = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    setOpenViewExpenseModal(false);
+  };
+
   useEffect(() => {
     fetchExpenses(0);
   }, []);
@@ -166,6 +166,7 @@ const Expenses = () => {
         setOpen={setOpenViewExpenseModal}
         expense={selectedExpense}
         onUpdateSuccess={() => fetchExpenses(page)}
+        onClose={handleCloseModal}
       />
 
       <CreateExpenseDialog
