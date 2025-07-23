@@ -51,6 +51,7 @@ export const ContextProvider = ({ children }) => {
         localStorage.removeItem("USER");
         localStorage.removeItem("IS_ADMIN");
         localStorage.removeItem("IS_MANAGER");
+        localStorage.removeItem("CSRF_TOKEN");
 
         setToken(null);
         setloggedInUser(null);

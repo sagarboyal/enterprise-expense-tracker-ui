@@ -97,17 +97,37 @@ const Expenses = () => {
         responseType: "blob",
       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      if (
+        response.status === 204 ||
+        !response.data ||
+        (response.data.size !== undefined && response.data.size === 0)
+      ) {
+        throw new Error("No data to export. Try adjusting your filters.");
+      }
+
+      console.log("Export response:", response);
+
+      const url = window.URL.createObjectURL(response.data);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `expenses-${new Date().toISOString()}.pdf`);
+      link.setAttribute(
+        "download",
+        `expenses-${new Date().toISOString().replace(/:/g, "-")}.pdf`
+      );
+      console.log("Download link created:", link.href);
+
       document.body.appendChild(link);
       link.click();
       link.remove();
+      // Clean up: revoke ObjectURL after the download event
+      setTimeout(() => window.URL.revokeObjectURL(url), 100); // 100ms is safe
+
       toast.success("PDF export successful!", { id: toastId });
     } catch (error) {
       console.error("Error exporting PDF:", error);
-      toast.error("Failed to export PDF.", { id: toastId });
+      toast.error("Failed to export PDF. " + (error.message || ""), {
+        id: toastId,
+      });
     }
   };
 
@@ -153,12 +173,6 @@ const Expenses = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const shouldLock =
-      openViewExpenseModal || openCreateExpenseModal || openAdvanceFilter;
-    document.body.style.overflow = shouldLock ? "hidden" : "auto";
-  }, [openViewExpenseModal, openCreateExpenseModal, openAdvanceFilter]);
-
   return (
     <>
       <ExpenseViewModal
@@ -168,7 +182,6 @@ const Expenses = () => {
         onUpdateSuccess={() => fetchExpenses(page)}
         onClose={handleCloseModal}
       />
-
       <CreateExpenseDialog
         isOpen={openCreateExpenseModal}
         onClose={() => {
@@ -176,7 +189,6 @@ const Expenses = () => {
           fetchExpenses(0);
         }}
       />
-
       <AdvancedFilterDialog
         isOpen={openAdvanceFilter}
         onClose={() => setOpenAdvanceFilter(false)}
@@ -188,7 +200,6 @@ const Expenses = () => {
         }}
         categories={categories}
       />
-
       <div className='bg-gray-50 min-h-screen w-full p-4 sm:p-6 lg:p-8 font-[Poppins]'>
         <div className='max-w-7xl mx-auto space-y-6'>
           <header className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
@@ -208,16 +219,27 @@ const Expenses = () => {
                 <PlusIcon className='h-5 w-5' />
                 New Expense
               </button>
-              <button
-                onClick={handleExport}
+              {/* <a
+                href={`http://localhost:8080/api/expenses?${params.toString()}&export=true`}
+                download='expenses.pdf'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Download PDF
+              </a> */}
+
+              <a
                 className='inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition'
+                href={`http://localhost:8080/api/expenses?export=true`}
+                download='expenses.pdf'
+                target='_blank'
+                rel='noopener noreferrer'
               >
                 <DocumentArrowDownIcon className='h-5 w-5' />
                 Export PDF
-              </button>
+              </a>
             </div>
           </header>
-
           <ExpenseFilterBar
             filters={filters}
             setFilters={setFilters}
@@ -225,7 +247,6 @@ const Expenses = () => {
             onSearch={() => fetchExpenses(0)}
             onReset={resetFiltersAndFetch}
           />
-
           {loading ? (
             <Spinner />
           ) : expenseList.length === 0 ? (
@@ -240,6 +261,7 @@ const Expenses = () => {
               onDeleteSuccess={() => fetchExpenses(page)}
               page={page}
               totalPages={totalPages}
+              t
               onPageChange={handlePageChange}
             />
           )}
