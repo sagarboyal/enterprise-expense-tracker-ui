@@ -19,6 +19,7 @@ import ApprovalPanel from "./components/approval/ApprovalPanel";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
 import UserManagementDashboard from "./components/users/UserManagementDashboard";
 import InvoiceDashboard from "./components/invoice/InvoiceDashboard";
+import UserInvoiceDashboard from "./components/invoice/UserInvoiceDashboard.jsx";
 
 function App() {
   const location = useLocation();
@@ -50,6 +51,7 @@ function App() {
           <Route path='users' element={<UserManagementDashboard />} />
           <Route path='invoice' element={<InvoiceDashboard />} />
           <Route path='notifications' element={<Notifications />} />
+          <Route path='billings' element={<UserInvoiceDashboard />} />
         </Route>
       </Routes>
       {showPage && <Footer />}
@@ -59,8 +61,6 @@ function App() {
 
 export default function AppWrapper() {
   return (
-    <BrowserRouter>
       <App />
-    </BrowserRouter>
   );
 }
