@@ -19,6 +19,8 @@ import ApprovalPanel from "./components/approval/ApprovalPanel";
 import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
 import UserManagementDashboard from "./components/users/UserManagementDashboard";
 import InvoiceDashboard from "./components/invoice/InvoiceDashboard";
+import Terms from "./components/common/Terms";
+import Policy from "./components/common/Policy";
 import UserInvoiceDashboard from "./components/invoice/UserInvoiceDashboard.jsx";
 
 function App() {
@@ -40,6 +42,8 @@ function App() {
         <Route path='/contact' element={<Contact />} />
         <Route path='/homepage' element={<HomePage />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/terms' element={<Terms />} />
+        < Route path='/privacy-policy' element={<Policy />} />
 
         {/* Dashboard + Nested Routes */}
         <Route path='/homepage' element={<HomePage />}>
