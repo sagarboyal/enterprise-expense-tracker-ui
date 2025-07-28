@@ -29,6 +29,12 @@ const TopPanel = () => {
           >
             Analytics
           </Link>
+          <Link
+              to='/homepage/billings'
+              className={navLinkClass("/homepage/billings")}
+          >
+            Billings
+          </Link>
           {(isAdmin || isManager) && (
             <Link
               to='/homepage/approvals'

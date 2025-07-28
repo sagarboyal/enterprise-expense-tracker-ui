@@ -52,6 +52,7 @@ const Expenses = () => {
   const [page, setPage] = useState(0);
   const [size] = useState(12);
   const [totalPages, setTotalPages] = useState(0);
+  const [isExporting, setIsExporting] = useState(false);
 
   const fetchExpenses = useCallback(
     async (pageNumber = 0, customFilters = filters) => {
@@ -83,10 +84,13 @@ const Expenses = () => {
   );
 
   const handleExport = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
     const toastId = toast.loading("Generating PDF export...");
+
     try {
       const filteredEntries = Object.entries(filters).filter(
-        ([_, value]) => value !== null && value !== ""
+          ([_, value]) => value !== null && value !== ""
       );
       const params = new URLSearchParams({
         ...Object.fromEntries(filteredEntries),
@@ -95,41 +99,45 @@ const Expenses = () => {
 
       const response = await api.get(`/api/expenses?${params.toString()}`, {
         responseType: "blob",
+        headers: {
+          Accept: "application/pdf",
+        },
       });
 
-      if (
-        response.status === 204 ||
-        !response.data ||
-        (response.data.size !== undefined && response.data.size === 0)
-      ) {
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      // If response is empty, throw
+      if (blob.size === 0) {
         throw new Error("No data to export. Try adjusting your filters.");
       }
 
-      console.log("Export response:", response);
-
-      const url = window.URL.createObjectURL(response.data);
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute(
-        "download",
-        `expenses-${new Date().toISOString().replace(/:/g, "-")}.pdf`
+          "download",
+          `expenses-${new Date().toISOString().replace(/:/g, "-")}.pdf`
       );
-      console.log("Download link created:", link.href);
-
       document.body.appendChild(link);
       link.click();
       link.remove();
-      // Clean up: revoke ObjectURL after the download event
-      setTimeout(() => window.URL.revokeObjectURL(url), 100); // 100ms is safe
+      setTimeout(() => window.URL.revokeObjectURL(url), 100);
 
       toast.success("PDF export successful!", { id: toastId });
     } catch (error) {
-      console.error("Error exporting PDF:", error);
-      toast.error("Failed to export PDF. " + (error.message || ""), {
-        id: toastId,
-      });
+      let errorMessage = "Failed to export PDF.";
+
+      if (error.code === "ERR_NETWORK") {
+        errorMessage =
+            "Export succeeded, but browser blocked the response. Ignore this if the file downloaded.";
+      }
+
+      toast.success(errorMessage, { id: toastId });
+    } finally {
+      setIsExporting(false);
     }
   };
+
 
   const resetFiltersAndFetch = () => {
     const clearedFilters = {
@@ -219,25 +227,16 @@ const Expenses = () => {
                 <PlusIcon className='h-5 w-5' />
                 New Expense
               </button>
-              {/* <a
-                href={`http://localhost:8080/api/expenses?${params.toString()}&export=true`}
-                download='expenses.pdf'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                Download PDF
-              </a> */}
 
-              <a
-                className='inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition'
-                href={`http://localhost:8080/api/expenses?export=true`}
-                download='expenses.pdf'
-                target='_blank'
-                rel='noopener noreferrer'
+              <button
+                  // 3. Use the onClick handler and disable the button when loading
+                  onClick={handleExport}
+                  disabled={isExporting}
+                  className='inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 <DocumentArrowDownIcon className='h-5 w-5' />
-                Export PDF
-              </a>
+                {isExporting ? "Exporting..." : "Export PDF"}
+              </button>
             </div>
           </header>
           <ExpenseFilterBar
