@@ -39,6 +39,4 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-console.log(document.cookie);
-
 export default api;
