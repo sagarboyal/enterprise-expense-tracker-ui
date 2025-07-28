@@ -25,14 +25,9 @@ const NavBar = () => {
     useMyContext();
 
   const handleLogout = () => {
-    [
-      "JWT_TOKEN",
-      "USER",
-      "CSRF_TOKEN",
-      "IS_ADMIN",
-      "IS_MANAGER",
-      "X-XSRF-TOKEN",
-    ].forEach((item) => localStorage.removeItem(item));
+    ["JWT_TOKEN", "USER", "IS_ADMIN", "IS_MANAGER", "X-XSRF-TOKEN"].forEach(
+      (item) => localStorage.removeItem(item)
+    );
     setToken(null);
     setLoggedInUser(null);
     setIsAdmin(false);

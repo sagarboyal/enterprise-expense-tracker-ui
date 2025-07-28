@@ -4,14 +4,11 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   UserCircleIcon,
-  EnvelopeIcon,
   ShieldCheckIcon,
   PencilSquareIcon,
-  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import ProfileUpdateDialog from "./ProfileUpdateDialog"; // Assuming this component exists
+import ProfileUpdateDialog from "./ProfileUpdateDialog";
 
-// Helper to get initials from a name
 const getInitials = (name) => {
   if (!name) return "?";
   const names = name.split(" ");
@@ -19,7 +16,6 @@ const getInitials = (name) => {
   return initials.slice(0, 2).toUpperCase();
 };
 
-// Helper to assign colors to roles for visual distinction
 const getRoleClass = (role) => {
   switch (role.toLowerCase()) {
     case "admin":
@@ -39,14 +35,9 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    [
-      "JWT_TOKEN",
-      "USER",
-      "CSRF_TOKEN",
-      "IS_ADMIN",
-      "IS_MANAGER",
-      "X-XSRF-TOKEN",
-    ].forEach((item) => localStorage.removeItem(item));
+    ["JWT_TOKEN", "USER", "IS_ADMIN", "IS_MANAGER", "X-XSRF-TOKEN"].forEach(
+      (item) => localStorage.removeItem(item)
+    );
     setToken(null);
     setloggedInUser(null);
     setIsAdmin(false);
@@ -86,7 +77,6 @@ const Profile = () => {
       <div className='min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6 lg:p-8'>
         <div className='w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-200/80 overflow-hidden'>
           <div className='flex flex-col md:flex-row'>
-            {/* Sidebar */}
             <div className='w-full md:w-1/4 bg-gray-50 p-6 border-r border-gray-200'>
               <div className='flex flex-col items-center'>
                 <div className='relative'>
@@ -126,7 +116,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Main Content */}
             <div className='w-full md:w-3/4 p-8'>
               <div className='flex justify-between items-center pb-4 border-b border-gray-200'>
                 <div>
