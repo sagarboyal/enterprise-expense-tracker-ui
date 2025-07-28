@@ -21,15 +21,20 @@ const NavBar = () => {
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
 
-  const { token, setToken, setloggedInUser, setIsAdmin, setIsManager } =
+  const { token, setToken, setLoggedInUser, setIsAdmin, setIsManager } =
     useMyContext();
 
   const handleLogout = () => {
-    ["JWT_TOKEN", "USER", "CSRF_TOKEN", "IS_ADMIN", "IS_MANAGER"].forEach(
-      (item) => localStorage.removeItem(item)
-    );
+    [
+      "JWT_TOKEN",
+      "USER",
+      "CSRF_TOKEN",
+      "IS_ADMIN",
+      "IS_MANAGER",
+      "X-XSRF-TOKEN",
+    ].forEach((item) => localStorage.removeItem(item));
     setToken(null);
-    setloggedInUser(null);
+    setLoggedInUser(null);
     setIsAdmin(false);
     setIsManager(false);
     setIsDialogOpen(false);
