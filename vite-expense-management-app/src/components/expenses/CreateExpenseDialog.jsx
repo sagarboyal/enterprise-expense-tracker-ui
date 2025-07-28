@@ -1,48 +1,45 @@
-import { useEffect, useState, useCallback, Fragment } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
-import ExpenseViewModal from "./ExpenseViewModal";
-import ExpenseList from "./ExpenseList";
 import { Dialog, Transition } from "@headlessui/react";
 import { useForm } from "react-hook-form";
-import ExpenseFilterBar from "./ExpenseFilterBar";
 import {
-  PlusIcon,
-  DocumentArrowDownIcon,
   CurrencyDollarIcon,
   TagIcon,
   CalendarDaysIcon,
   PencilSquareIcon,
+  ArrowUpTrayIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
 
-// --- Helper Components for better UI feedback ---
-
-const Spinner = ({
-  className = "h-8 w-8",
-  borderColor = "border-indigo-600",
-}) => (
-  <div className='flex justify-center items-center py-20'>
-    <div
-      className={`${className} animate-spin rounded-full border-b-2 ${borderColor}`}
-    ></div>
-  </div>
-);
-
-const EmptyState = () => (
-  <div className='text-center py-16 px-4 bg-white rounded-lg shadow-sm border'>
-    <CurrencyDollarIcon className='mx-auto h-12 w-12 text-gray-300' />
-    <h3 className='mt-2 text-lg font-semibold text-gray-800'>
-      No Expenses Found
-    </h3>
-    <p className='mt-1 text-sm text-gray-500'>
-      Try adjusting your filters or create a new expense.
-    </p>
-  </div>
+const Spinner = () => (
+  <svg
+    className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
+    xmlns='http://www.w3.org/2000/svg'
+    fill='none'
+    viewBox='0 0 24 24'
+  >
+    <circle
+      className='opacity-25'
+      cx='12'
+      cy='12'
+      r='10'
+      stroke='currentColor'
+      strokeWidth='4'
+    ></circle>
+    <path
+      className='opacity-75'
+      fill='currentColor'
+      d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+    ></path>
+  </svg>
 );
 
 const CreateExpenseDialog = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
 
   const {
     register,
@@ -61,45 +58,69 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
   });
 
   useEffect(() => {
-    if (isOpen) {
-      const fetchCategories = async () => {
-        try {
-          const response = await api.get("/api/public/categories?pageSize=100");
-          setCategories(response.data.content || []);
-        } catch (error) {
-          console.error("Error fetching categories:", error);
-          toast.error("Failed to load categories.");
-        }
-      };
-      fetchCategories();
-    }
+    if (!isOpen) return;
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get("/api/public/categories?pageSize=100");
+        setCategories(response.data.content || []);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        toast.error("Failed to load categories.");
+      }
+    };
+    fetchCategories();
   }, [isOpen]);
 
   const afterLeave = () => {
     reset();
+    setSelectedFile(null);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const removeSelectedFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleFormSubmit = async (data) => {
     setLoading(true);
-    const { title, amount, categoryId, expenseDate, description } = data;
-    const sendData = {
-      title: title.trim(),
-      amount: parseFloat(amount),
-      categoryId,
-      expenseDate: new Date(expenseDate).toISOString(),
-      description: description.trim(),
+    const expenseData = {
+      title: data.title.trim(),
+      amount: parseFloat(data.amount),
+      categoryId: data.categoryId,
+      expenseDate: new Date(data.expenseDate).toISOString(),
+      description: data.description.trim(),
     };
 
     try {
-      await api.post("/api/expenses", sendData);
-      toast.success("New expense added successfully!");
+      const response = await api.post("/api/expenses", expenseData);
+      toast.success("Expense created successfully!");
+
+      if (selectedFile) {
+        const newExpenseId = response.data.id;
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        await api.post(
+          `/api/document/cloudinary/upload/${newExpenseId}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        toast.success("Receipt uploaded successfully!");
+      }
       onClose();
     } catch (error) {
-      console.error("Error adding expense:", error);
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to add expense. Please try again."
-      );
+      console.error("Error creating expense or uploading file:", error);
+      toast.error(error.response?.data?.message || "An error occurred.");
     } finally {
       setLoading(false);
     }
@@ -107,7 +128,11 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
 
   return (
     <Transition appear show={isOpen} as={Fragment} afterLeave={afterLeave}>
-      <Dialog as='div' className='relative z-50' onClose={onClose}>
+      <Dialog
+        as='div'
+        className='relative z-50'
+        onClose={loading ? () => {} : onClose}
+      >
         <Transition.Child
           as={Fragment}
           enter='ease-out duration-300'
@@ -117,7 +142,7 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <div className='fixed inset-0 bg-black/30 backdrop-blur-sm' />
+          <div className='fixed inset-0 bg-black/40 backdrop-blur-sm' />
         </Transition.Child>
 
         <div className='fixed inset-0 overflow-y-auto'>
@@ -131,145 +156,179 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-              <Dialog.Panel className='w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+              <Dialog.Panel className='w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all'>
                 <Dialog.Title
                   as='h3'
-                  className='text-xl font-bold leading-6 text-gray-900'
+                  className='text-2xl font-bold leading-6 text-gray-900'
                 >
-                  Add a New Expense
+                  Create New Expense
                 </Dialog.Title>
-                <p className='mt-1 text-sm text-gray-500'>
-                  Fill in the details below to add a new expense to your
-                  tracker.
+                <p className='mt-2 text-sm text-gray-500'>
+                  Enter the details of your expense below. Fields marked with an
+                  asterisk are required.
                 </p>
 
                 <form
                   onSubmit={handleSubmit(handleFormSubmit)}
-                  className='mt-6 space-y-4'
+                  className='mt-8 space-y-6'
                 >
-                  <div className='relative'>
-                    <PencilSquareIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
-                    <input
-                      {...register("title", { required: "Title is required." })}
-                      placeholder='e.g., Team Lunch'
-                      className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
-                        errors.title ? "ring-red-500" : "focus:ring-indigo-500"
-                      }`}
-                    />
-                    {errors.title && (
-                      <p className='text-xs text-red-600 mt-1'>
-                        {errors.title.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                  <fieldset disabled={loading} className='space-y-6'>
                     <div className='relative'>
-                      <CurrencyDollarIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                      <PencilSquareIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400' />
                       <input
-                        type='number'
-                        step='0.01'
-                        {...register("amount", {
-                          required: "Amount is required.",
-                          valueAsNumber: true,
+                        {...register("title", {
+                          required: "Title is required.",
                         })}
-                        placeholder='Amount'
-                        className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
-                          errors.amount
-                            ? "ring-red-500"
-                            : "focus:ring-indigo-500"
+                        placeholder='Expense Title (e.g., Client Dinner)'
+                        className={`w-full rounded-lg border-gray-300 py-3 pl-11 shadow-sm focus:ring-2 ${
+                          errors.title
+                            ? "ring-red-500 border-red-500"
+                            : "focus:ring-indigo-500 focus:border-indigo-500"
                         }`}
                       />
-                      {errors.amount && (
+                      {errors.title && (
                         <p className='text-xs text-red-600 mt-1'>
-                          {errors.amount.message}
+                          {errors.title.message}
                         </p>
                       )}
                     </div>
-                    <div className='relative'>
-                      <CalendarDaysIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
-                      <input
-                        type='date'
-                        {...register("expenseDate", {
-                          required: "Date is required.",
-                        })}
-                        className={`w-full rounded-lg border-gray-300 py-2.5 pl-10 shadow-sm focus:ring-2 ${
-                          errors.expenseDate
-                            ? "ring-red-500"
-                            : "focus:ring-indigo-500"
-                        }`}
-                      />
-                      {errors.expenseDate && (
-                        <p className='text-xs text-red-600 mt-1'>
-                          {errors.expenseDate.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
 
-                  <div className='relative'>
-                    <TagIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
-                    <select
-                      {...register("categoryId", {
-                        required: "Category is required.",
-                      })}
-                      defaultValue=''
-                      className={`w-full appearance-none rounded-lg border-gray-300 py-2.5 pl-10 pr-10 shadow-sm focus:ring-2 ${
-                        errors.categoryId
-                          ? "ring-red-500"
-                          : "focus:ring-indigo-500"
-                      }`}
-                    >
-                      <option value='' disabled>
-                        Select a category
-                      </option>
-                      {categories.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name}
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
+                      <div className='relative'>
+                        <CurrencyDollarIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400' />
+                        <input
+                          type='number'
+                          step='0.01'
+                          {...register("amount", {
+                            required: "Amount is required.",
+                            valueAsNumber: true,
+                            min: {
+                              value: 0.01,
+                              message: "Amount must be positive.",
+                            },
+                          })}
+                          placeholder='Amount'
+                          className={`w-full rounded-lg border-gray-300 py-3 pl-11 shadow-sm focus:ring-2 ${
+                            errors.amount
+                              ? "ring-red-500 border-red-500"
+                              : "focus:ring-indigo-500 focus:border-indigo-500"
+                          }`}
+                        />
+                        {errors.amount && (
+                          <p className='text-xs text-red-600 mt-1'>
+                            {errors.amount.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className='relative'>
+                        <CalendarDaysIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400' />
+                        <input
+                          type='date'
+                          {...register("expenseDate", {
+                            required: "Date is required.",
+                          })}
+                          className={`w-full rounded-lg border-gray-300 py-3 pl-11 shadow-sm focus:ring-2 ${
+                            errors.expenseDate
+                              ? "ring-red-500 border-red-500"
+                              : "focus:ring-indigo-500 focus:border-indigo-500"
+                          }`}
+                        />
+                        {errors.expenseDate && (
+                          <p className='text-xs text-red-600 mt-1'>
+                            {errors.expenseDate.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className='relative'>
+                      <TagIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400' />
+                      <select
+                        {...register("categoryId", {
+                          required: "Please select a category.",
+                        })}
+                        defaultValue=''
+                        className={`w-full appearance-none rounded-lg border-gray-300 py-3 pl-11 pr-10 shadow-sm focus:ring-2 ${
+                          errors.categoryId
+                            ? "ring-red-500 border-red-500"
+                            : "focus:ring-indigo-500 focus:border-indigo-500"
+                        }`}
+                      >
+                        <option value='' disabled>
+                          Select Category
                         </option>
-                      ))}
-                    </select>
-                    {errors.categoryId && (
-                      <p className='text-xs text-red-600 mt-1'>
-                        {errors.categoryId.message}
-                      </p>
-                    )}
-                  </div>
+                        {categories.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                      {errors.categoryId && (
+                        <p className='text-xs text-red-600 mt-1'>
+                          {errors.categoryId.message}
+                        </p>
+                      )}
+                    </div>
 
-                  <div>
-                    <textarea
-                      {...register("description")}
-                      rows={3}
-                      placeholder='Add a description (optional)...'
-                      className='w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500'
-                    />
-                  </div>
+                    <div>
+                      <textarea
+                        {...register("description")}
+                        rows={3}
+                        placeholder='Description (optional)'
+                        className='w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'
+                      />
+                    </div>
+
+                    <div>
+                      <label className='block text-sm font-medium text-gray-700'>
+                        Attach Receipt
+                      </label>
+                      <div className='mt-2 flex items-center gap-4 rounded-lg border border-dashed border-gray-300 p-4'>
+                        <input
+                          type='file'
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          className='hidden'
+                          accept='image/*,.pdf'
+                        />
+                        <button
+                          type='button'
+                          onClick={() => fileInputRef.current.click()}
+                          className='inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+                        >
+                          <ArrowUpTrayIcon className='-ml-0.5 mr-2 h-5 w-5' />
+                          {selectedFile ? "Change File" : "Choose File"}
+                        </button>
+                        {selectedFile && (
+                          <div className='flex items-center gap-2 text-sm text-gray-600'>
+                            <span className='truncate max-w-xs'>
+                              {selectedFile.name}
+                            </span>
+                            <button type='button' onClick={removeSelectedFile}>
+                              <XCircleIcon className='h-5 w-5 text-gray-400 hover:text-red-500' />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </fieldset>
 
                   <div className='flex justify-end gap-4 pt-4'>
                     <button
                       type='button'
                       onClick={onClose}
-                      className='rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-200'
                       disabled={loading}
+                      className='rounded-lg bg-gray-100 px-6 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 disabled:opacity-50'
                     >
                       Cancel
                     </button>
                     <button
                       type='submit'
                       disabled={loading}
-                      className='inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:bg-indigo-400'
+                      className='inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:bg-indigo-400'
                     >
-                      {loading ? (
-                        <>
-                          <Spinner
-                            className='h-5 w-5 mr-2 !py-0'
-                            borderColor='border-white/50 border-b-white'
-                          />
-                          Saving...
-                        </>
-                      ) : (
-                        "Add Expense"
-                      )}
+                      {loading && <Spinner />}
+                      {loading ? "Saving..." : "Create Expense"}
                     </button>
                   </div>
                 </form>

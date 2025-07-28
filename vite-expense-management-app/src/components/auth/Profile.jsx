@@ -39,10 +39,14 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear all relevant local storage items
-    ["JWT_TOKEN", "USER", "CSRF_TOKEN", "IS_ADMIN", "IS_MANAGER"].forEach(
-      (item) => localStorage.removeItem(item)
-    );
+    [
+      "JWT_TOKEN",
+      "USER",
+      "CSRF_TOKEN",
+      "IS_ADMIN",
+      "IS_MANAGER",
+      "X-XSRF-TOKEN",
+    ].forEach((item) => localStorage.removeItem(item));
     setToken(null);
     setloggedInUser(null);
     setIsAdmin(false);

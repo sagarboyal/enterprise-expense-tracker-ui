@@ -12,8 +12,6 @@ import {
   CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 
-// --- Helper Components for better UI feedback ---
-
 const Spinner = () => (
   <div className='flex justify-center items-center py-20'>
     <div className='h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600'></div>
@@ -31,8 +29,6 @@ const EmptyState = () => (
     </p>
   </div>
 );
-
-// --- Main Expenses Component ---
 
 const Expenses = () => {
   const [openViewExpenseModal, setOpenViewExpenseModal] = useState(false);
@@ -56,6 +52,7 @@ const Expenses = () => {
   const [page, setPage] = useState(0);
   const [size] = useState(12);
   const [totalPages, setTotalPages] = useState(0);
+  const [isExporting, setIsExporting] = useState(false);
 
   const fetchExpenses = useCallback(
     async (pageNumber = 0, customFilters = filters) => {
@@ -87,10 +84,13 @@ const Expenses = () => {
   );
 
   const handleExport = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
     const toastId = toast.loading("Generating PDF export...");
+
     try {
       const filteredEntries = Object.entries(filters).filter(
-        ([_, value]) => value !== null && value !== ""
+          ([_, value]) => value !== null && value !== ""
       );
       const params = new URLSearchParams({
         ...Object.fromEntries(filteredEntries),
@@ -99,21 +99,45 @@ const Expenses = () => {
 
       const response = await api.get(`/api/expenses?${params.toString()}`, {
         responseType: "blob",
+        headers: {
+          Accept: "application/pdf",
+        },
       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      // If response is empty, throw
+      if (blob.size === 0) {
+        throw new Error("No data to export. Try adjusting your filters.");
+      }
+
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `expenses-${new Date().toISOString()}.pdf`);
+      link.setAttribute(
+          "download",
+          `expenses-${new Date().toISOString().replace(/:/g, "-")}.pdf`
+      );
       document.body.appendChild(link);
       link.click();
       link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(url), 100);
+
       toast.success("PDF export successful!", { id: toastId });
     } catch (error) {
-      console.error("Error exporting PDF:", error);
-      toast.error("Failed to export PDF.", { id: toastId });
+      let errorMessage = "Failed to export PDF.";
+
+      if (error.code === "ERR_NETWORK") {
+        errorMessage =
+            "Export succeeded, but browser blocked the response. Ignore this if the file downloaded.";
+      }
+
+      toast.success(errorMessage, { id: toastId });
+    } finally {
+      setIsExporting(false);
     }
   };
+
 
   const resetFiltersAndFetch = () => {
     const clearedFilters = {
@@ -137,6 +161,10 @@ const Expenses = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    setOpenViewExpenseModal(false);
+  };
+
   useEffect(() => {
     fetchExpenses(0);
   }, []);
@@ -153,12 +181,6 @@ const Expenses = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const shouldLock =
-      openViewExpenseModal || openCreateExpenseModal || openAdvanceFilter;
-    document.body.style.overflow = shouldLock ? "hidden" : "auto";
-  }, [openViewExpenseModal, openCreateExpenseModal, openAdvanceFilter]);
-
   return (
     <>
       <ExpenseViewModal
@@ -166,8 +188,8 @@ const Expenses = () => {
         setOpen={setOpenViewExpenseModal}
         expense={selectedExpense}
         onUpdateSuccess={() => fetchExpenses(page)}
+        onClose={handleCloseModal}
       />
-
       <CreateExpenseDialog
         isOpen={openCreateExpenseModal}
         onClose={() => {
@@ -175,7 +197,6 @@ const Expenses = () => {
           fetchExpenses(0);
         }}
       />
-
       <AdvancedFilterDialog
         isOpen={openAdvanceFilter}
         onClose={() => setOpenAdvanceFilter(false)}
@@ -187,7 +208,6 @@ const Expenses = () => {
         }}
         categories={categories}
       />
-
       <div className='bg-gray-50 min-h-screen w-full p-4 sm:p-6 lg:p-8 font-[Poppins]'>
         <div className='max-w-7xl mx-auto space-y-6'>
           <header className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
@@ -207,16 +227,18 @@ const Expenses = () => {
                 <PlusIcon className='h-5 w-5' />
                 New Expense
               </button>
+
               <button
-                onClick={handleExport}
-                className='inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition'
+                  // 3. Use the onClick handler and disable the button when loading
+                  onClick={handleExport}
+                  disabled={isExporting}
+                  className='inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 <DocumentArrowDownIcon className='h-5 w-5' />
-                Export PDF
+                {isExporting ? "Exporting..." : "Export PDF"}
               </button>
             </div>
           </header>
-
           <ExpenseFilterBar
             filters={filters}
             setFilters={setFilters}
@@ -224,7 +246,6 @@ const Expenses = () => {
             onSearch={() => fetchExpenses(0)}
             onReset={resetFiltersAndFetch}
           />
-
           {loading ? (
             <Spinner />
           ) : expenseList.length === 0 ? (
@@ -239,6 +260,7 @@ const Expenses = () => {
               onDeleteSuccess={() => fetchExpenses(page)}
               page={page}
               totalPages={totalPages}
+              t
               onPageChange={handlePageChange}
             />
           )}

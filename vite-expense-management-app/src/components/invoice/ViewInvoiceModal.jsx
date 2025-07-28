@@ -110,7 +110,7 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
         setLoadingExpenses(true);
         try {
           const response = await api.get(
-            `/api/admin/invoice/expenses/${invoice.id}`
+            `/api/users/invoice/expenses/${invoice.id}`
           );
           setExpenses(response.data || []);
         } catch (error) {
@@ -121,51 +121,53 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
           setLoadingExpenses(false);
         }
       };
-      fetchExpenses();
+      void fetchExpenses();
     }
   }, [invoice, open]);
 
   if (!invoice) return null;
 
   const handleExport = async () => {
+    const toastId = toast.loading("Preparing preview...");
+
     try {
-      const response = await api.get(
-        `/api/admin/users/invoice/${invoice.id}/download`,
-        {
-          responseType: "blob",
-        }
-      );
+      let url = invoice.invoiceUrl;
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-
-      const contentDisposition = response.headers["content-disposition"];
-      let filename = `Invoice-${invoice.invoiceNumber}.pdf`;
-      console.log("im here 1");
-
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="?(.+)"?/);
-        if (filenameMatch && filenameMatch.length === 2) {
-          filename = filenameMatch[1];
+      if (!url) {
+        toast.loading("URL not found, regenerating...", { id: toastId });
+        const response = await api.get(`/api/users/invoice/re-generate/${invoice.id}`);
+        url = response.data.invoiceUrl;
+        invoice = response.data;
+        if (!url) {
+          throw new Error("Failed to regenerate invoice URL.");
         }
       }
-      console.log("im here 2");
-      link.setAttribute("download", filename);
-      console.log("im here 3");
+
+      // Replace .pdf with .jpg to get Cloudinary's preview image
+      const imagePreviewUrl = url.replace(/\.pdf$/, ".jpg");
+      const imageName = imagePreviewUrl.split("/").pop();
+
+      // Fetch the image preview as a blob
+      const response = await fetch(imagePreviewUrl);
+      if (!response.ok) throw new Error("Failed to fetch image preview.");
+
+      const blob = await response.blob();
+
+      // Create a temporary link to download the image
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = imageName || "invoice-preview.jpg";
       document.body.appendChild(link);
-      console.log("im here 4");
       link.click();
-      console.log("im here 5");
-      link.remove();
-      console.log("im here 6");
-      window.URL.revokeObjectURL(url);
-      toast.success("Invoice PDF exported successfully!");
+      document.body.removeChild(link);
+
+      toast.success("Image downloaded successfully!", { id: toastId });
     } catch (error) {
-      console.error("Error exporting invoice:", error);
-      toast.error("Failed to export invoice PDF.");
+      console.error("Error preparing image download:", error);
+      toast.error(error.message || "Failed to download image.", { id: toastId });
     }
   };
+
 
   return (
     <Dialog
@@ -360,7 +362,7 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
             borderRadius: "12px",
           }}
         >
-          Export as PDF
+          Download Invoice
         </Button>
       </DialogActions>
     </Dialog>

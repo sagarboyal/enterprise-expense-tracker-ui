@@ -12,7 +12,7 @@ export const ContextProvider = ({ children }) => {
   const [token, setToken] = useState(getToken);
   const [isAdmin, setIsAdmin] = useState(admin);
   const [isManager, setIsManager] = useState(manager);
-  const [loggedInUser, setloggedInUser] = useState(null);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   const fetchUser = async () => {
     const user = JSON.parse(localStorage.getItem("USER"));
@@ -24,7 +24,6 @@ export const ContextProvider = ({ children }) => {
 
         const roles = data.roles || [];
 
-        // Set Admin flag
         if (roles.includes("ROLE_ADMIN")) {
           localStorage.setItem("IS_ADMIN", "true");
           setIsAdmin(true);
@@ -42,7 +41,7 @@ export const ContextProvider = ({ children }) => {
           setIsManager(false);
         }
 
-        setloggedInUser(data);
+        setLoggedInUser(data);
       } catch (error) {
         console.error("Error fetching user:", error);
 
@@ -53,7 +52,7 @@ export const ContextProvider = ({ children }) => {
         localStorage.removeItem("IS_MANAGER");
 
         setToken(null);
-        setloggedInUser(null);
+        setLoggedInUser(null);
         setIsAdmin(false);
         setIsManager(false);
 
@@ -78,7 +77,7 @@ export const ContextProvider = ({ children }) => {
         isManager,
         setIsManager,
         loggedInUser,
-        setloggedInUser,
+        setLoggedInUser,
       }}
     >
       {children}
