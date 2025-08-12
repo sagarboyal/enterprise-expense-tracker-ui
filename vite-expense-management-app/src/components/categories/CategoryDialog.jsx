@@ -1,35 +1,34 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 const CategoryDialog = ({ isOpen, onClose, onSave, category }) => {
+  const defaultValues = useMemo(
+    () => ({
+      name: category?.name || "",
+      id: category?.id || null,
+    }),
+    [category]
+  );
+
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({
+    values: defaultValues,
+  });
 
-  const isEditMode = useMemo(() => !!category, [category]);
-
-  useEffect(() => {
-    if (isOpen) {
-      if (isEditMode) {
-        reset({ name: category.name });
-      } else {
-        reset({ name: "" });
-      }
-    }
-  }, [isOpen, isEditMode, category, reset]);
+  const isEditMode = !!category;
 
   const onSubmit = async (data) => {
-    await onSave(data, category?.id);
+    await onSave(data);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 transition-opacity">
+    <div className="fixed inset-0 backdrop-blur-lg bg-black/10 flex justify-center items-center z-50 transition-opacity">
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md m-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-gray-800">
@@ -50,6 +49,8 @@ const CategoryDialog = ({ isOpen, onClose, onSave, category }) => {
             >
               Category Name
             </label>
+            {/* 2. Simplified hidden input */}
+            <input id="id" type="hidden" {...register("id")} />
             <input
               id="name"
               type="text"

@@ -151,7 +151,6 @@ const Category = () => {
 
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false} />
       <CategoryDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
