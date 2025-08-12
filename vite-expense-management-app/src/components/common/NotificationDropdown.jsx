@@ -92,30 +92,30 @@ const NotificationDropdown = ({ isOpen, setIsOpen }) => {
   };
 
   return (
-    <div className='relative'>
+    <div className="relative">
       <button
         onClick={setIsOpen}
-        className='relative p-2 rounded-full hover:bg-gray-100'
+        className="relative p-2 rounded-full hover:bg-gray-100"
       >
-        <BellIcon className='h-6 w-6 text-gray-600' />
+        <BellIcon className="h-6 w-6 text-gray-600" />
         {unreadCount > 0 && (
-          <span className='absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white'>
+          <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className='absolute right-0 mt-2 w-80 origin-top-right rounded-lg bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-fade-in-down'>
+        <div className="absolute right-0 mt-2 w-80 origin-top-right rounded-lg bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-fade-in-down">
           {/* Header */}
-          <div className='flex items-center justify-between border-b border-gray-200 px-4 py-3'>
-            <h3 className='text-lg font-semibold text-gray-800'>
+          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+            <h3 className="text-lg font-semibold text-gray-800">
               Notifications
             </h3>
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className='text-sm font-medium text-indigo-600 hover:text-indigo-500'
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Mark all as read
               </button>
@@ -123,23 +123,23 @@ const NotificationDropdown = ({ isOpen, setIsOpen }) => {
           </div>
 
           {/* Body */}
-          <div className='max-h-80 overflow-y-auto'>
+          <div className="max-h-80 overflow-y-auto">
             {loading ? (
-              <div className='flex justify-center items-center py-10'>
-                <div className='h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-500'></div>
+              <div className="flex justify-center items-center py-10">
+                <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-500"></div>
               </div>
             ) : notifications.length === 0 ? (
-              <div className='py-10 text-center'>
-                <CheckCircleIcon className='mx-auto h-12 w-12 text-gray-300' />
-                <h4 className='mt-2 text-sm font-semibold text-gray-700'>
+              <div className="py-10 text-center">
+                <CheckCircleIcon className="mx-auto h-12 w-12 text-gray-300" />
+                <h4 className="mt-2 text-sm font-semibold text-gray-700">
                   All caught up!
                 </h4>
-                <p className='text-xs text-gray-500'>
+                <p className="text-xs text-gray-500">
                   You have no new notifications.
                 </p>
               </div>
             ) : (
-              <ul className='divide-y divide-gray-100'>
+              <ul className="divide-y divide-gray-100">
                 {notifications.map((notif) => (
                   <li
                     key={notif.id}
@@ -148,20 +148,20 @@ const NotificationDropdown = ({ isOpen, setIsOpen }) => {
                     }`}
                   >
                     {!notif.read && (
-                      <div className='mt-1 h-2 w-2 rounded-full bg-indigo-500 flex-shrink-0'></div>
+                      <div className="mt-1 h-2 w-2 rounded-full bg-indigo-500 flex-shrink-0"></div>
                     )}
                     <div className={`flex-1 ${notif.read && "pl-5"}`}>
-                      <p className='text-sm text-gray-800'>{notif.message}</p>
-                      <p className='mt-1 text-xs text-gray-500'>
+                      <p className="text-sm text-gray-800">{notif.message}</p>
+                      <p className="mt-1 text-xs text-gray-500">
                         {formatRelativeTime(notif.sentAt)}
                       </p>
                     </div>
                     <button
                       onClick={() => handleDelete(notif.id)}
-                      className='text-gray-400 hover:text-red-500 flex-shrink-0'
-                      title='Delete notification'
+                      className="text-gray-400 hover:text-red-500 flex-shrink-0"
+                      title="Delete notification"
                     >
-                      <XMarkIcon className='h-4 w-4' />
+                      <XMarkIcon className="h-4 w-4" />
                     </button>
                   </li>
                 ))}
@@ -170,12 +170,12 @@ const NotificationDropdown = ({ isOpen, setIsOpen }) => {
           </div>
 
           {/* Footer */}
-          <div className='border-t border-gray-200 bg-gray-50/80 px-4 py-2'>
+          <div className="border-t border-gray-200 bg-gray-50/80 px-4 py-2">
             <a
-              href='/homepage/notifications'
-              className='flex items-center justify-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-500'
+              href="/homepage/notifications"
+              className="flex items-center justify-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-500"
             >
-              <EnvelopeOpenIcon className='h-5 w-5' />
+              <EnvelopeOpenIcon className="h-5 w-5" />
               <span>View all notifications</span>
             </a>
           </div>

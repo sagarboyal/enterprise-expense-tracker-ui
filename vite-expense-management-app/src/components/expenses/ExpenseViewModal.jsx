@@ -26,13 +26,13 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 import api from "../../services/api";
 
 const DetailItem = ({ icon, label, value }) => (
-  <div className='flex items-start space-x-3 p-3 bg-slate-50 rounded-lg'>
-    <div className='flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-slate-200 text-slate-600'>
+  <div className="flex items-start space-x-3 p-3 bg-slate-50 rounded-lg">
+    <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full bg-slate-200 text-slate-600">
       {icon}
     </div>
     <div>
-      <p className='text-sm font-medium text-slate-500'>{label}</p>
-      <p className='text-md font-semibold text-slate-800'>{value}</p>
+      <p className="text-sm font-medium text-slate-500">{label}</p>
+      <p className="text-md font-semibold text-slate-800">{value}</p>
     </div>
   </div>
 );
@@ -62,46 +62,46 @@ const ApprovalTimeline = ({ approvals }) => {
   };
 
   return (
-    <div className='flow-root'>
-      <ul className='-mb-8'>
+    <div className="flow-root">
+      <ul className="-mb-8">
         {approvals?.map((approval, index) => {
           const { Icon, color, ring } = getStatusInfo(approval.status);
           return (
             <li
               key={approval.id || index}
-              className='animate-fade-in-up'
+              className="animate-fade-in-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className='relative pb-8'>
+              <div className="relative pb-8">
                 {index !== approvals.length - 1 ? (
                   <span
-                    className='absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200'
-                    aria-hidden='true'
+                    className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-slate-200"
+                    aria-hidden="true"
                   />
                 ) : null}
-                <div className='relative flex items-start space-x-3 pl-4 pt-2'>
-                  <div className='relative z-10'>
+                <div className="relative flex items-start space-x-3 pl-4 pt-2">
+                  <div className="relative z-10">
                     <span
                       className={`h-8 w-8 rounded-full ${color} flex items-center justify-center ring-4 ${ring}`}
                     >
-                      <Icon className='h-5 w-5' aria-hidden='true' />
+                      <Icon className="h-5 w-5" aria-hidden="true" />
                     </span>
                   </div>
-                  <div className='min-w-0 flex-1'>
+                  <div className="min-w-0 flex-1">
                     <div>
-                      <p className='text-sm font-medium text-slate-800'>
+                      <p className="text-sm font-medium text-slate-800">
                         <span className={`font-bold ${color.split(" ")[0]}`}>
                           {approval.status}
                         </span>
                       </p>
-                      <p className='mt-0.5 text-xs text-slate-500'>
+                      <p className="mt-0.5 text-xs text-slate-500">
                         {new Date(approval.actionTime).toLocaleString("en-IN", {
                           dateStyle: "medium",
                           timeStyle: "short",
                         })}
                       </p>
                     </div>
-                    <div className='mt-2 text-sm text-slate-700 bg-slate-50 p-2 rounded-md'>
+                    <div className="mt-2 text-sm text-slate-700 bg-slate-50 p-2 rounded-md">
                       <p>{approval.comment || "No comment provided."}</p>
                     </div>
                   </div>
@@ -119,9 +119,9 @@ const DocumentViewer = ({ documentUrl, title }) => {
   const renderContent = () => {
     if (!documentUrl) {
       return (
-        <div className='flex flex-col justify-center items-center h-full text-slate-500 bg-slate-100'>
-          <DocumentIcon className='h-16 w-16 mb-4 text-slate-400' />
-          <p className='font-semibold'>No document attached</p>
+        <div className="flex flex-col justify-center items-center h-full text-slate-500 bg-slate-100">
+          <DocumentIcon className="h-16 w-16 mb-4 text-slate-400" />
+          <p className="font-semibold">No document attached</p>
         </div>
       );
     }
@@ -134,13 +134,13 @@ const DocumentViewer = ({ documentUrl, title }) => {
         ? documentUrl
         : documentUrl.replace(
             /\/upload\/(.*)/,
-            "/upload/c_fill,w_600,h_500,f_auto,q_auto/$1"
+            "/upload/c_fill,w_600,h_500,f_auto,q_auto/$1",
           );
 
     return isPdf ? (
       <iframe
         src={optimizedImageUrl}
-        className='w-full h-full'
+        className="w-full h-full"
         title={`Document for ${title}`}
         style={{ border: 0 }}
       />
@@ -148,7 +148,7 @@ const DocumentViewer = ({ documentUrl, title }) => {
       <img
         src={optimizedImageUrl}
         alt={`Document for ${title}`}
-        className='w-full h-full object-contain'
+        className="w-full h-full object-contain"
       />
     );
   };
@@ -159,29 +159,29 @@ const DocumentViewer = ({ documentUrl, title }) => {
     const sanitizedFilename = title.replace(/[^a-z0-9]/gi, "_").toLowerCase();
     return documentUrl.replace(
       /\/upload\/(.*)/,
-      `/upload/fl_attachment:${sanitizedFilename}/$1`
+      `/upload/fl_attachment:${sanitizedFilename}/$1`,
     );
   };
 
   const downloadUrl = createDownloadUrl();
 
   return (
-    <div className='bg-white p-4 rounded-xl shadow-sm h-full flex flex-col'>
-      <div className='flex items-center justify-between pb-3 border-b border-slate-200'>
-        <h3 className='text-lg font-semibold text-slate-800'>
+    <div className="bg-white p-4 rounded-xl shadow-sm h-full flex flex-col">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+        <h3 className="text-lg font-semibold text-slate-800">
           Attached Document
         </h3>
         {downloadUrl && (
           <a
             href={downloadUrl}
-            className='inline-flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors'
+            className="inline-flex items-center gap-2 text-sm font-medium text-purple-600 hover:text-purple-800 transition-colors"
           >
-            <ArrowDownTrayIcon className='h-5 w-5' />
+            <ArrowDownTrayIcon className="h-5 w-5" />
             Download
           </a>
         )}
       </div>
-      <div className='mt-4 flex-grow w-full h-96 rounded-lg overflow-hidden border border-slate-200'>
+      <div className="mt-4 flex-grow w-full h-96 rounded-lg overflow-hidden border border-slate-200">
         {renderContent()}
       </div>
     </div>
@@ -218,7 +218,7 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
 
       const documentPromise = api.get(`/api/document/${expense.id}`);
       const historyPromise = api.get(
-        `/api/expenses/approval-stack/${expense.id}`
+        `/api/expenses/approval-stack/${expense.id}`,
       );
 
       const [docResponse, historyResponse] = await Promise.allSettled([
@@ -234,7 +234,7 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
       } else {
         console.error("Error fetching document:", docResponse.reason);
         setDocUrl(
-          "https://placehold.co/600x400/e2e8f0/475569?text=Document+Not+Found"
+          "https://placehold.co/600x400/e2e8f0/475569?text=Document+Not+Found",
         );
       }
       setDocLoading(false);
@@ -244,7 +244,7 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
       } else {
         console.error(
           "Error fetching approval history:",
-          historyResponse.reason
+          historyResponse.reason,
         );
       }
       setHistoryLoading(false);
@@ -259,22 +259,22 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
         {
           label: "User",
           value: expense.fullName,
-          icon: <UserIcon className='h-5 w-5' />,
+          icon: <UserIcon className="h-5 w-5" />,
         },
         {
           label: "Category",
           value: expense.category,
-          icon: <TagIcon className='h-5 w-5' />,
+          icon: <TagIcon className="h-5 w-5" />,
         },
         {
           label: "Amount",
           value: `₹${expense.amount.toLocaleString("en-IN")}`,
-          icon: <CurrencyRupeeIcon className='h-5 w-5' />,
+          icon: <CurrencyRupeeIcon className="h-5 w-5" />,
         },
         {
           label: "Date",
           value: new Date(expense.expenseDate).toLocaleDateString("en-GB"),
-          icon: <CalendarIcon className='h-5 w-5' />,
+          icon: <CalendarIcon className="h-5 w-5" />,
         },
       ]
     : [];
@@ -304,8 +304,8 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
   const renderContent = () => {
     if (!expense) {
       return (
-        <div className='flex justify-center items-center h-full'>
-          <div className='h-12 w-12 animate-spin rounded-full border-b-2 border-purple-600'></div>
+        <div className="flex justify-center items-center h-full">
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-purple-600"></div>
         </div>
       );
     }
@@ -316,21 +316,21 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
         : "opacity-0";
 
     return (
-      <div className='grid grid-cols-1 lg:grid-cols-5 gap-6'>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className={`lg:col-span-3 space-y-6 ${animationClass(0)}`}>
-          <div className='bg-white p-4 rounded-xl shadow-sm'>
-            <div className='flex justify-between items-start'>
-              <h3 className='text-lg font-semibold text-slate-800'>
+          <div className="bg-white p-4 rounded-xl shadow-sm">
+            <div className="flex justify-between items-start">
+              <h3 className="text-lg font-semibold text-slate-800">
                 Expense Details
               </h3>
               <Chip
                 label={statusInfo.label}
-                size='small'
+                size="small"
                 className={`font-semibold ${statusInfo.chip}`}
               />
             </div>
-            <p className='text-sm text-slate-500 mt-1'>{expense.title}</p>
-            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4'>
+            <p className="text-sm text-slate-500 mt-1">{expense.title}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
               {detailItems.map((item) => (
                 <DetailItem
                   key={item.label}
@@ -340,26 +340,26 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
                 />
               ))}
             </div>
-            <div className='mt-4'>
-              <p className='text-sm font-medium text-slate-500'>Description</p>
-              <p className='text-md text-slate-700 mt-1'>
+            <div className="mt-4">
+              <p className="text-sm font-medium text-slate-500">Description</p>
+              <p className="text-md text-slate-700 mt-1">
                 {expense.description || "No description provided."}
               </p>
             </div>
           </div>
-          <div className='bg-white p-4 rounded-xl shadow-sm flex flex-col'>
-            <h3 className='text-lg font-semibold text-slate-800 mb-4'>
+          <div className="bg-white p-4 rounded-xl shadow-sm flex flex-col">
+            <h3 className="text-lg font-semibold text-slate-800 mb-4">
               Approval History
             </h3>
-            <div className='flex-grow overflow-y-auto max-h-[40vh] pr-2'>
+            <div className="flex-grow overflow-y-auto max-h-[40vh] pr-2">
               {historyLoading ? (
-                <div className='flex justify-center items-center h-24'>
-                  <div className='h-6 w-6 animate-spin rounded-full border-b-2 border-purple-600'></div>
+                <div className="flex justify-center items-center h-24">
+                  <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-purple-600"></div>
                 </div>
               ) : approvalHistory.length > 0 ? (
                 <ApprovalTimeline approvals={approvalHistory} />
               ) : (
-                <p className='text-sm text-slate-500'>
+                <p className="text-sm text-slate-500">
                   No approval history available.
                 </p>
               )}
@@ -369,8 +369,8 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
 
         <div className={`lg:col-span-2 ${animationClass(200)}`}>
           {docLoading ? (
-            <div className='flex justify-center items-center w-full h-full rounded-xl bg-slate-50'>
-              <div className='h-8 w-8 animate-spin rounded-full border-b-2 border-purple-600'></div>
+            <div className="flex justify-center items-center w-full h-full rounded-xl bg-slate-50">
+              <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-purple-600"></div>
             </div>
           ) : (
             <DocumentViewer documentUrl={docUrl} title={expense.title} />
@@ -402,31 +402,31 @@ const ExpenseViewModal = ({ open, onClose, expense }) => {
         open={open}
         onClose={handleClose}
         fullWidth
-        maxWidth='xl'
+        maxWidth="xl"
         PaperProps={{ className: "bg-slate-100 rounded-2xl shadow-xl m-4" }}
       >
-        <DialogTitle className='flex items-center justify-between p-4 border-b border-slate-200'>
-          <div className='flex items-center space-x-3'>
-            <div className='h-10 w-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-600'>
-              <ReceiptPercentIcon className='h-6 w-6' />
+        <DialogTitle className="flex items-center justify-between p-4 border-b border-slate-200">
+          <div className="flex items-center space-x-3">
+            <div className="h-10 w-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-600">
+              <ReceiptPercentIcon className="h-6 w-6" />
             </div>
-            <Typography variant='h6' className='font-bold text-slate-800'>
+            <Typography variant="h6" className="font-bold text-slate-800">
               Expense Details
             </Typography>
           </div>
           <IconButton
             onClick={handleClose}
-            aria-label='Close'
-            className='text-slate-500 hover:text-slate-800'
+            aria-label="Close"
+            className="text-slate-500 hover:text-slate-800"
           >
             <IoClose />
           </IconButton>
         </DialogTitle>
-        <DialogContent className='p-4 md:p-6'>{renderContent()}</DialogContent>
-        <DialogActions className='p-4 border-t border-slate-200'>
+        <DialogContent className="p-4 md:p-6">{renderContent()}</DialogContent>
+        <DialogActions className="p-4 border-t border-slate-200">
           <button
             onClick={handleClose}
-            className='font-semibold px-6 py-2 rounded-lg text-white bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+            className="font-semibold px-6 py-2 rounded-lg text-white bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Close
           </button>

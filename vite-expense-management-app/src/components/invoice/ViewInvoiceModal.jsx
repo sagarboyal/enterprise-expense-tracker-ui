@@ -90,10 +90,10 @@ const DetailItem = ({ icon, label, value }) => (
   <Box sx={{ display: "flex", alignItems: "center", gap: 2, color: "#4b5563" }}>
     {icon}
     <Box>
-      <Typography variant='caption' sx={{ color: "#6b7280", display: "block" }}>
+      <Typography variant="caption" sx={{ color: "#6b7280", display: "block" }}>
         {label}
       </Typography>
-      <Typography variant='body1' sx={{ fontWeight: 500 }}>
+      <Typography variant="body1" sx={{ fontWeight: 500 }}>
         {value}
       </Typography>
     </Box>
@@ -110,7 +110,7 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
         setLoadingExpenses(true);
         try {
           const response = await api.get(
-            `/api/users/invoice/expenses/${invoice.id}`
+            `/api/users/invoice/expenses/${invoice.id}`,
           );
           setExpenses(response.data || []);
         } catch (error) {
@@ -135,7 +135,9 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
 
       if (!url) {
         toast.loading("URL not found, regenerating...", { id: toastId });
-        const response = await api.get(`/api/users/invoice/re-generate/${invoice.id}`);
+        const response = await api.get(
+          `/api/users/invoice/re-generate/${invoice.id}`,
+        );
         url = response.data.invoiceUrl;
         invoice = response.data;
         if (!url) {
@@ -164,16 +166,17 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
       toast.success("Image downloaded successfully!", { id: toastId });
     } catch (error) {
       console.error("Error preparing image download:", error);
-      toast.error(error.message || "Failed to download image.", { id: toastId });
+      toast.error(error.message || "Failed to download image.", {
+        id: toastId,
+      });
     }
   };
-
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth='lg'
+      maxWidth="lg"
       fullWidth
       PaperProps={{ sx: { borderRadius: "20px" } }}
     >
@@ -185,7 +188,7 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
           p: 3,
         }}
       >
-        <Typography variant='h5' component='div' sx={{ fontWeight: "bold" }}>
+        <Typography variant="h5" component="div" sx={{ fontWeight: "bold" }}>
           Invoice Details
         </Typography>
         <IconButton onClick={onClose} sx={{ color: "grey.600" }}>
@@ -198,14 +201,14 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
           <Grid item xs={12} md={4}>
             <DetailItem
               icon={<FaHashtag size={20} />}
-              label='Invoice Number'
+              label="Invoice Number"
               value={invoice.invoiceNumber}
             />
           </Grid>
           <Grid item xs={12} md={4}>
             <DetailItem
               icon={<FaCalendarAlt size={20} />}
-              label='Generated At'
+              label="Generated At"
               value={new Date(invoice.generatedAt).toLocaleString("en-IN")}
             />
           </Grid>
@@ -221,12 +224,12 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
               <FaInfoCircle size={20} />
               <Box>
                 <Typography
-                  variant='caption'
+                  variant="caption"
                   sx={{ color: "#6b7280", display: "block" }}
                 >
                   Status
                 </Typography>
-                <StatusChip status={invoice.status} size='small' />
+                <StatusChip status={invoice.status} size="small" />
               </Box>
             </Box>
           </Grid>
@@ -234,21 +237,21 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
 
         <Divider sx={{ my: 3 }} />
 
-        <Typography variant='h6' sx={{ fontWeight: "bold", mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
           User Information
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <DetailItem
               icon={<FaUser size={20} />}
-              label='Full Name'
+              label="Full Name"
               value={invoice.user?.fullName || "N/A"}
             />
           </Grid>
           <Grid item xs={12} md={6}>
             <DetailItem
               icon={<FaEnvelope size={20} />}
-              label='Email Address'
+              label="Email Address"
               value={invoice.user?.email || "N/A"}
             />
           </Grid>
@@ -256,7 +259,7 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
 
         <Divider sx={{ my: 3 }} />
 
-        <Typography variant='h6' sx={{ fontWeight: "bold", mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
           Expense Details
         </Typography>
         {loadingExpenses ? (
@@ -277,7 +280,7 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
                 <TableRow>
                   <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Category</TableCell>
-                  <TableCell align='right' sx={{ fontWeight: "bold" }}>
+                  <TableCell align="right" sx={{ fontWeight: "bold" }}>
                     Amount
                   </TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>
@@ -291,16 +294,16 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
                   <TableRow key={expense.id}>
                     <TableCell>{expense.title}</TableCell>
                     <TableCell>{expense.category}</TableCell>
-                    <TableCell align='right'>
+                    <TableCell align="right">
                       ₹{expense.amount?.toFixed(2)}
                     </TableCell>
                     <TableCell>
                       {new Date(expense.expenseDate).toLocaleDateString(
-                        "en-IN"
+                        "en-IN",
                       )}
                     </TableCell>
                     <TableCell>
-                      <StatusChip status={expense.status} size='small' />
+                      <StatusChip status={expense.status} size="small" />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -325,11 +328,11 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
             alignItems: "center",
           }}
         >
-          <Typography variant='h6' sx={{ fontWeight: "bold" }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             Total Invoice Amount
           </Typography>
           <Typography
-            variant='h4'
+            variant="h4"
             sx={{ fontWeight: "bold", color: "#4f46e5" }}
           >
             ₹{invoice.totalAmount?.toFixed(2)}
@@ -339,7 +342,7 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
       <Divider />
       <DialogActions sx={{ p: 3, bgcolor: "#f9fafb" }}>
         <Button
-          variant='outlined'
+          variant="outlined"
           onClick={onClose}
           sx={{
             textTransform: "none",
@@ -351,7 +354,7 @@ const ViewInvoiceModal = ({ invoice, open, onClose }) => {
           Close
         </Button>
         <Button
-          variant='contained'
+          variant="contained"
           onClick={handleExport}
           startIcon={<FaFilePdf />}
           disabled={invoice.status === "IN_PROGRESS"}

@@ -22,6 +22,7 @@ import InvoiceDashboard from "./components/invoice/InvoiceDashboard";
 import Terms from "./components/common/Terms";
 import Policy from "./components/common/Policy";
 import UserInvoiceDashboard from "./components/invoice/UserInvoiceDashboard.jsx";
+import Category from "./components/categories/Category.jsx";
 
 function App() {
   const location = useLocation();
@@ -30,32 +31,33 @@ function App() {
   return (
     <>
       {showPage && <NavBar />}
-      <Toaster position='bottom-center' reverseOrder={false} />
+      <Toaster position="bottom-center" reverseOrder={false} />
       <Routes>
         {/* Public routes */}
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<SignUp />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/' element={<Introduction />} />
-        <Route path='/about' element={<About />} />
-        <Route path='/contact' element={<Contact />} />
-        <Route path='/homepage' element={<HomePage />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/terms' element={<Terms />} />
-        < Route path='/privacy-policy' element={<Policy />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/" element={<Introduction />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/homepage" element={<HomePage />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy-policy" element={<Policy />} />
 
         {/* Dashboard + Nested Routes */}
-        <Route path='/homepage' element={<HomePage />}>
+        <Route path="/homepage" element={<HomePage />}>
           <Route index element={<WelcomePage />} /> {/* default view */}
-          <Route path='expenses' element={<Expenses />} />
-          <Route path='analytics' element={<AnalyticsDashboard />} />
-          <Route path='audit-logs' element={<AuditLog />} />
-          <Route path='approvals' element={<ApprovalPanel />} />
-          <Route path='users' element={<UserManagementDashboard />} />
-          <Route path='invoice' element={<InvoiceDashboard />} />
-          <Route path='notifications' element={<Notifications />} />
-          <Route path='billings' element={<UserInvoiceDashboard />} />
+          <Route path="expenses" element={<Expenses />} />
+          <Route path="analytics" element={<AnalyticsDashboard />} />
+          <Route path="audit-logs" element={<AuditLog />} />
+          <Route path="approvals" element={<ApprovalPanel />} />
+          <Route path="users" element={<UserManagementDashboard />} />
+          <Route path="invoice" element={<InvoiceDashboard />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="billings" element={<UserInvoiceDashboard />} />
+          <Route path="categories" element={<Category />} />
         </Route>
       </Routes>
       {showPage && <Footer />}
@@ -64,7 +66,5 @@ function App() {
 }
 
 export default function AppWrapper() {
-  return (
-      <App />
-  );
+  return <App />;
 }

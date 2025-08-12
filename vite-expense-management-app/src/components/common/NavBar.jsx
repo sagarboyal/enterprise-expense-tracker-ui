@@ -26,7 +26,7 @@ const NavBar = () => {
 
   const handleLogout = () => {
     ["JWT_TOKEN", "USER", "IS_ADMIN", "IS_MANAGER", "X-XSRF-TOKEN"].forEach(
-      (item) => localStorage.removeItem(item)
+      (item) => localStorage.removeItem(item),
     );
     setToken(null);
     setLoggedInUser(null);
@@ -66,14 +66,14 @@ const NavBar = () => {
   };
 
   return (
-    <header className='h-16 bg-white shadow-sm px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-50'>
-      <div className='flex items-center gap-4'>
-        <Link to='/' className='flex-shrink-0'>
-          <img src={logo} alt='Trex Logo' className='h-10 w-auto' />
+    <header className="h-16 bg-white shadow-sm px-4 sm:px-6 lg:px-8 flex items-center justify-between sticky top-0 z-50">
+      <div className="flex items-center gap-4">
+        <Link to="/" className="flex-shrink-0">
+          <img src={logo} alt="Trex Logo" className="h-10 w-auto" />
         </Link>
       </div>
 
-      <div className='flex items-center gap-4'>
+      <div className="flex items-center gap-4">
         {token ? (
           <>
             <div ref={notificationDropdownRef}>
@@ -83,32 +83,32 @@ const NavBar = () => {
               />
             </div>
 
-            <div className='relative' ref={profileDropdownRef}>
+            <div className="relative" ref={profileDropdownRef}>
               <button
                 onClick={toggleProfileDropdown}
-                className='rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                aria-label='Open profile menu'
+                className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                aria-label="Open profile menu"
               >
                 <img
                   src={profileIcon}
-                  alt='Profile'
-                  className='w-10 h-10 rounded-full object-cover'
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full object-cover"
                 />
               </button>
 
               {profileDropdownOpen && (
                 <div
-                  className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transition ease-out duration-100 transform opacity-100 scale-100'
-                  role='menu'
-                  aria-orientation='vertical'
+                  className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none transition ease-out duration-100 transform opacity-100 scale-100"
+                  role="menu"
+                  aria-orientation="vertical"
                 >
                   <Link
-                    to='/profile'
+                    to="/profile"
                     onClick={closeAllDropdowns}
-                    className='flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
-                    role='menuitem'
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
                   >
-                    <FaUserTie className='w-5 h-5 text-gray-500' />
+                    <FaUserTie className="w-5 h-5 text-gray-500" />
                     <span>Profile</span>
                   </Link>
                   <button
@@ -116,10 +116,10 @@ const NavBar = () => {
                       setIsDialogOpen(true);
                       closeAllDropdowns();
                     }}
-                    className='w-full text-left flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
-                    role='menuitem'
+                    className="w-full text-left flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
                   >
-                    <IoLogOutOutline className='w-5 h-5 text-gray-500' />
+                    <IoLogOutOutline className="w-5 h-5 text-gray-500" />
                     <span>Logout</span>
                   </button>
                 </div>
@@ -127,16 +127,16 @@ const NavBar = () => {
             </div>
           </>
         ) : (
-          <div className='hidden md:flex items-center gap-4'>
+          <div className="hidden md:flex items-center gap-4">
             <Link
-              to='/login'
-              className='text-sm font-medium text-gray-600 hover:text-indigo-500'
+              to="/login"
+              className="text-sm font-medium text-gray-600 hover:text-indigo-500"
             >
               Sign in
             </Link>
             <Link
-              to='/register'
-              className='inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+              to="/register"
+              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Try it now
             </Link>

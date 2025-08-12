@@ -1,10 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-
 const Policy = () => {
-    const Company = "Trex";
-    const Website = "trex.com";
+  const Company = "Trex";
+  const Website = "trex.com";
   const sectionVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -47,11 +46,11 @@ const Policy = () => {
     width = 400,
     height = 200,
     bgColor = "e0e7ff",
-    textColor = "4f46e5"
+    textColor = "4f46e5",
   ) => {
     return `https://placehold.co/${width}x${height}/${bgColor}/${textColor}?text=${text.replace(
       /\s/g,
-      "+"
+      "+",
     )}`;
   };
 
@@ -65,7 +64,7 @@ const Policy = () => {
             initial="hidden"
             animate="visible"
           >
-            Privacy Policy 
+            Privacy Policy
           </motion.h1>
 
           <motion.p
@@ -74,12 +73,14 @@ const Policy = () => {
             initial="hidden"
             animate="visible"
           >
-            Your privacy is incredibly important to us. It is { Company }'s policy to respect your privacy regarding any information we may collect from you across our website,{" "}
-            <strong className="text-indigo-600">{Company}</strong>'s policy
+            Your privacy is incredibly important to us. It is {Company}'s policy
             to respect your privacy regarding any information we may collect
-            from you across our website
-            <strong className="text-indigo-600"> {Website}</strong>, and
-            other sites we own and operate.
+            from you across our website,{" "}
+            <strong className="text-indigo-600">{Company}</strong>'s policy to
+            respect your privacy regarding any information we may collect from
+            you across our website
+            <strong className="text-indigo-600"> {Website}</strong>, and other
+            sites we own and operate.
           </motion.p>
 
           <motion.div
@@ -134,7 +135,7 @@ const Policy = () => {
                   600,
                   300,
                   "f3e8ff",
-                  "8b5cf6"
+                  "8b5cf6",
                 )}
                 alt="Illustration of information usage"
                 className="w-full max-w-md rounded-lg shadow-md border border-purple-200"
@@ -201,7 +202,7 @@ const Policy = () => {
                   600,
                   300,
                   "f3e8ff",
-                  "8b5cf6"
+                  "8b5cf6",
                 )}
                 alt="Illustration of cookies"
                 className="w-full max-w-md rounded-lg shadow-md border border-purple-200"
@@ -265,7 +266,7 @@ const Policy = () => {
                   600,
                   300,
                   "f3e8ff",
-                  "8b5cf6"
+                  "8b5cf6",
                 )}
                 alt="Illustration of policy updates"
                 className="w-full max-w-md rounded-lg shadow-md border border-purple-200"

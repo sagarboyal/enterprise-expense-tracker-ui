@@ -61,44 +61,44 @@ const ForgotPassword = () => {
   }, [token, navigate]);
 
   return (
-    <div className='min-h-[calc(100vh-74px)] flex justify-center items-center bg-gray-50'>
+    <div className="min-h-[calc(100vh-74px)] flex justify-center items-center bg-gray-50">
       <form
         onSubmit={handleSubmit(onPasswordForgotHandler)}
-        className='sm:w-[450px] w-[360px] bg-white shadow-lg rounded-xl py-10 sm:px-10 px-6'
+        className="sm:w-[450px] w-[360px] bg-white shadow-lg rounded-xl py-10 sm:px-10 px-6"
       >
-        <div className='mb-6'>
-          <h1 className='text-center text-3xl font-semibold text-gray-800'>
+        <div className="mb-6">
+          <h1 className="text-center text-3xl font-semibold text-gray-800">
             Forgot Password?
           </h1>
-          <p className='text-center text-gray-600'>
+          <p className="text-center text-gray-600">
             Enter your email reset link will be sent to you.
           </p>
         </div>
-        <div className='flex flex-col gap-4'>
+        <div className="flex flex-col gap-4">
           <InputField
-            label='Email'
+            label="Email"
             required
-            id='email'
-            type='email'
-            message='*Email is required'
-            placeholder='Enter your email'
+            id="email"
+            type="email"
+            message="*Email is required"
+            placeholder="Enter your email"
             register={register}
             errors={errors}
-            className='border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md'
+            className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
           />
         </div>
 
         <Buttons
           disabled={loading}
           onClickhandler={() => {}}
-          className='mt-6 w-full py-3 bg-black text-white font-semibold rounded-md shadow-lg hover:bg-gray-800 transition duration-300 ease-in-out'
-          type='submit'
+          className="mt-6 w-full py-3 bg-black text-white font-semibold rounded-md shadow-lg hover:bg-gray-800 transition duration-300 ease-in-out"
+          type="submit"
         >
           {loading ? <span>Loading...</span> : "Send"}
         </Buttons>
 
-        <p className='mt-4 text-center text-sm text-gray-700'>
-          <Link className='underline hover:text-black' to='/login'>
+        <p className="mt-4 text-center text-sm text-gray-700">
+          <Link className="underline hover:text-black" to="/login">
             Back to Login
           </Link>
         </p>

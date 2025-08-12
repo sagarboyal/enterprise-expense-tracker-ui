@@ -13,20 +13,30 @@ import {
 } from "@heroicons/react/24/outline";
 
 const Spinner = () => (
-  <div className='flex justify-center items-center py-20'>
-    <div className='h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600'></div>
+  <div className="flex justify-center items-center py-20">
+    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600"></div>
   </div>
 );
 
-const EmptyState = () => (
-  <div className='text-center py-16 px-4 bg-white rounded-lg shadow-sm border'>
-    <CurrencyDollarIcon className='mx-auto h-12 w-12 text-gray-300' />
-    <h3 className='mt-2 text-lg font-semibold text-gray-800'>
-      No Expenses Found
+const EmptyState = ({ onButtonClick }) => (
+  <div className="text-center py-16 px-4 bg-white rounded-lg shadow-sm border">
+    <CurrencyDollarIcon className="mx-auto h-12 w-12 text-gray-300" />
+    <h3 className="mt-2 text-lg font-semibold text-gray-800">
+      Your Expense List is Empty
     </h3>
-    <p className='mt-1 text-sm text-gray-500'>
-      Try adjusting your filters or create a new expense.
+    <p className="mt-1 text-sm text-gray-500">
+      Get started by creating your first expense below.
     </p>
+    <div className="mt-6">
+      <button
+        type="button"
+        onClick={onButtonClick}
+        className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200"
+      >
+        <PlusIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
+        New Expense
+      </button>
+    </div>
   </div>
 );
 
@@ -59,7 +69,7 @@ const Expenses = () => {
       setLoading(true);
       try {
         const filteredEntries = Object.entries(customFilters).filter(
-          ([_, value]) => value !== null && value !== ""
+          ([_, value]) => value !== null && value !== "",
         );
 
         const params = new URLSearchParams({
@@ -80,7 +90,7 @@ const Expenses = () => {
         setLoading(false);
       }
     },
-    [filters, size]
+    [filters, size],
   );
 
   const handleExport = async () => {
@@ -90,7 +100,7 @@ const Expenses = () => {
 
     try {
       const filteredEntries = Object.entries(filters).filter(
-          ([_, value]) => value !== null && value !== ""
+        ([_, value]) => value !== null && value !== "",
       );
       const params = new URLSearchParams({
         ...Object.fromEntries(filteredEntries),
@@ -115,8 +125,8 @@ const Expenses = () => {
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute(
-          "download",
-          `expenses-${new Date().toISOString().replace(/:/g, "-")}.pdf`
+        "download",
+        `expenses-${new Date().toISOString().replace(/:/g, "-")}.pdf`,
       );
       document.body.appendChild(link);
       link.click();
@@ -129,7 +139,7 @@ const Expenses = () => {
 
       if (error.code === "ERR_NETWORK") {
         errorMessage =
-            "Export succeeded, but browser blocked the response. Ignore this if the file downloaded.";
+          "Export succeeded, but browser blocked the response. Ignore this if the file downloaded.";
       }
 
       toast.success(errorMessage, { id: toastId });
@@ -137,7 +147,6 @@ const Expenses = () => {
       setIsExporting(false);
     }
   };
-
 
   const resetFiltersAndFetch = () => {
     const clearedFilters = {
@@ -208,33 +217,33 @@ const Expenses = () => {
         }}
         categories={categories}
       />
-      <div className='bg-gray-50 min-h-screen w-full p-4 sm:p-6 lg:p-8 font-[Poppins]'>
-        <div className='max-w-7xl mx-auto space-y-6'>
-          <header className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
+      <div className="bg-gray-50 min-h-screen w-full p-4 sm:p-6 lg:p-8 font-[Poppins]">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h1 className='text-3xl font-bold text-gray-900'>
+              <h1 className="text-3xl font-bold text-gray-900">
                 Manage Expenses
               </h1>
-              <p className='mt-1 text-sm text-gray-600'>
+              <p className="mt-1 text-sm text-gray-600">
                 Track, filter, and export all your team's expenses.
               </p>
             </div>
-            <div className='flex-shrink-0 flex gap-2'>
+            <div className="flex-shrink-0 flex gap-2">
               <button
                 onClick={() => setOpenCreateExpenseModal(true)}
-                className='inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition'
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
               >
-                <PlusIcon className='h-5 w-5' />
+                <PlusIcon className="h-5 w-5" />
                 New Expense
               </button>
 
               <button
-                  // 3. Use the onClick handler and disable the button when loading
-                  onClick={handleExport}
-                  disabled={isExporting}
-                  className='inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed'
+                // 3. Use the onClick handler and disable the button when loading
+                onClick={handleExport}
+                disabled={isExporting}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 font-semibold border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <DocumentArrowDownIcon className='h-5 w-5' />
+                <DocumentArrowDownIcon className="h-5 w-5" />
                 {isExporting ? "Exporting..." : "Export PDF"}
               </button>
             </div>
@@ -249,7 +258,7 @@ const Expenses = () => {
           {loading ? (
             <Spinner />
           ) : expenseList.length === 0 ? (
-            <EmptyState />
+            <EmptyState onButtonClick={() => setOpenCreateExpenseModal(true)} />
           ) : (
             <ExpenseList
               expenses={expenseList}

@@ -52,14 +52,14 @@ const AuditLogDashboard = () => {
   };
 
   return (
-    <div className='p-6 font-[Poppins]'>
-      <div className='flex justify-between items-center mb-6'>
-        <h2 className='text-2xl font-semibold flex items-center gap-2'>
-          <AiOutlineAudit className='text-indigo-600 text-3xl' />
+    <div className="p-6 font-[Poppins]">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold flex items-center gap-2">
+          <AiOutlineAudit className="text-indigo-600 text-3xl" />
           Audit Log Dashboard
         </h2>
         <Button
-          variant='outlined'
+          variant="outlined"
           onClick={() => setOpenFilter(true)}
           startIcon={<FaFilter />}
           sx={{
@@ -78,11 +78,11 @@ const AuditLogDashboard = () => {
       </div>
 
       {loading ? (
-        <p className='text-gray-500 animate-pulse'>Loading logs...</p>
+        <p className="text-gray-500 animate-pulse">Loading logs...</p>
       ) : logs.length === 0 ? (
-        <p className='text-gray-500'>No audit logs available.</p>
+        <p className="text-gray-500">No audit logs available.</p>
       ) : (
-        <div className='space-y-4'>
+        <div className="space-y-4">
           {logs.map((log) => (
             <motion.div
               key={log.id}
@@ -90,20 +90,20 @@ const AuditLogDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <Card className='rounded-2xl shadow-md border border-gray-200 transition'>
-                <CardContent className='space-y-2 text-sm text-gray-700'>
-                  <div className='space-y-1.5 text-sm text-gray-700'>
+              <Card className="rounded-2xl shadow-md border border-gray-200 transition">
+                <CardContent className="space-y-2 text-sm text-gray-700">
+                  <div className="space-y-1.5 text-sm text-gray-700">
                     {/* Entity + Timestamp */}
-                    <div className='flex justify-between items-start'>
+                    <div className="flex justify-between items-start">
                       <div>
-                        <p className='font-semibold text-indigo-600'>
+                        <p className="font-semibold text-indigo-600">
                           {log.entityName}{" "}
-                          <span className='text-gray-600 font-medium'>
+                          <span className="text-gray-600 font-medium">
                             #{log.entityId}
                           </span>
                         </p>
                       </div>
-                      <span className='text-xs text-gray-400 whitespace-nowrap'>
+                      <span className="text-xs text-gray-400 whitespace-nowrap">
                         {new Date(log.timestamp).toLocaleString("en-IN", {
                           dateStyle: "medium",
                           timeStyle: "short",
@@ -112,60 +112,60 @@ const AuditLogDashboard = () => {
                     </div>
 
                     {/* Action */}
-                    <div className='flex items-start gap-2'>
-                      <span className='min-w-[100px] text-gray-600 font-medium'>
+                    <div className="flex items-start gap-2">
+                      <span className="min-w-[100px] text-gray-600 font-medium">
                         Action:
                       </span>
-                      <span className='text-gray-800'>{log.action}</span>
+                      <span className="text-gray-800">{log.action}</span>
                     </div>
 
                     {/* Performed By */}
-                    <div className='flex items-start gap-2'>
-                      <span className='min-w-[100px] text-gray-600 font-medium'>
+                    <div className="flex items-start gap-2">
+                      <span className="min-w-[100px] text-gray-600 font-medium">
                         Performed By:
                       </span>
-                      <span className='text-gray-800'>{log.performedBy}</span>
+                      <span className="text-gray-800">{log.performedBy}</span>
                     </div>
 
                     {/* IP Address */}
-                    <div className='flex items-start gap-2'>
-                      <span className='min-w-[100px] text-gray-600 font-medium'>
+                    <div className="flex items-start gap-2">
+                      <span className="min-w-[100px] text-gray-600 font-medium">
                         IP Address:
                       </span>
-                      <span className='text-gray-800'>{log.deviceIp}</span>
+                      <span className="text-gray-800">{log.deviceIp}</span>
                     </div>
 
                     {/* Old Value */}
                     {log.oldValue && (
-                      <div className='mt-2 bg-rose-50 border-l-4 border-rose-400 px-3 py-2 text-xs text-rose-700 whitespace-pre-wrap rounded-md'>
-                        <strong className='block mb-1'>Old Value:</strong>
+                      <div className="mt-2 bg-rose-50 border-l-4 border-rose-400 px-3 py-2 text-xs text-rose-700 whitespace-pre-wrap rounded-md">
+                        <strong className="block mb-1">Old Value:</strong>
                         {log.oldValue}
                       </div>
                     )}
 
                     {/* New Value */}
                     {log.newValue && (
-                      <div className='bg-green-50 border-l-4 border-green-400 px-3 py-2 text-xs text-green-700 whitespace-pre-wrap rounded-md'>
-                        <strong className='block mb-1'>New Value:</strong>
+                      <div className="bg-green-50 border-l-4 border-green-400 px-3 py-2 text-xs text-green-700 whitespace-pre-wrap rounded-md">
+                        <strong className="block mb-1">New Value:</strong>
                         {log.newValue}
                       </div>
                     )}
                   </div>
 
-                  <div className='flex justify-end pt-2'>
+                  <div className="flex justify-end pt-2">
                     <Button
-                      size='small'
-                      variant='text'
+                      size="small"
+                      variant="text"
                       onClick={() => setSelectedLog(log)}
                       startIcon={
                         <svg
-                          className='w-4 h-4'
-                          fill='none'
-                          stroke='currentColor'
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
                           strokeWidth={2}
-                          viewBox='0 0 24 24'
+                          viewBox="0 0 24 24"
                         >
-                          <path d='M15 12H3m0 0l6-6m-6 6l6 6' />
+                          <path d="M15 12H3m0 0l6-6m-6 6l6 6" />
                         </svg>
                       }
                       sx={{
@@ -197,13 +197,13 @@ const AuditLogDashboard = () => {
       )}
 
       {totalPages > 1 && (
-        <div className='flex justify-end mt-6'>
+        <div className="flex justify-end mt-6">
           <Pagination
             count={totalPages}
             page={page}
             onChange={(_, value) => fetchLogs(value, filters)}
-            color='primary'
-            shape='rounded'
+            color="primary"
+            shape="rounded"
           />
         </div>
       )}

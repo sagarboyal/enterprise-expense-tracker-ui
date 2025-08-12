@@ -27,7 +27,7 @@ import {
 import { IoClose } from "react-icons/io5";
 
 const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction='down' ref={ref} {...props} />;
+  return <Slide direction="down" ref={ref} {...props} />;
 });
 
 const initialFilters = {
@@ -40,18 +40,18 @@ const initialFilters = {
 };
 
 const FilterSection = ({ title, children }) => (
-  <div className='py-4'>
-    <p className='text-sm font-semibold text-slate-600 mb-3'>{title}</p>
-    <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>{children}</div>
+  <div className="py-4">
+    <p className="text-sm font-semibold text-slate-600 mb-3">{title}</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{children}</div>
   </div>
 );
 
 const StyledFormControl = ({ label, icon, children }) => (
-  <div className='relative'>
-    <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 z-10'>
+  <div className="relative">
+    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 z-10">
       {icon}
     </div>
-    <FormControl fullWidth variant='outlined'>
+    <FormControl fullWidth variant="outlined">
       <InputLabel
         sx={{
           "&.MuiInputLabel-root": {
@@ -92,149 +92,149 @@ const UserFilterDialog = ({ open, onClose, onApply }) => {
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth='sm'
+      maxWidth="sm"
       TransitionComponent={Transition}
       PaperProps={{
         className: "bg-slate-50 rounded-2xl shadow-xl",
       }}
     >
-      <DialogTitle className='flex items-center justify-between p-4 border-b border-slate-200'>
-        <div className='flex items-center space-x-3'>
-          <div className='h-10 w-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-600'>
-            <FunnelIcon className='h-6 w-6' />
+      <DialogTitle className="flex items-center justify-between p-4 border-b border-slate-200">
+        <div className="flex items-center space-x-3">
+          <div className="h-10 w-10 flex items-center justify-center rounded-full bg-purple-100 text-purple-600">
+            <FunnelIcon className="h-6 w-6" />
           </div>
-          <Typography variant='h6' className='font-bold text-slate-800'>
+          <Typography variant="h6" className="font-bold text-slate-800">
             Advanced Filters
           </Typography>
         </div>
         <IconButton
           onClick={onClose}
-          aria-label='Close'
-          className='text-slate-500 hover:text-slate-800'
+          aria-label="Close"
+          className="text-slate-500 hover:text-slate-800"
         >
           <IoClose />
         </IconButton>
       </DialogTitle>
-      <DialogContent className='p-4'>
-        <FilterSection title='Filter by Details'>
+      <DialogContent className="p-4">
+        <FilterSection title="Filter by Details">
           <TextField
-            name='fullName'
-            label='Full Name'
+            name="fullName"
+            label="Full Name"
             value={filters.fullName}
             onChange={handleChange}
             fullWidth
             InputProps={{
               startAdornment: (
-                <UserIcon className='h-5 w-5 text-slate-400 mr-2' />
+                <UserIcon className="h-5 w-5 text-slate-400 mr-2" />
               ),
             }}
           />
           <TextField
-            name='email'
-            label='Email'
+            name="email"
+            label="Email"
             value={filters.email}
             onChange={handleChange}
             fullWidth
             InputProps={{
               startAdornment: (
-                <EnvelopeIcon className='h-5 w-5 text-slate-400 mr-2' />
+                <EnvelopeIcon className="h-5 w-5 text-slate-400 mr-2" />
               ),
             }}
           />
           <StyledFormControl
-            label='Role'
-            icon={<BriefcaseIcon className='h-5 w-5 text-slate-400' />}
+            label="Role"
+            icon={<BriefcaseIcon className="h-5 w-5 text-slate-400" />}
           >
             <Select
-              name='role'
+              name="role"
               value={filters.role}
               onChange={handleChange}
-              label='Role'
-              className='pl-8'
+              label="Role"
+              className="pl-8"
             >
-              <MenuItem value=''>
+              <MenuItem value="">
                 <em>All Roles</em>
               </MenuItem>
-              <MenuItem value='ROLE_ADMIN'>Admin</MenuItem>
-              <MenuItem value='ROLE_MANAGER'>Manager</MenuItem>
-              <MenuItem value='ROLE_EMPLOYEE'>User</MenuItem>
+              <MenuItem value="ROLE_ADMIN">Admin</MenuItem>
+              <MenuItem value="ROLE_MANAGER">Manager</MenuItem>
+              <MenuItem value="ROLE_EMPLOYEE">User</MenuItem>
             </Select>
           </StyledFormControl>
           <TextField
-            name='minAmount'
-            label='Min Expenses'
-            type='number'
+            name="minAmount"
+            label="Min Expenses"
+            type="number"
             value={filters.minAmount}
             onChange={handleChange}
             fullWidth
             InputProps={{
               startAdornment: (
-                <CurrencyRupeeIcon className='h-5 w-5 text-slate-400 mr-2' />
+                <CurrencyRupeeIcon className="h-5 w-5 text-slate-400 mr-2" />
               ),
             }}
           />
         </FilterSection>
-        <div className='border-t border-slate-200 -mx-4'></div>
-        <FilterSection title='Sort Options'>
+        <div className="border-t border-slate-200 -mx-4"></div>
+        <FilterSection title="Sort Options">
           <StyledFormControl
-            label='Sort By'
-            icon={<ArrowsUpDownIcon className='h-5 w-5 text-slate-400' />}
+            label="Sort By"
+            icon={<ArrowsUpDownIcon className="h-5 w-5 text-slate-400" />}
           >
             <Select
-              name='sortBy'
+              name="sortBy"
               value={filters.sortBy}
               onChange={handleChange}
-              label='Sort By'
-              className='pl-8'
+              label="Sort By"
+              className="pl-8"
             >
-              <MenuItem value=''>
+              <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value='fullName'>Name</MenuItem>
-              <MenuItem value='totalExpenses'>Total Expenses</MenuItem>
+              <MenuItem value="fullName">Name</MenuItem>
+              <MenuItem value="totalExpenses">Total Expenses</MenuItem>
             </Select>
           </StyledFormControl>
           <StyledFormControl
-            label='Order'
+            label="Order"
             icon={
               filters.sortOrder === "asc" ? (
-                <ArrowUpIcon className='h-5 w-5 text-slate-400' />
+                <ArrowUpIcon className="h-5 w-5 text-slate-400" />
               ) : (
-                <ArrowDownIcon className='h-5 w-5 text-slate-400' />
+                <ArrowDownIcon className="h-5 w-5 text-slate-400" />
               )
             }
           >
             <Select
-              name='sortOrder'
+              name="sortOrder"
               value={filters.sortOrder}
               onChange={handleChange}
-              label='Order'
-              className='pl-8'
+              label="Order"
+              className="pl-8"
             >
-              <MenuItem value='asc'>Ascending</MenuItem>
-              <MenuItem value='desc'>Descending</MenuItem>
+              <MenuItem value="asc">Ascending</MenuItem>
+              <MenuItem value="desc">Descending</MenuItem>
             </Select>
           </StyledFormControl>
         </FilterSection>
       </DialogContent>
-      <DialogActions className='p-4 flex justify-between border-t border-slate-200'>
+      <DialogActions className="p-4 flex justify-between border-t border-slate-200">
         <button
           onClick={handleReset}
-          className='font-semibold px-4 py-2 rounded-lg text-slate-600 bg-slate-200 hover:bg-slate-300 transition-colors duration-200 flex items-center gap-2'
+          className="font-semibold px-4 py-2 rounded-lg text-slate-600 bg-slate-200 hover:bg-slate-300 transition-colors duration-200 flex items-center gap-2"
         >
-          <XMarkIcon className='h-5 w-5' />
+          <XMarkIcon className="h-5 w-5" />
           Reset Filters
         </button>
-        <div className='space-x-2'>
+        <div className="space-x-2">
           <button
             onClick={onClose}
-            className='font-semibold px-6 py-2 rounded-lg text-slate-800 bg-white border border-slate-300 hover:bg-slate-100 transition-colors duration-200'
+            className="font-semibold px-6 py-2 rounded-lg text-slate-800 bg-white border border-slate-300 hover:bg-slate-100 transition-colors duration-200"
           >
             Cancel
           </button>
           <button
             onClick={handleApply}
-            className='font-semibold px-6 py-2 rounded-lg text-white bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300'
+            className="font-semibold px-6 py-2 rounded-lg text-white bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
           >
             Apply Filters
           </button>

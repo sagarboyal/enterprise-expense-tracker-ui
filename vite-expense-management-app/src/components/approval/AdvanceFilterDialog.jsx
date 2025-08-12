@@ -14,7 +14,7 @@ import {
 import { useState, forwardRef } from "react";
 
 const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction='up' ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const AdvancedFilterDialog = ({ open, onClose, onApply, categories = [] }) => {
@@ -47,7 +47,7 @@ const AdvancedFilterDialog = ({ open, onClose, onApply, categories = [] }) => {
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth='sm'
+      maxWidth="sm"
       TransitionComponent={Transition}
       transitionDuration={300}
       PaperProps={{
@@ -56,34 +56,34 @@ const AdvancedFilterDialog = ({ open, onClose, onApply, categories = [] }) => {
       }}
     >
       <DialogTitle>Advanced Filters</DialogTitle>
-      <DialogContent className='space-y-4 py-4'>
-        <div className='grid grid-cols-2 gap-4'>
+      <DialogContent className="space-y-4 py-4">
+        <div className="grid grid-cols-2 gap-4">
           <TextField
-            name='userId'
-            label='User ID'
+            name="userId"
+            label="User ID"
             value={filters.userId}
             onChange={handleChange}
             fullWidth
-            size='small'
+            size="small"
           />
           <TextField
-            name='title'
-            label='Title'
+            name="title"
+            label="Title"
             value={filters.title}
             onChange={handleChange}
             fullWidth
-            size='small'
+            size="small"
           />
 
-          <FormControl fullWidth size='small'>
+          <FormControl fullWidth size="small">
             <InputLabel>Category</InputLabel>
             <Select
-              name='categoryName'
+              name="categoryName"
               value={filters.categoryName}
               onChange={handleChange}
-              label='Category'
+              label="Category"
             >
-              <MenuItem value=''>All</MenuItem>
+              <MenuItem value="">All</MenuItem>
               {categories.map((cat) => (
                 <MenuItem key={cat.id} value={cat.name}>
                   {cat.name.charAt(0).toUpperCase() +
@@ -93,98 +93,98 @@ const AdvancedFilterDialog = ({ open, onClose, onApply, categories = [] }) => {
             </Select>
           </FormControl>
 
-          <FormControl fullWidth size='small'>
+          <FormControl fullWidth size="small">
             <InputLabel>Status</InputLabel>
             <Select
-              name='status'
+              name="status"
               value={filters.status}
               onChange={handleChange}
-              label='Status'
+              label="Status"
             >
-              <MenuItem value=''>All</MenuItem>
-              <MenuItem value='APPROVED'>Approved</MenuItem>
-              <MenuItem value='REJECTED'>Rejected</MenuItem>
-              <MenuItem value='PENDING'>Pending</MenuItem>
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="APPROVED">Approved</MenuItem>
+              <MenuItem value="REJECTED">Rejected</MenuItem>
+              <MenuItem value="PENDING">Pending</MenuItem>
             </Select>
           </FormControl>
 
           <TextField
-            name='level'
-            label='Level'
+            name="level"
+            label="Level"
             value={filters.level}
             onChange={handleChange}
             fullWidth
-            size='small'
+            size="small"
           />
           <TextField
-            name='startDate'
-            label='Start Date'
-            type='date'
+            name="startDate"
+            label="Start Date"
+            type="date"
             value={filters.startDate}
             onChange={handleChange}
             fullWidth
-            size='small'
+            size="small"
             InputLabelProps={{ shrink: true }}
           />
           <TextField
-            name='endDate'
-            label='End Date'
-            type='date'
+            name="endDate"
+            label="End Date"
+            type="date"
             value={filters.endDate}
             onChange={handleChange}
             fullWidth
-            size='small'
+            size="small"
             InputLabelProps={{ shrink: true }}
           />
           <TextField
-            name='minAmount'
-            label='Min Amount'
+            name="minAmount"
+            label="Min Amount"
             value={filters.minAmount}
             onChange={handleChange}
             fullWidth
-            size='small'
-            type='number'
+            size="small"
+            type="number"
           />
           <TextField
-            name='maxAmount'
-            label='Max Amount'
+            name="maxAmount"
+            label="Max Amount"
             value={filters.maxAmount}
             onChange={handleChange}
             fullWidth
-            size='small'
-            type='number'
+            size="small"
+            type="number"
           />
-          <FormControl fullWidth size='small'>
+          <FormControl fullWidth size="small">
             <InputLabel>Sort By</InputLabel>
             <Select
-              name='sortBy'
+              name="sortBy"
               value={filters.sortBy}
               onChange={handleChange}
-              label='Sort By'
+              label="Sort By"
             >
-              <MenuItem value=''>None</MenuItem>
-              <MenuItem value='createdAt'>Created At</MenuItem>
-              <MenuItem value='amount'>Amount</MenuItem>
-              <MenuItem value='title'>Title</MenuItem>
+              <MenuItem value="">None</MenuItem>
+              <MenuItem value="createdAt">Created At</MenuItem>
+              <MenuItem value="amount">Amount</MenuItem>
+              <MenuItem value="title">Title</MenuItem>
             </Select>
           </FormControl>
-          <FormControl fullWidth size='small'>
+          <FormControl fullWidth size="small">
             <InputLabel>Sort Order</InputLabel>
             <Select
-              name='sortOrder'
+              name="sortOrder"
               value={filters.sortOrder}
               onChange={handleChange}
-              label='Sort Order'
+              label="Sort Order"
             >
-              <MenuItem value='asc'>Ascending</MenuItem>
-              <MenuItem value='desc'>Descending</MenuItem>
+              <MenuItem value="asc">Ascending</MenuItem>
+              <MenuItem value="desc">Descending</MenuItem>
             </Select>
           </FormControl>
         </div>
       </DialogContent>
-      <DialogActions className='px-6 pb-4'>
+      <DialogActions className="px-6 pb-4">
         <Button
-          variant='outlined'
+          variant="outlined"
           onClick={onClose}
           sx={{
             fontFamily: "Poppins",
@@ -201,7 +201,7 @@ const AdvancedFilterDialog = ({ open, onClose, onApply, categories = [] }) => {
         </Button>
 
         <Button
-          variant='contained'
+          variant="contained"
           onClick={handleApply}
           sx={{
             fontFamily: "Poppins",

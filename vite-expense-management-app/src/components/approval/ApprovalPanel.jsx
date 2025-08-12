@@ -30,8 +30,8 @@ const ApprovalPanel = () => {
 
       const cleanFilters = Object.fromEntries(
         Object.entries(appliedFilters).filter(
-          ([_, value]) => value !== "" && value !== null && value !== undefined
-        )
+          ([_, value]) => value !== "" && value !== null && value !== undefined,
+        ),
       );
 
       const params = new URLSearchParams({
@@ -107,18 +107,18 @@ const ApprovalPanel = () => {
         categories={categories}
       />
 
-      <div className='p-6 space-y-6 font-[Poppins]'>
-        <div className='flex items-center justify-between flex-wrap gap-4'>
-          <h2 className='flex items-center gap-2 text-2xl sm:text-3xl font-semibold text-black font-[Poppins]'>
-            <GoTasklist className='text-3xl' />
+      <div className="p-6 space-y-6 font-[Poppins]">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <h2 className="flex items-center gap-2 text-2xl sm:text-3xl font-semibold text-black font-[Poppins]">
+            <GoTasklist className="text-3xl" />
             Pending Approvals
           </h2>
 
-          <div className='flex gap-3 items-center'>
+          <div className="flex gap-3 items-center">
             <TextField
-              size='small'
-              variant='outlined'
-              placeholder='Search by title'
+              size="small"
+              variant="outlined"
+              placeholder="Search by title"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               sx={{
@@ -127,7 +127,7 @@ const ApprovalPanel = () => {
               }}
               InputProps={{
                 endAdornment: searchQuery && (
-                  <InputAdornment position='end'>
+                  <InputAdornment position="end">
                     <IconButton
                       onClick={() => {
                         setSearchQuery("");
@@ -135,7 +135,7 @@ const ApprovalPanel = () => {
                         setFilters(updatedFilters);
                         fetchApprovals(0, updatedFilters);
                       }}
-                      size='small'
+                      size="small"
                     >
                       <MdClose />
                     </IconButton>
@@ -145,8 +145,8 @@ const ApprovalPanel = () => {
             />
 
             <Button
-              variant='contained'
-              color='primary'
+              variant="contained"
+              color="primary"
               startIcon={<FaSearch />}
               onClick={handleSearch}
               sx={{
@@ -159,7 +159,7 @@ const ApprovalPanel = () => {
               Search
             </Button>
             <Button
-              variant='outlined'
+              variant="outlined"
               onClick={() => setFilterOpen(true)}
               startIcon={<FaFilter />}
               sx={{
@@ -181,9 +181,9 @@ const ApprovalPanel = () => {
         <ApprovalTable approvals={approvalList} loading={loading} />
 
         {totalPages > 1 && (
-          <div className='flex justify-center items-center gap-4 mt-6'>
+          <div className="flex justify-center items-center gap-4 mt-6">
             <Button
-              variant='outlined'
+              variant="outlined"
               onClick={handlePrev}
               disabled={pageNumber === 0}
               startIcon={<MdNavigateBefore />}
@@ -202,13 +202,13 @@ const ApprovalPanel = () => {
               Previous
             </Button>
 
-            <span className='text-sm sm:text-base text-black font-medium'>
-              Page <span className='text-indigo-600'>{pageNumber + 1}</span> of{" "}
-              <span className='text-indigo-600'>{totalPages}</span>
+            <span className="text-sm sm:text-base text-black font-medium">
+              Page <span className="text-indigo-600">{pageNumber + 1}</span> of{" "}
+              <span className="text-indigo-600">{totalPages}</span>
             </span>
 
             <Button
-              variant='outlined'
+              variant="outlined"
               onClick={handleNext}
               disabled={pageNumber >= totalPages - 1}
               endIcon={<MdNavigateNext />}

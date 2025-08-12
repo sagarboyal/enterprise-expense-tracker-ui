@@ -14,23 +14,23 @@ import {
 
 const Spinner = () => (
   <svg
-    className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
-    xmlns='http://www.w3.org/2000/svg'
-    fill='none'
-    viewBox='0 0 24 24'
+    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
   >
     <circle
-      className='opacity-25'
-      cx='12'
-      cy='12'
-      r='10'
-      stroke='currentColor'
-      strokeWidth='4'
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
     ></circle>
     <path
-      className='opacity-75'
-      fill='currentColor'
-      d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
     ></path>
   </svg>
 );
@@ -113,7 +113,7 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
-          }
+          },
         );
         toast.success("Receipt uploaded successfully!");
       }
@@ -129,57 +129,57 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
   return (
     <Transition appear show={isOpen} as={Fragment} afterLeave={afterLeave}>
       <Dialog
-        as='div'
-        className='relative z-50'
+        as="div"
+        className="relative z-50"
         onClose={loading ? () => {} : onClose}
       >
         <Transition.Child
           as={Fragment}
-          enter='ease-out duration-300'
-          enterFrom='opacity-0'
-          enterTo='opacity-100'
-          leave='ease-in duration-200'
-          leaveFrom='opacity-100'
-          leaveTo='opacity-0'
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          <div className='fixed inset-0 bg-black/40 backdrop-blur-sm' />
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
         </Transition.Child>
 
-        <div className='fixed inset-0 overflow-y-auto'>
-          <div className='flex min-h-full items-center justify-center p-4'>
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
             <Transition.Child
               as={Fragment}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0 scale-95'
-              enterTo='opacity-100 scale-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100 scale-100'
-              leaveTo='opacity-0 scale-95'
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className='w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all'>
+              <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
-                  as='h3'
-                  className='text-2xl font-bold leading-6 text-gray-900'
+                  as="h3"
+                  className="text-2xl font-bold leading-6 text-gray-900"
                 >
                   Create New Expense
                 </Dialog.Title>
-                <p className='mt-2 text-sm text-gray-500'>
+                <p className="mt-2 text-sm text-gray-500">
                   Enter the details of your expense below. Fields marked with an
                   asterisk are required.
                 </p>
 
                 <form
                   onSubmit={handleSubmit(handleFormSubmit)}
-                  className='mt-8 space-y-6'
+                  className="mt-8 space-y-6"
                 >
-                  <fieldset disabled={loading} className='space-y-6'>
-                    <div className='relative'>
-                      <PencilSquareIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400' />
+                  <fieldset disabled={loading} className="space-y-6">
+                    <div className="relative">
+                      <PencilSquareIcon className="pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400" />
                       <input
                         {...register("title", {
                           required: "Title is required.",
                         })}
-                        placeholder='Expense Title (e.g., Client Dinner)'
+                        placeholder="Expense Title (e.g., Client Dinner)"
                         className={`w-full rounded-lg border-gray-300 py-3 pl-11 shadow-sm focus:ring-2 ${
                           errors.title
                             ? "ring-red-500 border-red-500"
@@ -187,18 +187,18 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                         }`}
                       />
                       {errors.title && (
-                        <p className='text-xs text-red-600 mt-1'>
+                        <p className="text-xs text-red-600 mt-1">
                           {errors.title.message}
                         </p>
                       )}
                     </div>
 
-                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
-                      <div className='relative'>
-                        <CurrencyDollarIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400' />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="relative">
+                        <CurrencyDollarIcon className="pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400" />
                         <input
-                          type='number'
-                          step='0.01'
+                          type="number"
+                          step="0.01"
                           {...register("amount", {
                             required: "Amount is required.",
                             valueAsNumber: true,
@@ -207,7 +207,7 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                               message: "Amount must be positive.",
                             },
                           })}
-                          placeholder='Amount'
+                          placeholder="Amount"
                           className={`w-full rounded-lg border-gray-300 py-3 pl-11 shadow-sm focus:ring-2 ${
                             errors.amount
                               ? "ring-red-500 border-red-500"
@@ -215,15 +215,15 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                           }`}
                         />
                         {errors.amount && (
-                          <p className='text-xs text-red-600 mt-1'>
+                          <p className="text-xs text-red-600 mt-1">
                             {errors.amount.message}
                           </p>
                         )}
                       </div>
-                      <div className='relative'>
-                        <CalendarDaysIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400' />
+                      <div className="relative">
+                        <CalendarDaysIcon className="pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400" />
                         <input
-                          type='date'
+                          type="date"
                           {...register("expenseDate", {
                             required: "Date is required.",
                           })}
@@ -234,27 +234,27 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                           }`}
                         />
                         {errors.expenseDate && (
-                          <p className='text-xs text-red-600 mt-1'>
+                          <p className="text-xs text-red-600 mt-1">
                             {errors.expenseDate.message}
                           </p>
                         )}
                       </div>
                     </div>
 
-                    <div className='relative'>
-                      <TagIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400' />
+                    <div className="relative">
+                      <TagIcon className="pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-4 text-gray-400" />
                       <select
                         {...register("categoryId", {
                           required: "Please select a category.",
                         })}
-                        defaultValue=''
+                        defaultValue=""
                         className={`w-full appearance-none rounded-lg border-gray-300 py-3 pl-11 pr-10 shadow-sm focus:ring-2 ${
                           errors.categoryId
                             ? "ring-red-500 border-red-500"
                             : "focus:ring-indigo-500 focus:border-indigo-500"
                         }`}
                       >
-                        <option value='' disabled>
+                        <option value="" disabled>
                           Select Category
                         </option>
                         {categories.map((cat) => (
@@ -264,7 +264,7 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                         ))}
                       </select>
                       {errors.categoryId && (
-                        <p className='text-xs text-red-600 mt-1'>
+                        <p className="text-xs text-red-600 mt-1">
                           {errors.categoryId.message}
                         </p>
                       )}
@@ -274,38 +274,38 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                       <textarea
                         {...register("description")}
                         rows={3}
-                        placeholder='Description (optional)'
-                        className='w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'
+                        placeholder="Description (optional)"
+                        className="w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     </div>
 
                     <div>
-                      <label className='block text-sm font-medium text-gray-700'>
+                      <label className="block text-sm font-medium text-gray-700">
                         Attach Receipt
                       </label>
-                      <div className='mt-2 flex items-center gap-4 rounded-lg border border-dashed border-gray-300 p-4'>
+                      <div className="mt-2 flex items-center gap-4 rounded-lg border border-dashed border-gray-300 p-4">
                         <input
-                          type='file'
+                          type="file"
                           ref={fileInputRef}
                           onChange={handleFileChange}
-                          className='hidden'
-                          accept='image/*,.pdf'
+                          className="hidden"
+                          accept="image/*,.pdf"
                         />
                         <button
-                          type='button'
+                          type="button"
                           onClick={() => fileInputRef.current.click()}
-                          className='inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+                          className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         >
-                          <ArrowUpTrayIcon className='-ml-0.5 mr-2 h-5 w-5' />
+                          <ArrowUpTrayIcon className="-ml-0.5 mr-2 h-5 w-5" />
                           {selectedFile ? "Change File" : "Choose File"}
                         </button>
                         {selectedFile && (
-                          <div className='flex items-center gap-2 text-sm text-gray-600'>
-                            <span className='truncate max-w-xs'>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="truncate max-w-xs">
                               {selectedFile.name}
                             </span>
-                            <button type='button' onClick={removeSelectedFile}>
-                              <XCircleIcon className='h-5 w-5 text-gray-400 hover:text-red-500' />
+                            <button type="button" onClick={removeSelectedFile}>
+                              <XCircleIcon className="h-5 w-5 text-gray-400 hover:text-red-500" />
                             </button>
                           </div>
                         )}
@@ -313,19 +313,19 @@ const CreateExpenseDialog = ({ isOpen, onClose }) => {
                     </div>
                   </fieldset>
 
-                  <div className='flex justify-end gap-4 pt-4'>
+                  <div className="flex justify-end gap-4 pt-4">
                     <button
-                      type='button'
+                      type="button"
                       onClick={onClose}
                       disabled={loading}
-                      className='rounded-lg bg-gray-100 px-6 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 disabled:opacity-50'
+                      className="rounded-lg bg-gray-100 px-6 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
-                      type='submit'
+                      type="submit"
                       disabled={loading}
-                      className='inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:bg-indigo-400'
+                      className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:bg-indigo-400"
                     >
                       {loading && <Spinner />}
                       {loading ? "Saving..." : "Create Expense"}

@@ -64,52 +64,52 @@ const ProfileUpdateDialog = ({ isOpen, onClose }) => {
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as='div' className='relative z-50' onClose={onClose}>
+      <Dialog as="div" className="relative z-50" onClose={onClose}>
         {/* The backdrop, rendered as a fixed sibling to the panel container */}
         <Transition.Child
           as={Fragment}
-          enter='ease-out duration-300'
-          enterFrom='opacity-0'
-          enterTo='opacity-100'
-          leave='ease-in duration-200'
-          leaveFrom='opacity-100'
-          leaveTo='opacity-0'
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          <div className='fixed inset-0 bg-black/30 backdrop-blur-sm' />
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
         </Transition.Child>
 
         {/* Full-screen container to center the panel */}
-        <div className='fixed inset-0 overflow-y-auto'>
-          <div className='flex min-h-full items-center justify-center p-4 text-center'>
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
             <Transition.Child
               as={Fragment}
-              enter='ease-out duration-300'
-              enterFrom='opacity-0 scale-95'
-              enterTo='opacity-100 scale-100'
-              leave='ease-in duration-200'
-              leaveFrom='opacity-100 scale-100'
-              leaveTo='opacity-0 scale-95'
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200/80'>
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all border border-gray-200/80">
                 <Dialog.Title
-                  as='h3'
-                  className='text-xl font-bold leading-6 text-gray-900 text-center mb-6'
+                  as="h3"
+                  className="text-xl font-bold leading-6 text-gray-900 text-center mb-6"
                 >
                   Edit Your Profile
                 </Dialog.Title>
 
                 <form
                   onSubmit={handleSubmit(handleFormSubmit)}
-                  className='space-y-4'
+                  className="space-y-4"
                 >
                   {/* Full Name Input */}
-                  <div className='relative'>
-                    <UserIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                  <div className="relative">
+                    <UserIcon className="pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400" />
                     <input
                       {...register("fullName", {
                         required: "Full name is required",
                       })}
-                      placeholder='Full Name'
+                      placeholder="Full Name"
                       className={`w-full border rounded-lg px-4 py-2.5 pl-10 shadow-sm focus:outline-none focus:ring-2 transition-colors ${
                         errors.fullName
                           ? "border-red-300 focus:ring-red-500 bg-red-50"
@@ -117,17 +117,17 @@ const ProfileUpdateDialog = ({ isOpen, onClose }) => {
                       }`}
                     />
                     {errors.fullName && (
-                      <p className='text-red-600 text-xs mt-1 ml-1'>
+                      <p className="text-red-600 text-xs mt-1 ml-1">
                         {errors.fullName.message}
                       </p>
                     )}
                   </div>
 
                   {/* Email Input */}
-                  <div className='relative'>
-                    <EnvelopeIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                  <div className="relative">
+                    <EnvelopeIcon className="pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400" />
                     <input
-                      type='email'
+                      type="email"
                       {...register("email", {
                         required: "Email is required",
                         pattern: {
@@ -135,7 +135,7 @@ const ProfileUpdateDialog = ({ isOpen, onClose }) => {
                           message: "Enter a valid email address",
                         },
                       })}
-                      placeholder='Email Address'
+                      placeholder="Email Address"
                       className={`w-full border rounded-lg px-4 py-2.5 pl-10 shadow-sm focus:outline-none focus:ring-2 transition-colors ${
                         errors.email
                           ? "border-red-300 focus:ring-red-500 bg-red-50"
@@ -143,57 +143,57 @@ const ProfileUpdateDialog = ({ isOpen, onClose }) => {
                       }`}
                     />
                     {errors.email && (
-                      <p className='text-red-600 text-xs mt-1 ml-1'>
+                      <p className="text-red-600 text-xs mt-1 ml-1">
                         {errors.email.message}
                       </p>
                     )}
                   </div>
 
                   {/* Password Input */}
-                  <div className='relative'>
-                    <LockClosedIcon className='pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400' />
+                  <div className="relative">
+                    <LockClosedIcon className="pointer-events-none w-5 h-5 absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400" />
                     <input
-                      type='password'
+                      type="password"
                       {...register("password")}
-                      placeholder='New Password (optional)'
-                      className='w-full border rounded-lg px-4 py-2.5 pl-10 shadow-sm focus:outline-none focus:ring-2 border-gray-300 focus:ring-indigo-500'
+                      placeholder="New Password (optional)"
+                      className="w-full border rounded-lg px-4 py-2.5 pl-10 shadow-sm focus:outline-none focus:ring-2 border-gray-300 focus:ring-indigo-500"
                     />
                   </div>
 
                   {/* Action Buttons */}
-                  <div className='flex justify-end gap-4 pt-4'>
+                  <div className="flex justify-end gap-4 pt-4">
                     <button
-                      type='button'
+                      type="button"
                       onClick={onClose}
-                      className='px-5 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 transition'
+                      className="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2 transition"
                     >
                       Cancel
                     </button>
                     <button
-                      type='submit'
+                      type="submit"
                       disabled={isSubmitting}
-                      className='inline-flex justify-center items-center px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 transition disabled:bg-indigo-400 disabled:cursor-not-allowed'
+                      className="inline-flex justify-center items-center px-5 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 transition disabled:bg-indigo-400 disabled:cursor-not-allowed"
                     >
                       {isSubmitting ? (
                         <>
                           <svg
-                            className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
+                            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
                           >
                             <circle
-                              className='opacity-25'
-                              cx='12'
-                              cy='12'
-                              r='10'
-                              stroke='currentColor'
-                              strokeWidth='4'
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
                             ></circle>
                             <path
-                              className='opacity-75'
-                              fill='currentColor'
-                              d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                             ></path>
                           </svg>
                           Updating...

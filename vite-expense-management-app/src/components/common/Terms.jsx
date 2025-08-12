@@ -47,11 +47,11 @@ const PrivacyPolicy = () => {
     width = 600,
     height = 300,
     bgColor = "e0e7ff",
-    textColor = "4f46e5"
+    textColor = "4f46e5",
   ) => {
     return `https://placehold.co/${width}x${height}/${bgColor}/${textColor}?text=${text.replace(
       /\s/g,
-      "+"
+      "+",
     )}`;
   };
 
@@ -109,7 +109,7 @@ const PrivacyPolicy = () => {
                   600,
                   350,
                   "c7d2fe",
-                  "4f46e5"
+                  "4f46e5",
                 )}
                 alt="Illustration of data collection"
                 className="w-full max-w-sm sm:max-w-md rounded-lg shadow-lg border border-indigo-200"
@@ -149,7 +149,7 @@ const PrivacyPolicy = () => {
                   600,
                   350,
                   "bfdbfe",
-                  "3b82f6"
+                  "3b82f6",
                 )}
                 alt="Illustration of information usage"
                 className="w-full max-w-sm sm:max-w-md rounded-lg shadow-lg border border-blue-200"
@@ -189,7 +189,7 @@ const PrivacyPolicy = () => {
                   600,
                   350,
                   "c7d2fe",
-                  "4f46e5"
+                  "4f46e5",
                 )}
                 alt="Illustration of data sharing"
                 className="w-full max-w-sm sm:max-w-md rounded-lg shadow-lg border border-indigo-200"
@@ -229,7 +229,7 @@ const PrivacyPolicy = () => {
                   600,
                   350,
                   "bfdbfe",
-                  "3b82f6"
+                  "3b82f6",
                 )}
                 alt="Illustration of data security"
                 className="w-full max-w-sm sm:max-w-md rounded-lg shadow-lg border border-blue-200"
@@ -268,7 +268,7 @@ const PrivacyPolicy = () => {
                   600,
                   350,
                   "c7d2fe",
-                  "4f46e5"
+                  "4f46e5",
                 )}
                 alt="Illustration of user rights"
                 className="w-full max-w-sm sm:max-w-md rounded-lg shadow-lg border border-indigo-200"
@@ -307,7 +307,7 @@ const PrivacyPolicy = () => {
                   600,
                   350,
                   "bfdbfe",
-                  "3b82f6"
+                  "3b82f6",
                 )}
                 alt="Illustration of cookies and tracking"
                 className="w-full max-w-sm sm:max-w-md rounded-lg shadow-lg border border-blue-200"
@@ -351,8 +351,13 @@ const PrivacyPolicy = () => {
             </h2>
             <p className="mb-4 text-gray-800 leading-relaxed">
               If you have any questions or concerns about this Privacy Policy or
-              our data practices, please contact us at: <a className="text-indigo-600 hover:underline font-semibold" href="/">Contact</a>
-            
+              our data practices, please contact us at:{" "}
+              <a
+                className="text-indigo-600 hover:underline font-semibold"
+                href="/"
+              >
+                Contact
+              </a>
             </p>
             <ul className="list-disc list-inside text-gray-800 ml-4">
               <li>

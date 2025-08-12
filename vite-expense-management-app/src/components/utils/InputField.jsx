@@ -33,7 +33,7 @@ const InputField = ({
       {label && (
         <label
           htmlFor={id}
-          className='block mb-1 text-sm font-semibold text-gray-900'
+          className="block mb-1 text-sm font-semibold text-gray-900"
         >
           {label}
         </label>
@@ -56,20 +56,20 @@ const InputField = ({
       />
 
       {errors[id]?.message && (
-        <p className='flex items-center gap-1 text-sm font-medium text-red-600 mt-1'>
+        <p className="flex items-center gap-1 text-sm font-medium text-red-600 mt-1">
           <svg
-            className='w-4 h-4 text-red-600'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            viewBox='0 0 24 24'
-            xmlns='http://www.w3.org/2000/svg'
-            aria-hidden='true'
+            className="w-4 h-4 text-red-600"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              d='M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
           {errors[id].message}
