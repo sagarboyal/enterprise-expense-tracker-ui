@@ -30,8 +30,8 @@ const ApprovalPanel = () => {
 
       const cleanFilters = Object.fromEntries(
         Object.entries(appliedFilters).filter(
-          ([_, value]) => value !== "" && value !== null && value !== undefined,
-        ),
+          ([_, value]) => value !== "" && value !== null && value !== undefined
+        )
       );
 
       const params = new URLSearchParams({
@@ -47,8 +47,7 @@ const ApprovalPanel = () => {
 
       const url = `/api/expenses/request-list?${params}`;
       const response = await api.get(url);
-      console.log("Fetching Approvals with URL:", url);
-
+      
       setApprovalList(response.data.content || []);
       setPageNumber(response.data.pageNumber);
       setTotalPages(response.data.totalPages);
@@ -178,7 +177,11 @@ const ApprovalPanel = () => {
           </div>
         </div>
 
-        <ApprovalTable approvals={approvalList} loading={loading} />
+        <ApprovalTable
+          approvals={approvalList}
+          loading={loading}
+          onActionComplete={fetchApprovals}
+        />
 
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-4 mt-6">
