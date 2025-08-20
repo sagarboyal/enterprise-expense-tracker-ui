@@ -6,6 +6,7 @@ import {
   UserCircleIcon,
   ShieldCheckIcon,
   PencilSquareIcon,
+  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import ProfileUpdateDialog from "./ProfileUpdateDialog";
 
