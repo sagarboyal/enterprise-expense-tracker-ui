@@ -69,7 +69,7 @@ const Footer = () => {
           {/* Social Media Links */}
           <div className="flex justify-center gap-6 mt-6">
             <a
-              href="https://twitter.com"
+              href="https://x.com/SagarBoyal4"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition-colors duration-300"
@@ -78,7 +78,7 @@ const Footer = () => {
               <TwitterIcon />
             </a>
             <a
-              href="https://github.com"
+              href="https://github.com/sagarboyal/enterprise-expense-tracker-backend"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition-colors duration-300"
@@ -87,7 +87,7 @@ const Footer = () => {
               <GithubIcon />
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/sagarboyal/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition-colors duration-300"

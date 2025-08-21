@@ -23,6 +23,7 @@ import Terms from "./components/common/Terms";
 import Policy from "./components/common/Policy";
 import UserInvoiceDashboard from "./components/invoice/UserInvoiceDashboard.jsx";
 import Category from "./components/categories/Category.jsx";
+import ContactReq from "./components/contactrequest/ContactReq.jsx";
 
 function App() {
   const location = useLocation();
@@ -58,6 +59,7 @@ function App() {
           <Route path="notifications" element={<Notifications />} />
           <Route path="billings" element={<UserInvoiceDashboard />} />
           <Route path="categories" element={<Category />} />
+          <Route path="contact-requests" element={<ContactReq />} />
         </Route>
       </Routes>
       {showPage && <Footer />}

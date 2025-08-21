@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
@@ -8,28 +8,7 @@ import {
   UserIcon,
   ChatBubbleBottomCenterTextIcon,
 } from "@heroicons/react/24/outline";
-
-const api = {
-  post: (endpoint, data) => {
-    return new Promise((resolve, reject) => {
-      console.log("Submitting to:", endpoint, data);
-      setTimeout(() => {
-        if (data.email !== "error@example.com") {
-          resolve({
-            status: 200,
-            data: { message: "Message received successfully!" },
-          });
-        } else {
-          reject({
-            response: {
-              data: { message: "Submission failed. Please try again." },
-            },
-          });
-        }
-      }, 1500);
-    });
-  },
-};
+import api from "../../services/api";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -172,7 +151,7 @@ const Contact = () => {
                   </div>
                   <input
                     type="text"
-                    id="full-name"
+                    id="fullName"
                     autoComplete="name"
                     {...register("fullName", {
                       required: "Full name is required.",

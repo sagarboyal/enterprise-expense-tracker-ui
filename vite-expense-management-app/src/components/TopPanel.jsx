@@ -36,12 +36,20 @@ const TopPanel = () => {
               Billings
             </Link>
             {(isAdmin || isManager) && (
-              <Link
-                to="/homepage/approvals"
-                className={navLinkClass("/homepage/approvals")}
-              >
-                Approval Panel
-              </Link>
+              <>
+                <Link
+                  to="/homepage/approvals"
+                  className={navLinkClass("/homepage/approvals")}
+                >
+                  Approval Panel
+                </Link>
+                <Link
+                  to="/homepage/contact-requests"
+                  className={navLinkClass("/homepage/contact-requests")}
+                >
+                  Contact Requests
+                </Link>
+              </>
             )}
             {isAdmin && (
               <>

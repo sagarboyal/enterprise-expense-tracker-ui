@@ -71,7 +71,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (token) navigate("/");
+    if (token) navigate("/homepage/expenses");
   }, [navigate, token]);
 
   return (
