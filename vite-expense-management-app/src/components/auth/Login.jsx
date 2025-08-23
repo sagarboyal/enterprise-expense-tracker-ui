@@ -116,13 +116,13 @@ const Login = () => {
             register={register}
             errors={errors}
           />
-          <a
-            href="/forgot-password"
+          <Link
+            to="/forgot-password"
             className="font-[Poppins] block text-right text-xs text-red-500 hover:text-black font-semibold transition-colors duration-200"
             aria-label="Link"
           >
             Forgot password?
-          </a>
+          </Link>
         </div>
 
         <div className="mt-6">
@@ -139,12 +139,12 @@ const Login = () => {
         <div className="font-[Poppins] text-center text-sm text-gray-600 mt-6">
           <p>
             New to Trex?{" "}
-            <a
-              href="/register"
+            <Link
+              to="/register"
               className="font-[Poppins] text-blue-600 hover:text-black font-light transition-colors duration-200"
             >
               Create an account
-            </a>
+            </Link>
           </p>
         </div>
       </form>

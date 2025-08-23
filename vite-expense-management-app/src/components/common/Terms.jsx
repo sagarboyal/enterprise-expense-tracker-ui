@@ -365,13 +365,12 @@ const PrivacyPolicy = () => {
                 <a
                   href="mailto:privacy@[yourcompany.com]"
                   className="text-indigo-600 hover:underline"
-                >
-                  privacy@[yourcompany.com]
+                >  
+                server.notifications.system@gmail.com
                 </a>
               </li>
               <li>
-                Address: [Your Company Address], [City], [State/Province],
-                [Postal Code], [Country]
+                Address: Haldia, Mahishadal, West Bengal, India - 721628
               </li>
             </ul>
           </motion.div>

@@ -8,7 +8,6 @@ import {
 } from "@heroicons/react/24/outline";
 import api from "../../services/api";
 
-// --- Helper Components & Functions ---
 
 const formatRelativeTime = (isoDate) => {
   const now = new Date();
@@ -47,7 +46,6 @@ const ErrorState = ({ message }) => (
   </div>
 );
 
-// --- Main Notifications Page Component ---
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
@@ -56,7 +54,7 @@ const NotificationsPage = () => {
     totalPages: 1,
     last: true,
   });
-  const [activeTab, setActiveTab] = useState("all"); // 'all' or 'unread'
+  const [activeTab, setActiveTab] = useState("all");
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

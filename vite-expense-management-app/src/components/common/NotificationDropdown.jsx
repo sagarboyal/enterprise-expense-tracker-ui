@@ -6,6 +6,7 @@ import {
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 import api from "../../services/api";
+import { Link } from "react-router-dom";
 
 const formatRelativeTime = (dateString) => {
   const date = new Date(dateString);
@@ -169,15 +170,14 @@ const NotificationDropdown = ({ isOpen, setIsOpen }) => {
             )}
           </div>
 
-          {/* Footer */}
           <div className="border-t border-gray-200 bg-gray-50/80 px-4 py-2">
-            <a
-              href="/homepage/notifications"
+            <Link
+              to="/homepage/notifications"
               className="flex items-center justify-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-500"
             >
               <EnvelopeOpenIcon className="h-5 w-5" />
               <span>View all notifications</span>
-            </a>
+            </Link>
           </div>
         </div>
       )}
