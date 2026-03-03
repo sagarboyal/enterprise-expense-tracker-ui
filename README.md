@@ -6,6 +6,14 @@ A modern, feature-rich expense management application built with React and Vite.
 [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
+## 📸 Screenshots
+
+| Main Dashboard | Expense Management | Analytics | Approval Workflow |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/dashboard.png" width="200" alt="Dashboard" /> | <img src="docs/screenshots/expenses.png" width="200" alt="Expenses" /> | <img src="docs/screenshots/analytics.png" width="200" alt="Analytics Dashboard" /> | <img src="docs/screenshots/approval.png" width="200" alt="Approval Workflow" /> |
+
+
+
 ## ✨ Features
 
 - **🔐 Authentication & Authorization**
@@ -77,8 +85,8 @@ Before you start, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/vite-expense-management-app.git
-cd vite-expense-management-app
+git clone https://github.com/sagarboyal/enterprise-expense-tracker-ui.git
+cd enterprise-expense-tracker-ui
 ```
 
 ### 2. Install Dependencies
