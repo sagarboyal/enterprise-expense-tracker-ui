@@ -178,11 +178,6 @@ VITE_API_BASE_URL=http://localhost:5000/api
 # App Configuration
 VITE_APP_NAME=Expense Management System
 VITE_APP_VERSION=1.0.0
-
-# Feature Flags
-VITE_ENABLE_ANALYTICS=true
-VITE_ENABLE_APPROVAL_WORKFLOW=true
-VITE_ENABLE_AUDIT_LOG=true
 ```
 
 ## 🏗️ Building for Production
@@ -252,8 +247,8 @@ Please ensure your code follows the ESLint rules and maintains the project's cod
 
 ## 📞 Support & Contact
 
-- 📧 **Email**: your.email@example.com
-- 🐛 **Report Issues**: [GitHub Issues](https://github.com/yourusername/vite-expense-management-app/issues)
+- 📧 **Email**: sagarboyal.024@gmail.com
+- 🐛 **Report Issues**: [GitHub Issues](https://github.com/sagarboyal/enterprise-expense-tracker-ui/issues)
 - 💡 **Suggestions**: Feel free to open a discussion
 
 ## 📄 License
@@ -269,6 +264,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ by [Your Name]**
+**Built with ❤️ by Sagar Boyal**
 
 Star ⭐ this repository if you find it helpful!
