@@ -7,6 +7,7 @@ import {
   UsersIcon,
   ArrowRightIcon,
 } from "@heroicons/react/24/outline";
+import { Button } from "./button";
 
 const features = [
   {
@@ -183,12 +184,11 @@ const About = () => {
               Trex. Get started for free today.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Link
-                to="/register"
-                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Get started <ArrowRightIcon className="inline h-4 w-4" />
-              </Link>
+              <Button asChild size="lg">
+                <Link to="/register">
+                  Get started <ArrowRightIcon className="inline h-4 w-4 ml-2" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

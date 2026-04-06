@@ -9,6 +9,7 @@ import {
   ChatBubbleBottomCenterTextIcon,
 } from "@heroicons/react/24/outline";
 import api from "../../services/api";
+import { Button } from "./button";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -232,15 +233,11 @@ const Contact = () => {
               </div>
             </div>
             <div className="mt-8 flex justify-end">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="inline-flex items-center rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-indigo-400 disabled:cursor-not-allowed"
-              >
+              <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -264,7 +261,7 @@ const Contact = () => {
                 ) : (
                   "Send message"
                 )}
-              </button>
+              </Button>
             </div>
           </div>
         </form>

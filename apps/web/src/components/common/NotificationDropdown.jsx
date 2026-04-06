@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   BellIcon,
   XMarkIcon,
@@ -31,7 +31,7 @@ const NotificationDropdown = ({ isOpen, setIsOpen }) => {
     return api.get(`/api/notification?sortOrder=desc`);
   };
 
-  const loadNotifications = async () => {
+  const loadNotifications = useCallback(async () => {
     if (!isOpen) return;
     setLoading(true);
     try {
@@ -46,20 +46,20 @@ const NotificationDropdown = ({ isOpen, setIsOpen }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isOpen]);
 
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     try {
       const res = await api.get("/api/notification/unread-count");
       setUnreadCount(res.data.unreadCount || 0);
     } catch (error) {
       console.error("Failed to fetch unread count:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadNotifications();
-  }, [isOpen]);
+  }, [loadNotifications]);
 
   useEffect(() => {
     fetchUnreadCount();
