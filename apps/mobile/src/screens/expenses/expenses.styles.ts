@@ -1,36 +1,41 @@
 import { StyleSheet } from 'react-native';
 
+import { colors, fonts } from '../../theme';
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
+  },
+  content: {
     padding: 24,
     gap: 16,
   },
   heading: {
-    fontSize: 24,
+    color: colors.textPrimary,
+    fontFamily: fonts.bold,
     fontWeight: '700',
-    color: '#122033',
   },
   card: {
-    backgroundColor: '#f5f7fb',
+    backgroundColor: colors.background,
     borderRadius: 18,
-    padding: 18,
+  },
+  cardBody: {
     gap: 8,
   },
   title: {
-    fontSize: 17,
+    color: colors.textPrimary,
+    fontFamily: fonts.semibold,
     fontWeight: '600',
-    color: '#122033',
   },
   meta: {
-    fontSize: 14,
-    color: '#526077',
+    color: colors.textSecondary,
+    fontFamily: fonts.regular,
   },
   amount: {
-    fontSize: 20,
+    color: colors.secondary,
+    fontFamily: fonts.bold,
     fontWeight: '700',
-    color: '#0a7d35',
   },
 });
 

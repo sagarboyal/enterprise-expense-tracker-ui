@@ -1,5 +1,6 @@
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Button, Text } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import styles from './home.styles';
@@ -10,18 +11,23 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 const HomeScreen = ({ navigation }: Props) => {
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Expense Management</Text>
-      <Text style={styles.subtitle}>
+      <Text variant="headlineMedium" style={styles.title}>
+        Expense Management
+      </Text>
+      <Text variant="bodyLarge" style={styles.subtitle}>
         Review team spending, track reimbursement requests, and keep approvals
         moving from one place.
       </Text>
 
-      <Pressable
+      <Button
+        mode="contained"
+        contentStyle={styles.buttonContent}
         style={styles.button}
+        labelStyle={styles.buttonLabel}
         onPress={() => navigation.navigate('Expenses')}
       >
-        <Text style={styles.buttonText}>View Expenses</Text>
-      </Pressable>
+        View Expenses
+      </Button>
     </View>
   );
 };

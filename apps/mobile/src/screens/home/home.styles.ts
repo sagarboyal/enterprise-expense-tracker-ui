@@ -1,34 +1,35 @@
 import { StyleSheet } from 'react-native';
 
+import { colors, fonts } from '../../theme';
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#f5f7fb',
+    backgroundColor: colors.background,
     padding: 24,
     justifyContent: 'center',
     gap: 16,
   },
   title: {
-    fontSize: 28,
+    color: colors.textPrimary,
+    fontFamily: fonts.bold,
     fontWeight: '700',
-    color: '#122033',
   },
   subtitle: {
-    fontSize: 16,
+    color: colors.textSecondary,
+    fontFamily: fonts.regular,
     lineHeight: 24,
-    color: '#526077',
   },
   button: {
-    backgroundColor: '#155eef',
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
     alignSelf: 'flex-start',
+    borderRadius: 14,
   },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
+  buttonContent: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
+  buttonLabel: {
+    fontFamily: fonts.medium,
   },
 });
 
