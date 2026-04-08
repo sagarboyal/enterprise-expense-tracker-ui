@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useMyContext } from "../../store/ContextApi";
 import toast from "react-hot-toast";
@@ -11,7 +11,6 @@ import {
 } from "react-icons/io5";
 import { FaUserTie } from "react-icons/fa";
 
-import logo from "../../assets/brandlogo-cropped.png";
 import profileIcon from "../../assets/profile-icon.png";
 import NotificationDropdown from "./NotificationDropdown";
 import LogoutDialog from "../utils/LogoutDialog";
@@ -23,10 +22,11 @@ const NavBar = ({ theme, onToggleTheme }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const profileDropdownRef = useRef(null);
   const notificationDropdownRef = useRef(null);
 
-  const { token, setToken, setLoggedInUser, setIsAdmin, setIsManager } =
+  const { token, setToken, setloggedInUser, setIsAdmin, setIsManager } =
     useMyContext();
 
   const isDark = theme === "dark";
@@ -41,7 +41,7 @@ const NavBar = ({ theme, onToggleTheme }) => {
       "X-XSRF-TOKEN",
     ].forEach((item) => localStorage.removeItem(item));
     setToken(null);
-    setLoggedInUser(null);
+    setloggedInUser(null);
     setIsAdmin(false);
     setIsManager(false);
     setIsDialogOpen(false);
@@ -86,6 +86,31 @@ const NavBar = ({ theme, onToggleTheme }) => {
     setProfileDropdownOpen(false);
     setNotificationDropdownOpen(false);
   };
+
+  // Minimal Navbar for authentication pages
+  const authRoutes = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+  ];
+  if (authRoutes.includes(location.pathname)) {
+    return (
+      <div className="absolute top-0 left-0 z-[100] p-4 sm:p-6 lg:p-8">
+        <Link
+          to="/"
+          className="group flex items-center gap-2 transition-transform active:scale-95"
+        >
+          <span
+            className={`text-xl font-black tracking-tighter text-white
+            `}
+          >
+            TREX<span className="text-indigo-400">.</span>
+          </span>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <header
