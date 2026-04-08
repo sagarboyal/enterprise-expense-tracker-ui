@@ -3,7 +3,6 @@ import api from "../../services/api";
 import { useForm } from "react-hook-form";
 import InputField from "../utils/InputField";
 import Buttons from "../utils/Buttons";
-import { Divider } from "@mui/material";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -61,48 +60,102 @@ const ForgotPassword = () => {
   }, [token, navigate]);
 
   return (
-    <div className="min-h-[calc(100vh-74px)] flex justify-center items-center bg-gray-50">
-      <form
-        onSubmit={handleSubmit(onPasswordForgotHandler)}
-        className="sm:w-[450px] w-[360px] bg-white shadow-lg rounded-xl py-10 sm:px-10 px-6"
-      >
-        <div className="mb-6">
-          <h1 className="text-center text-3xl font-semibold text-gray-800">
-            Forgot Password?
+    <div className="h-screen overflow-hidden flex flex-col md:flex-row font-[Poppins] bg-white">
+      {/* Left Branding Panel */}
+      <div className="hidden md:flex md:w-1/2 relative overflow-hidden bg-gray-900 flex-col justify-center items-center p-12 text-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-gray-900 to-black opacity-90"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-indigo-600/30 rounded-full blur-3xl mix-blend-screen pointer-events-none"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-teal-500/20 rounded-full blur-3xl mix-blend-screen pointer-events-none"></div>
+
+        <div className="relative z-10 max-w-lg">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-6">
+            Forgot Your Password?
           </h1>
-          <p className="text-center text-gray-600">
-            Enter your email reset link will be sent to you.
+          <p className="text-lg text-gray-300 leading-relaxed font-light">
+            No worries! Enter your email address, and we'll send you a link to
+            reset your password and get you back into your account.
           </p>
         </div>
-        <div className="flex flex-col gap-4">
-          <InputField
-            label="Email"
-            required
-            id="email"
-            type="email"
-            message="*Email is required"
-            placeholder="Enter your email"
-            register={register}
-            errors={errors}
-            className="border-gray-300 focus:ring-2 focus:ring-blue-500 rounded-md"
-          />
+      </div>
+
+      {/* Right Form Panel */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 bg-gray-50 md:bg-white relative">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+              Reset Password
+            </h2>
+            <p className="mt-2 text-sm text-gray-500 font-light">
+              Enter your email to receive a reset link.
+            </p>
+          </div>
+
+          <form
+            onSubmit={handleSubmit(onPasswordForgotHandler)}
+            className="space-y-6 mt-8"
+          >
+            <div className="space-y-5">
+              <InputField
+                label="Email Address"
+                required
+                id="email"
+                type="email"
+                message="Email is required"
+                placeholder="name@example.com"
+                register={register}
+                errors={errors}
+              />
+            </div>
+
+            <Buttons
+              disabled={loading}
+              onClickhandler={() => {}}
+              className="w-full py-3.5 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 active:scale-[0.98] bg-indigo-600 hover:bg-indigo-700"
+              type="submit"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Sending...
+                </div>
+              ) : (
+                "Send Reset Link"
+              )}
+            </Buttons>
+
+            <div className="text-center text-sm text-gray-600 mt-8">
+              <p>
+                Remembered your password?{" "}
+                <Link
+                  to="/login"
+                  className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors duration-200"
+                >
+                  Back to Sign In
+                </Link>
+              </p>
+            </div>
+          </form>
         </div>
-
-        <Buttons
-          disabled={loading}
-          onClickhandler={() => {}}
-          className="mt-6 w-full py-3 bg-black text-white font-semibold rounded-md shadow-lg hover:bg-gray-800 transition duration-300 ease-in-out"
-          type="submit"
-        >
-          {loading ? <span>Loading...</span> : "Send"}
-        </Buttons>
-
-        <p className="mt-4 text-center text-sm text-gray-700">
-          <Link className="underline hover:text-black" to="/login">
-            Back to Login
-          </Link>
-        </p>
-      </form>
+      </div>
     </div>
   );
 };
