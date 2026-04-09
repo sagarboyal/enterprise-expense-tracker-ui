@@ -76,45 +76,62 @@ const Login = () => {
 
   return (
     <div className="h-screen overflow-hidden flex flex-col md:flex-row font-[Poppins] bg-white">
-      {/* Left Branding Panel */}
-      <div className="hidden md:flex md:w-1/2 relative overflow-hidden bg-gray-900 flex-col justify-center items-center p-12 text-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-gray-900 to-black opacity-90"></div>
-        {/* Decorative blurred blobs */}
-        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-indigo-600/30 rounded-full blur-3xl mix-blend-screen pointer-events-none"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-teal-500/20 rounded-full blur-3xl mix-blend-screen pointer-events-none"></div>
-        <div className="absolute top-0 left-0 z-[100] p-4 sm:p-6 lg:p-8">
-          <Link
-            to="/"
-            className="group flex items-center gap-2 transition-transform active:scale-95"
-          >
-            <span
-              className={`text-xl font-black tracking-tighter text-white
-            `}
+      {/* Left Section - Abstract Modern Art */}
+      <div className="hidden lg:flex lg:w-[45%] relative bg-black overflow-hidden flex-col justify-between p-12">
+        {/* Abstract shapes */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 blur-[120px] opacity-60 mix-blend-screen animate-pulse duration-10000"></div>
+          <div className="absolute top-[40%] -right-[20%] w-[60%] h-[80%] rounded-full bg-gradient-to-tr from-rose-500 to-orange-500 blur-[140px] opacity-40 mix-blend-screen"></div>
+          <div className="absolute -bottom-[20%] left-[20%] w-[80%] h-[60%] rounded-full bg-gradient-to-tl from-emerald-500 to-teal-400 blur-[130px] opacity-30 mix-blend-screen"></div>
+          
+          {/* Subtle grid overlay */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDEwaDQwTTAgMjBoNDBNMCAzMGg0ME0xMCAwdjQwTTIwIDB2NDBNMzAgMHY0MCIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=')] opacity-50"></div>
+        </div>
+        
+        <div className="relative z-10">
+          <div className="mb-16">
+            <Link
+              to="/"
+              className="group inline-flex items-center gap-2 transition-transform active:scale-95"
             >
-              TREX<span className="text-indigo-400">.</span>
-            </span>
-          </Link>
+              <span className="text-3xl font-black tracking-tighter text-white">
+                TREX<span className="text-indigo-500">.</span>
+              </span>
+            </Link>
+          </div>
+          
+          <div className="mt-20">
+            <h1 className="text-5xl font-bold text-white tracking-tight mb-8 leading-[1.1]">
+              Welcome back to <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">
+                Trex
+              </span>
+            </h1>
+            <p className="text-lg text-gray-400 max-w-md font-light leading-relaxed">
+              {loginType === "business"
+                ? "Sign in to your organization's workspace — manage expenses, track approvals, and keep your team's finances under control."
+                : "Log in to access your dashboard, track your expenses, and manage your financial goals with ease."}
+            </p>
+          </div>
         </div>
 
-        <div className="relative z-10 max-w-lg">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-6">
-            Welcome back to{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-teal-400">
-              Trex
-            </span>
-          </h1>
-          <p className="text-lg text-gray-300 leading-relaxed font-light">
-            {loginType === "business"
-              ? "Sign in to your organization's workspace — manage expenses, track approvals," +
-                "and keep your team's finances under control."
-              : "Log in to access your dashboard, track your expenses, and manage" +
-                "your financial goals with ease."}
-          </p>
+        <div className="relative z-10">
+          <div className="flex -space-x-4 mb-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="w-12 h-12 rounded-full border-2 border-black bg-gray-800 flex items-center justify-center overflow-hidden">
+                <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" className="w-full h-full object-cover" />
+              </div>
+            ))}
+            <div className="w-12 h-12 rounded-full border-2 border-black bg-white flex items-center justify-center text-black font-bold text-sm">
+              +2k
+            </div>
+          </div>
+          <p className="text-sm text-gray-500 font-medium">Trusted by forward-thinking companies worldwide.</p>
         </div>
       </div>
 
       {/* Right Form Panel */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 bg-gray-50 md:bg-white relative">
+      <div className="flex flex-col justify-center items-center w-full lg:w-[55%] p-6 sm:p-12 bg-gray-50 md:bg-white relative">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-900 tracking-tight transition-all">

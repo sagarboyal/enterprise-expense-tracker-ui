@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Login from "./components/auth/Login";
-import SignUp from "./components/auth/SignUp";
+import Registration from "./components/auth/registration/Registration";
 import Profile from "./components/auth/Profile";
 import HomePage from "./components/HomePage";
 import { Toaster } from "react-hot-toast";
@@ -69,7 +69,7 @@ function App() {
       <main className="flex-1">
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<SignUp />} />
+          <Route path="/register" element={<Registration />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/" element={<Introduction theme={theme} />} />
