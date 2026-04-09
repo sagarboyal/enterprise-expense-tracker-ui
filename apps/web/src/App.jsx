@@ -1,32 +1,32 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Login from "./components/auth/Login";
-import Registration from "./components/auth/registration/Registration";
-import Profile from "./components/auth/Profile";
-import HomePage from "./components/HomePage";
+import Login from "@/features/auth/Login";
+import Registration from "@/features/auth/registration/Registration";
+import Profile from "@/features/auth/Profile";
+import HomePage from "@/pages/HomePage";
 import { Toaster } from "react-hot-toast";
-import Contact from "./components/common/Contact";
-import About from "./components/common/About";
-import ResetPassword from "./components/auth/ResetPassword";
-import ForgotPassword from "./components/auth/ForgotPassword";
-import NavBar from "./components/common/NavBar";
-import Footer from "./components/common/Footer";
+import Contact from "@/pages/Contact";
+import About from "@/pages/About";
+import ResetPassword from "@/features/auth/ResetPassword";
+import ForgotPassword from "@/features/auth/ForgotPassword";
+import NavBar from "@/layouts/NavBar";
+import Footer from "@/layouts/Footer";
 import Introduction, {
   EnterpriseIntro,
-} from "./components/common/introduction/Introduction";
-import Expenses from "./components/expenses/Expenses";
-import WelcomePage from "./components/common/WelcomePage";
-import Notifications from "./components/common/Notifications";
-import AuditLog from "./components/audit-log/AuditLog";
-import ApprovalPanel from "./components/approval/ApprovalPanel";
-import AnalyticsDashboard from "./components/analytics/AnalyticsDashboard";
-import UserManagementDashboard from "./components/users/UserManagementDashboard";
-import InvoiceDashboard from "./components/invoice/InvoiceDashboard";
-import Terms from "./components/common/Terms";
-import Policy from "./components/common/Policy";
-import UserInvoiceDashboard from "./components/invoice/UserInvoiceDashboard.jsx";
-import Category from "./components/categories/Category.jsx";
-import ContactReq from "./components/contactrequest/ContactReq.jsx";
+} from "@/features/introduction/Introduction";
+import Expenses from "@/features/expenses/Expenses";
+import WelcomePage from "@/pages/WelcomePage";
+import Notifications from "@/features/notifications/Notifications";
+import AuditLog from "@/features/audit-log/AuditLog";
+import ApprovalPanel from "@/features/approval/ApprovalPanel";
+import AnalyticsDashboard from "@/features/analytics/AnalyticsDashboard";
+import UserManagementDashboard from "@/features/users/UserManagementDashboard";
+import InvoiceDashboard from "@/features/invoice/InvoiceDashboard";
+import Terms from "@/pages/Terms";
+import Policy from "@/pages/Policy";
+import UserInvoiceDashboard from "@/features/invoice/UserInvoiceDashboard.jsx";
+import Category from "@/features/categories/Category.jsx";
+import ContactReq from "@/features/contactrequest/ContactReq.jsx";
 
 const getInitialTheme = () => {
   if (typeof window === "undefined") {
