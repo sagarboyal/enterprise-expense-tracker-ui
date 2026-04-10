@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
 import { useMyContext } from "@/store/ContextApi";
 import toast from "react-hot-toast";
-import InputField from "@/components/ui/utils_InputField";
+import InputField from "@/components/ui/InputField";
 import Buttons from "@/components/ui/Buttons";
 import api from "@/services/api";
 
@@ -83,11 +83,11 @@ const Login = () => {
           <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 blur-[120px] opacity-60 mix-blend-screen animate-pulse duration-10000"></div>
           <div className="absolute top-[40%] -right-[20%] w-[60%] h-[80%] rounded-full bg-gradient-to-tr from-rose-500 to-orange-500 blur-[140px] opacity-40 mix-blend-screen"></div>
           <div className="absolute -bottom-[20%] left-[20%] w-[80%] h-[60%] rounded-full bg-gradient-to-tl from-emerald-500 to-teal-400 blur-[130px] opacity-30 mix-blend-screen"></div>
-          
+
           {/* Subtle grid overlay */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDEwaDQwTTAgMjBoNDBNMCAzMGg0ME0xMCAwdjQwTTIwIDB2NDBNMzAgMHY0MCIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=')] opacity-50"></div>
         </div>
-        
+
         <div className="relative z-10">
           <div className="mb-16">
             <Link
@@ -99,10 +99,10 @@ const Login = () => {
               </span>
             </Link>
           </div>
-          
+
           <div className="mt-20">
             <h1 className="text-5xl font-bold text-white tracking-tight mb-8 leading-[1.1]">
-              Welcome back to <br/>
+              Welcome back to <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">
                 Trex
               </span>
@@ -118,15 +118,24 @@ const Login = () => {
         <div className="relative z-10">
           <div className="flex -space-x-4 mb-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="w-12 h-12 rounded-full border-2 border-black bg-gray-800 flex items-center justify-center overflow-hidden">
-                <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" className="w-full h-full object-cover" />
+              <div
+                key={i}
+                className="w-12 h-12 rounded-full border-2 border-black bg-gray-800 flex items-center justify-center overflow-hidden"
+              >
+                <img
+                  src={`https://i.pravatar.cc/100?img=${i + 10}`}
+                  alt="User"
+                  className="w-full h-full object-cover"
+                />
               </div>
             ))}
             <div className="w-12 h-12 rounded-full border-2 border-black bg-white flex items-center justify-center text-black font-bold text-sm">
               +2k
             </div>
           </div>
-          <p className="text-sm text-gray-500 font-medium">Trusted by forward-thinking companies worldwide.</p>
+          <p className="text-sm text-gray-500 font-medium">
+            Trusted by forward-thinking companies worldwide.
+          </p>
         </div>
       </div>
 
@@ -189,6 +198,24 @@ const Login = () => {
                 }
                 register={register}
                 errors={errors}
+                icon={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-user-icon lucide-user"
+                    className="text-gray-400"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                }
               />
               <InputField
                 label="Password"
@@ -199,6 +226,25 @@ const Login = () => {
                 placeholder="••••••••"
                 register={register}
                 errors={errors}
+                icon={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-lock-keyhole-icon lucide-lock-keyhole"
+                    className="text-gray-400"
+                  >
+                    <circle cx="12" cy="16" r="1" />
+                    <rect x="3" y="10" width="18" height="12" rx="2" />
+                    <path d="M7 10V7a5 5 0 0 1 10 0v3" />
+                  </svg>
+                }
               />
               <div className="flex justify-end">
                 <Link
@@ -245,7 +291,25 @@ const Login = () => {
                   Signing in...
                 </div>
               ) : (
-                "Sign In"
+                <div className="flex items-center gap-2 justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-log-in-icon lucide-log-in"
+                  >
+                    <path d="m10 17 5-5-5-5" />
+                    <path d="M15 12H3" />
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                  </svg>
+                  <p> Sign In</p>
+                </div>
               )}
             </Buttons>
 

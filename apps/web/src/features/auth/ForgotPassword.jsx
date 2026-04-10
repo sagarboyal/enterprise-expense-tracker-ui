@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "@/services/api";
 import { useForm } from "react-hook-form";
-import InputField from "@/components/ui/utils_InputField";
+import InputField from "@/components/ui/InputField";
 import Buttons from "@/components/ui/Buttons";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
@@ -104,6 +104,23 @@ const ForgotPassword = () => {
                 placeholder="name@example.com"
                 register={register}
                 errors={errors}
+                icon={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-mail-icon lucide-mail"
+                  >
+                    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                  </svg>
+                }
               />
             </div>
 
@@ -138,7 +155,24 @@ const ForgotPassword = () => {
                   Sending...
                 </div>
               ) : (
-                "Send Reset Link"
+                <div className="flex items-center gap-2 justify-center align-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-send-icon lucide-send"
+                  >
+                    <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+                    <path d="m21.854 2.147-10.94 10.939" />
+                  </svg>{" "}
+                  <p> Send Reset Link</p>
+                </div>
               )}
             </Buttons>
 
