@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { Card, Text } from 'react-native-paper';
 
 import styles from './expenses.styles';
 
@@ -20,17 +21,29 @@ const expenseItems = [
 
 const ExpensesScreen = () => {
   return (
-    <View style={styles.screen}>
-      <Text style={styles.heading}>Recent Expense Requests</Text>
+    <ScrollView contentContainerStyle={styles.content} style={styles.screen}>
+      <Text variant="headlineSmall" style={styles.heading}>
+        Recent Expense Requests
+      </Text>
 
       {expenseItems.map((item) => (
-        <View key={item.id} style={styles.card}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.meta}>{item.meta}</Text>
-          <Text style={styles.amount}>{item.amount}</Text>
-        </View>
+        <Card key={item.id} mode="contained" style={styles.card}>
+          <Card.Content>
+            <View style={styles.cardBody}>
+              <Text variant="titleMedium" style={styles.title}>
+                {item.title}
+              </Text>
+              <Text variant="bodyMedium" style={styles.meta}>
+                {item.meta}
+              </Text>
+              <Text variant="titleLarge" style={styles.amount}>
+                {item.amount}
+              </Text>
+            </View>
+          </Card.Content>
+        </Card>
       ))}
-    </View>
+    </ScrollView>
   );
 };
 
